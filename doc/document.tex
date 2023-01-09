@@ -1,0 +1,94 @@
+% This must be in the first 5 lines to tell arXiv to use pdfLaTeX, which is strongly recommended.
+\pdfoutput=1
+% In particular, the hyperref package requires pdfLaTeX in order to break URLs across lines.
+
+\documentclass[11pt]{article}
+
+\input{preamble.tex}
+
+% If the title and author information does not fit in the area allocated, uncomment the following
+%
+%\setlength\titlebox{<dim>}
+%
+% and set <dim> to something 5cm or larger.
+
+\title{D1}
+
+% Author information can be set in various styles:
+% For several authors from the same institution:
+\author{Anna Batra, Sam Briggs, Junyin Chen, Hilly Steinmetz\\
+          Department of Linguistics, University of Washington \\
+          \texttt{\{batraa, briggs3, junyinc, hsteinm\}@uw.edu}}
+% if the names do not fit well on one line use
+%         Author 1 \\ {\bf Author 2} \\ ... \\ {\bf Author n} \\
+% For authors from different institutions:
+% \author{Author 1 \\ Address line \\  ... \\ Address line
+%         \And  ... \And
+%         Author n \\ Address line \\ ... \\ Address line}
+% To start a seperate ``row'' of authors use \AND, as in
+% \author{Author 1 \\ Address line \\  ... \\ Address line
+%         \AND
+%         Author 2 \\ Address line \\ ... \\ Address line \And
+%         Author 3 \\ Address line \\ ... \\ Address line}
+
+% \author{First Author \\
+%   Affiliation / Address line 1 \\
+%   Affiliation / Address line 2 \\
+%   Affiliation / Address line 3 \\
+%   \texttt{email@domain} \\\And
+%   Second Author \\
+%   Affiliation / Address line 1 \\
+%   Affiliation / Address line 2 \\
+%   Affiliation / Address line 3 \\
+%   \texttt{email@domain} \\}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This deliverable contains a skeleton of the paper and a list of team members. This is an example citation \citep{jurafsky-martin-draft}. According to \citet{jurafsky-martin-draft}, this is another example citation.
+\end{abstract}
+
+\section{Introduction}
+
+\section{Engines}
+
+\section{System Overview}
+
+\section{Approach}
+
+\section{Results}
+
+\section{Discussion}
+
+\section{Conclusion}
+
+\section{Appendix A: Workload distribution}
+
+\begin{itemize}
+    \item Anna Batra set up the Github repository, turned in D1
+    \item Junyin Chen got the team together and set up a communication channel
+    \item Sam Briggs set up the Overleaf file and sent out a when-to-meet to schedule weekly meetings
+    \item Hilly Steinmetz edited the Overleaf file to prepare it for D1.
+\end{itemize}
+
+\section{Appendix B: Code repository and additional software and data used in your system}
+
+The repository for our project can be found on Github at \href{https://github.com/LING-575-Summarization/Summarization}{github.com/LING-575-Summarization/Summarization}.
+
+We plan to use the following software for the project: 
+
+\begin{itemize}
+    \item Python
+    \item Anaconda (for virtual environment)
+    \item NLTK (for parsing, NER, and more)
+    \item spaCy (for parsing, NER, and more)
+    \item Scikit-learn (for machine learning models)
+    \item Pytorch (for large LMs)
+    \item Hugging Face's Transformer library (for auto-tokenization and find-tune trained model)
+\end{itemize}
+
+\nocite{jurafsky-martin-draft, radev-etal-2000-centroid}
+\bibliography{bibliography/custom}
+\bibliographystyle{bibliography/acl_natbib}
+
+\end{document}
