@@ -9,11 +9,22 @@ It uses the processing functions defined in read_xml
 import os
 import re
 import xml.etree.ElementTree as ET
+import logging
 from typing import *
-from read_xml import get_xml_document
+from read_xml import get_xml_document, resolve_path
+
+# TODO: Make sure documents consistent include or exlude places
 
 Path = str
 
+logging.basicConfig(
+    level=logging.INFO, 
+    format='(%(levelname)s|(%(asctime)s)) %(message)s',
+    handlers=[
+        logging.FileHandler("preprocess/preprocess.log")
+    ]
+)
+logger = logging.getLogger()
 
 def parse_metadata_file(file: Path) -> Dict[str, str]:
     '''Go through the metadata file and acquire a dictionary of file
@@ -28,7 +39,11 @@ def parse_metadata_file(file: Path) -> Dict[str, str]:
     dictionary = {}
     for doc_id in doc_ids:
         id = doc_id.get("id")
-        dictionary[id] = get_xml_document(id)
+        try:
+            dictionary[id] = get_xml_document(id)
+            # print(id, " ".join(dictionary[id].split()[0:10]), "...")
+        except FileNotFoundError:
+            logger.warning("Couldn't load file ID: {}. Issue with path: {}?".format(id, resolve_path(id)))
     return dictionary
 
 
@@ -51,4 +66,5 @@ def get_dataset_dict(
 
 
 if __name__ == '__main__':
-    print(get_dataset_dict())
+    print("Reading files")
+    get_dataset_dict()

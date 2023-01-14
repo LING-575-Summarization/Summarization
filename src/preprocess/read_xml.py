@@ -101,7 +101,51 @@ def parse_aquaint2(path: Path, doc_id: str) -> str:
             return text
 
 
-def get_xml_document(doc_id: str) -> Path:
+def resolve_path(doc_id: str) -> Path:
+    '''Like get_xml_document, but only returns path (for debugging)'''
+    regex = re.compile(r'([A-Za-z]*|[A-Za-z]*_[A-Za-z]*)_?(\d+\.\d+)')
+    parsed_doc = re.match(regex, doc_id)
+    news_org, doc = parsed_doc.group(1), parsed_doc.group(2)
+    time_period = int(doc.split(".")[0])
+    parser = etree.XMLParser(recover=True)
+    if time_period <= 20009999:
+        year = str(int(round(time_period/10000, 1)))
+        news_org_f = "XIN" if news_org == "XIE" else news_org
+        news_org_f = news_org_f + "_ENG" if news_org_f != "NYT" else news_org_f
+        file = "".join([str(time_period), "_", news_org_f])
+        path = os.path.join(
+            CORPUS_PATHS["AQUAINT"], 
+            news_org.lower(), 
+            year,
+            file
+        )
+        return path
+    elif time_period > 20009999 and time_period <= 20060399:
+        year = str(int(round(time_period/100, 1)))
+        file = "".join(
+            [news_org.lower(), "_", year, ".xml"]
+        )
+        path = os.path.join(
+            CORPUS_PATHS["AQUAINT2"], 
+            news_org.lower(),
+            file
+        )
+        return path
+    else:
+        directory = doc.split(".")[0]
+        file = "".join(
+            [news_org, "_", doc, ".LDC2009T13", ".sgm"]
+        )
+        path = os.path.join(
+            CORPUS_PATHS["TAC2011"], 
+            news_org.lower(),
+            directory,
+            file
+        )
+        return path
+
+
+def get_xml_document(doc_id: str) -> str:
     '''Find the path for the file based on the following heuristics:
             If <= 2000, then search in AQUAINT (parse_invalid)
             If >= 2000 and <= 2006.03 then search in AQUAINT2 (parse_valid)
