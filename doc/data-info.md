@@ -3,7 +3,11 @@
 ## Corpora info (from sldies)
 
 - AQUAINT: `/corpora/LDC/LDC02T31/`
+    - Before 2000
 - AQUAINT-2: `/corpora/LDC/LDC08T25/data/`
+    - After 2000 and before 2006
+- TAC: `/corpora/LDC/LDC10E12/12/TAC_2010_KBP_Source_Data`
+    - After 2006
 
 ## Dropbox directory info (from slides)
 
