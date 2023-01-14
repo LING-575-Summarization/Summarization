@@ -14,6 +14,7 @@ from typing import *
 from read_xml import get_xml_document, resolve_path
 
 # TODO: Make sure documents consistent include or exlude places
+#       - Fix bugs
 
 Path = str
 
