@@ -7,7 +7,6 @@ import spacy
 def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str):
     output = open(output_path, "w+")
 
-    parser = etree.XMLParser(resolve_entities=False, no_network=True, recover=True)
     root = get_root(data_path)
     date = get_date(doc_id)
     headline = ""
@@ -30,7 +29,7 @@ def read_aquaint(root: etree.Element, doc_id: str) -> (str, [str]):
                 s = s.strip().replace('\n', ' ')
                 if s != '':
                     body.append(s)
-                # We now find what we need, break so we can move on
+            # We now find what we need, break so we can move on
             break
     return headline, body
 
@@ -46,8 +45,20 @@ def read_aquaint2(root: etree.Element, doc_id: str) -> (str, [str]):
                 s = p_node.text.strip().replace('\n', ' ')
                 if s != '':
                     body.append(s)
-                # We now find what we need, break so we can move on
+            # We now find what we need, break so we can move on
             break
+    return headline, body
+
+
+def read_tac(root: etree.Element) -> (str, [str]):
+    body_node = root.find("DOC").find("BODY")
+    headline = body_node.find("HEADLINE").text.strip().replace('\n', ' ')
+    body = []
+    for p_node in body_node.find("TEXT"):
+        s = p_node.text.strip().replace('\n', ' ')
+        if s != '':
+            body.append(s)
+
     return headline, body
 
 
