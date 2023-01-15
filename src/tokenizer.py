@@ -13,6 +13,10 @@ def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type:
     body = []
     if corpus_type == 1:
         headline, body = read_aquaint(root, doc_id)
+    elif corpus_type == 2:
+        headline, body = read_aquaint2(root, doc_id)
+    elif corpus_type == 3:
+        headline, body = read_tac(root)
     write_output(output, category, date, headline, body)
 
 
@@ -63,18 +67,21 @@ def read_tac(root: etree.Element) -> (str, [str]):
 
 
 def write_output(output: typing.TextIO, category: int, date: str, headline: str, body: [str]):
-    output.write("DATE_TIME: " + date)
-    output.write("CATEGORY: " + str(category))
-    output.write("HEADLINE: " + headline)
+    output.write("DATE_TIME: " + date + "\n")
+    output.write("CATEGORY: " + str(category) + "\n")
+    output.write("HEADLINE: " + headline + "\n")
     output.write("\n")
+    for line in body:
+        output.write(str(tokenizer(line)) + "\n")
+    output.close()
 
 
-def tokenizer(input: str):
+def tokenizer(input: str) -> [str]:
     nlp = spacy.load("en_core_web_sm")
     for line in input:
         if line:
-            doc = nlp(str)
-    return doc
+            doc = nlp(input)
+    return [token.text for token in doc]
 
 
 def get_root(input_file: str) -> etree.Element:
