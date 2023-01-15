@@ -72,18 +72,19 @@ def parse_aquaint(
                 if info.tag == "BODY":
                     article_text = ""
                     for _text in info.iterchildren():
+                        # handle text
+                        if _text.tag == "TEXT":
+                            text = "\n\n".join(
+                                [replace_spaces(p.text) for p in _text.iter()]
+                            )
+                            article_text += text
                         # handle headlines and bylines
-                        if _text.tag == "HEADLINE" or _text.tag == "DATELINE":
+                        else:
                             text = replace_spaces(_text.text)
                             if re.search(r'\w', text):
-                                article_text += (text + ".\n")
-                        # handle text
-                        elif _text.tag == "TEXT":
-                            text = " ".join(
-                                [p.text for p in _text.iter()]
-                            )
-                            text = replace_spaces(text)
-                            article_text += (text + ".\n")
+                                article_text += (_text.tag + ": " + text + "\n")
+                    # fix any new lines greater than 2
+                    article_text = re.sub(r'\n{3,}', '\n\n', article_text)
                     return article_text
 
 
@@ -118,14 +119,19 @@ def parse_aquaint2(
         else:
             article_text = ""
             for _text in doc_no:
-                if _text.tag == 'HEADLINE' or _text.tag == 'DATELINE':
-                    article_text += (
-                        replace_spaces(_text.text) + ".\n"
+                # handle text
+                if _text.tag == "TEXT":
+                    text = "\n\n".join(
+                        [replace_spaces(p.text) for p in _text.iter()]
                     )
-                elif _text.tag == 'TEXT':
-                    text = " ".join([p.text for p in _text])
-                    text = replace_spaces(text)
-                    article_text += text  
+                    article_text += text
+                # handle headlines and bylines
+                else:
+                    text = replace_spaces(_text.text)
+                    if re.search(r'\w', text):
+                        article_text += (_text.tag + ": " + text + "\n")
+            # fix any new lines greater than 2
+            article_text = re.sub(r'\n{3,}', '\n\n', article_text)
             return article_text
 
 
@@ -164,16 +170,19 @@ def parse_tac(
         elif child.tag == 'BODY':
             article_text = ""
             for _text in child.iterchildren():
-                if _text.tag == "HEADLINE":
+                # handle text
+                if _text.tag == "TEXT":
+                    text = "\n\n".join(
+                        [replace_spaces(p.text) for p in _text.iter()]
+                    )
+                    article_text += text
+                # handle headlines and bylines
+                else:
                     text = replace_spaces(_text.text)
                     if re.search(r'\w', text):
-                        article_text += (text + ".\n")
-                elif _text.tag == "TEXT":
-                    text = " ".join(
-                        [p.text for p in _text.iter()]
-                    )
-                    text = replace_spaces(text)
-                    article_text += text
+                        article_text += (_text.tag + ": " + text + "\n")
+            # fix any new lines greater than 2
+            article_text = re.sub(r'\n{3,}', '\n\n', article_text)
             return article_text
 
 
