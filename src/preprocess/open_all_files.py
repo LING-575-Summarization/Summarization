@@ -39,16 +39,17 @@ def parse_metadata_file(file: Path) -> Dict[str, str]:
         id = doc_id.get("id")
         try:
             dictionary[id] = get_xml_document(id)
-            # print(id, " ".join(dictionary[id].split()[0:10]), "...")
+            print(id, (" ".join(dictionary[id].replace("\n", " ").split()[0:10])), "...")
         except FileNotFoundError:
             logger.warning(
                 "Couldn't load file ID: {}. Issue with path: {}?".format(id, resolve_path(id))
             )
+            exit(1)
             errors += 1
     if errors == 0:
         logger.info("Done! Good news! No errors found!")
     else:
-        logger.info("Done! Uh oh! Ran into {} errors...".format(str(len(errors))))
+        logger.info("Done! Uh oh! Ran into {} errors...".format(str(errors)))
     return dictionary
 
 
@@ -82,7 +83,8 @@ if __name__ == '__main__':
     logger.addHandler(hndlr)
     from datetime import datetime
     _now = datetime.now()
-    now = (_now.day, _now.month, _now.hour, _now.minute, _now.second)
+    now = [_now.day, _now.month, _now.hour, _now.minute, _now.second]
+    now = tuple(map(lambda x: str(x) if x>9 else "0" + str(x), now))
     logger.info("\n======= Script session %s/%s %s:%s:%s =======\n" % now)
     for hndlr in logger.handlers:
         hndlr.setFormatter(logging.Formatter(default_fmt))
