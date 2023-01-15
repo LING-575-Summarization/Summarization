@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "preprocess/open_all_files.py", line 89, in <module>
+    get_dataset_dict()
+  File "preprocess/open_all_files.py", line 73, in get_dataset_dict
+    dictionary[train_test_split] = parse_metadata_file(file_path)
+  File "preprocess/open_all_files.py", line 41, in parse_metadata_file
+    dictionary[id] = get_xml_document(id)
+  File "/home2/hsteinm/575-Summarization/repo/src/preprocess/read_xml.py", line 220, in get_xml_document
+    return parse_tac(news_org, doc_id, parser)
+  File "/home2/hsteinm/575-Summarization/repo/src/preprocess/read_xml.py", line 128, in parse_tac
+    files = os.listfiles(path)
+AttributeError: module 'os' has no attribute 'listfiles'
