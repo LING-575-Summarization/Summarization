@@ -78,7 +78,7 @@ def parse_aquaint(
                             if re.search(r'\w', text):
                                 article_text += (text + ".\n")
                         # handle text
-                        if _text.tag == "TEXT":
+                        elif _text.tag == "TEXT":
                             text = " ".join(
                                 [p.text for p in _text.iter()]
                             )
@@ -168,7 +168,7 @@ def parse_tac(
                     text = replace_spaces(_text.text)
                     if re.search(r'\w', text):
                         article_text += (text + ".\n")
-                if _text.tag == "TEXT":
+                elif _text.tag == "TEXT":
                     text = " ".join(
                         [p.text for p in _text.iter()]
                     )

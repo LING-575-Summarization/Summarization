@@ -44,12 +44,11 @@ def parse_metadata_file(file: Path) -> Dict[str, str]:
             logger.warning(
                 "Couldn't load file ID: {}. Issue with path: {}?".format(id, resolve_path(id))
             )
-            exit(1)
             errors += 1
     if errors == 0:
-        logger.info("Done! Good news! No errors found!")
+        logger.info("Done with {}! Good news! No errors found!".format(file))
     else:
-        logger.info("Done! Uh oh! Ran into {} errors...".format(str(errors)))
+        logger.info("Done with {}! Uh oh! Ran into {} errors...".format(file, str(errors)))
     return dictionary
 
 
@@ -60,6 +59,9 @@ def read_xml_files_from_directory(
     Obtain the data from the directory provided containing datasets splits.
     Arguments:
         - root_directory: Path to the directory containing train/test/dev splits.
+    NOTE: The documents include both headlines and datelines. Most often, these are
+    included in the first two paragraphs of the string. You can get the article text 
+    using the code: text.split("\n")[-1]
     '''
     if re.match(r'^~', root_directory):
         root_directory = os.path.join(
