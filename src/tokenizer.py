@@ -20,15 +20,30 @@ def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type:
 def read_aquaint(root: etree.Element, doc_id: str) -> (str, [str]):
     headline = ""
     body = []
-    print(doc_id)
     for child in root.findall("DOC"):
         # Compare the <DOCNO> text with doc_id
         if child.find("DOCNO").text.strip() == doc_id:
             # Grab the BODY section
             body_node = child.find("BODY")
-            headline = body_node.find("HEADLINE").text.strip()
+            headline = body_node.find("HEADLINE").text.strip().replace('\n', ' ')
             for s in body_node.find("TEXT").text.split('\t'):
                 s = s.strip().replace('\n', ' ')
+                if s != '':
+                    body.append(s)
+                # We now find what we need, break so we can move on
+            break
+    return headline, body
+
+
+def read_aquaint2(root: etree.Element, doc_id: str) -> (str, [str]):
+    headline = ""
+    body = []
+    for child in root.find("DOCSTREAM").findall("DOC"):
+        # Compare the id attributes' text with doc_id
+        if child.get("id").strip() == doc_id:
+            headline = child.find("HEADLINE").text.strip().replace('\n', ' ')
+            for p_node in child.find("TEXT"):
+                s = p_node.text.strip().replace('\n', ' ')
                 if s != '':
                     body.append(s)
                 # We now find what we need, break so we can move on
