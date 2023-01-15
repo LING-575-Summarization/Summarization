@@ -13,8 +13,6 @@ import logging
 from typing import *
 from read_xml import get_xml_document, resolve_path
 
-# TODO: Make sure documents consistent include or exlude places
-
 Path = str
 
 logging.basicConfig(
@@ -23,7 +21,8 @@ logging.basicConfig(
 )
 logger = logging.getLogger()
 
-def parse_metadata_file(file: Path) -> Dict[str, str]:
+
+def parse_metadata_file(file: Path, docset: str) -> Dict[str, Dict[str, str]]:
     '''
     Go through the metadata file and acquire a dictionary of file codes to text.
     Args:
@@ -32,19 +31,23 @@ def parse_metadata_file(file: Path) -> Dict[str, str]:
     with open(file, 'r') as document:
         doc_as_string = document.read()
     documents_list = ET.fromstring(doc_as_string)
-    doc_ids = documents_list.findall(".//doc")
-    dictionary = {}
-    errors = 0
+    doc_ids = documents_list.findall(".//{}".format(docset))
+    dictionary = {}   
+    errors = 0    
     for doc_id in doc_ids:
-        id = doc_id.get("id")
-        try:
-            dictionary[id] = get_xml_document(id)
-            print(id, (" ".join(dictionary[id].replace("\n", " ").split()[0:10])), "...")
-        except FileNotFoundError:
-            logger.warning(
-                "Couldn't load file ID: {}. Issue with path: {}?".format(id, resolve_path(id))
-            )
-            errors += 1
+        id_for_list = doc_id.get("id")
+        dictionary[id_for_list] = {}
+        print(doc_id.tag, id_for_list)
+        for document in doc_id.findall("doc"):
+            id = document.get("id")
+            try:
+                dictionary[id_for_list][id] = get_xml_document(id)
+                print("\t", id_for_list, id, (" ".join(dictionary[id_for_list][id].replace("\n", " ").split()[0:10])), "...")
+            except FileNotFoundError:
+                logger.warning(
+                    "Couldn't load file ID: {}. Issue with path: {}?".format(id, resolve_path(id))
+                )
+                errors += 1
     if errors == 0:
         logger.info("Done with {}! Good news! No errors found!".format(file))
     else:
@@ -53,15 +56,13 @@ def parse_metadata_file(file: Path) -> Dict[str, str]:
 
 
 def read_xml_files_from_directory(
-        root_directory: Path = '~/dropbox/22-23/575x/Data/Documents'
-    ) -> Dict[str, Dict[Path, str]]:
+        root_directory: Path = '~/dropbox/22-23/575x/Data/Documents',
+        docset: str = "docsetA"
+    ) -> Dict[str, Dict[str, Dict[Path, str]]]:
     '''
     Obtain the data from the directory provided containing datasets splits.
     Arguments:
         - root_directory: Path to the directory containing train/test/dev splits.
-    NOTE: The documents include both headlines and datelines. Most often, these are
-    included in the first two paragraphs of the string. You can get the article text 
-    using the code: text.split("\n")[-1]
     '''
     if re.match(r'^~', root_directory):
         root_directory = os.path.join(
@@ -73,13 +74,36 @@ def read_xml_files_from_directory(
             if file.endswith(".xml"):
                 train_test_split = os.path.basename(dirpath)
                 file_path = os.path.join(dirpath, file)
-                dictionary[train_test_split] = parse_metadata_file(file_path)
+                dictionary[train_test_split] = parse_metadata_file(file_path, docset)
     return dictionary
+
+
+def write_outputs(dictionary: Dict[str, Dict[Path, str]], output_dir: Path):
+    '''
+    Unravel the dictionary output and create directories with files for each document
+    in a docset
+    '''
+    if not os.path.exists(output_dir):
+        os.mkdir(output_dir)
+    for file in dictionary:
+        for docset in dictionary[file]:
+            docset_dir = os.path.join(output_dir, docset)
+            if not os.path.exists(docset_dir):
+                os.mkdir(docset_dir)
+            for doc, string in dictionary[file][docset].items():
+                file_path = os.path.join(docset_dir, doc)
+                # TODO: Put tokenizer here!
+                # NOTE: Paragraphs are not yet split into separate sentences for each line
+                #       so that needs to be done here as well.
+                #       This seems like a decent sentence tokenizer: https://www.nltk.org/api/nltk.tokenize.html?highlight=tokenize#nltk.tokenize.sent_tokenize
+                with open(file_path, 'w') as outfile:
+                    outfile.write(string)
+    logger.info("Successfully wrote dictionary to files")
 
 
 if __name__ == '__main__':
     no_fmt, default_fmt = '%(message)s', '(%(levelname)s|%(asctime)s) %(message)s'
-    hndlr = logging.FileHandler("preprocess/preprocess.log")
+    hndlr = logging.FileHandler("src/preprocess/preprocess.log")
     hndlr.setFormatter(logging.Formatter(no_fmt))
     logger.handlers.clear()
     logger.addHandler(hndlr)
@@ -90,4 +114,5 @@ if __name__ == '__main__':
     logger.info("\n======= Script session %s/%s %s:%s:%s =======\n" % now)
     for hndlr in logger.handlers:
         hndlr.setFormatter(logging.Formatter(default_fmt))
-    read_xml_files_from_directory()
+    dictionary = read_xml_files_from_directory()
+    write_outputs(dictionary, "outputs/D2")
