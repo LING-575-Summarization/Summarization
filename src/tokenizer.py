@@ -25,10 +25,13 @@ def read_aquaint(root: etree.Element, doc_id: str) -> (str, [str]):
         # Compare the <DOCNO> text with doc_id
         if child.find("DOCNO").text.strip() == doc_id:
             # Grab the BODY section
-            body = child.find("BODY")
-            headline = body.find("HEADLINE").text
-            body = [re.sub('\n', ' ', s.strip()) for s in body.find("TEXT").text.split('\t')]
-            # We now find what we need, break so we can move on
+            body_node = child.find("BODY")
+            headline = body_node.find("HEADLINE").text.strip()
+            for s in body_node.find("TEXT").text.split('\t'):
+                s = s.strip().replace('\n', ' ')
+                if s != '':
+                    body.append(s)
+                # We now find what we need, break so we can move on
             break
     return headline, body
 
