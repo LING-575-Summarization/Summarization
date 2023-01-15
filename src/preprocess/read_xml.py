@@ -27,6 +27,16 @@ CORPUS_PATHS = {
 }
 
 
+def replace_spaces(text: str) -> str:
+    '''
+    Helper function that replaces all spacing in a text
+    with single spaces (and corrects any spacing at the beginning)
+    '''
+    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r'(^\s+|\s+$)', '', text)
+    return text
+
+
 def parse_aquaint(
         news_org: str, 
         time_period: int,
@@ -60,14 +70,21 @@ def parse_aquaint(
         if doc.text.strip() == doc_id:
             for info in child.iterchildren():
                 if info.tag == "BODY":
-                    for text in info.iterchildren():
-                        if text.tag == "TEXT":
+                    article_text = ""
+                    for _text in info.iterchildren():
+                        # handle headlines and bylines
+                        if _text.tag == "HEADLINE" or _text.tag == "DATELINE":
+                            text = replace_spaces(_text.text)
+                            if re.search(r'\w', text):
+                                article_text += (text + ".\n")
+                        # handle text
+                        if _text.tag == "TEXT":
                             text = " ".join(
-                                [p.text for p in text.iter()]
+                                [p.text for p in _text.iter()]
                             )
-                            text = re.sub(r'\s+', ' ', text)
-                            text = re.sub(r'(^\s+|\s+$)', '', text)
-                            return text
+                            text = replace_spaces(text)
+                            article_text += (text + ".\n")
+                    return article_text
 
 
 def parse_aquaint2(
@@ -99,16 +116,23 @@ def parse_aquaint2(
         if doc_no.get('id') != doc_id:
             pass
         else:
-            text = doc_no.find('TEXT')
-            text = " ".join([p.text for p in text])
-            text = re.sub(r'\s+', ' ', text)
-            text = re.sub(r'(^\s+|\s+$)', '', text)
-            return text
+            article_text = ""
+            for _text in doc_no:
+                if _text.tag == 'HEADLINE' or _text.tag == 'DATELINE':
+                    article_text += (
+                        replace_spaces(_text.text) + ".\n"
+                    )
+                elif _text.tag == 'TEXT':
+                    text = " ".join([p.text for p in _text])
+                    text = replace_spaces(text)
+                    article_text += text  
+            return article_text
 
 
 def parse_tac(
         news_org: str, 
         doc_id: str,
+        doc_number: str,
         parser: etree.XMLParser
     ) -> str:
     '''
@@ -116,17 +140,18 @@ def parse_tac(
     going through the file to collect sentences
     Arguments:
         - news_org: the news organization associated with the file (e.g., NYT)
-        - doc_id: the document ID to find and extract from
+        - doc_id: the full document ID to find and extract from
+        - doc_number: the document ID number following the news org
         - parser: an lxml parser to flexibly open the file
     '''
-    directory = doc_id.split(".")[0]
+    directory = doc_number.split(".")[0]
     path = os.path.join(
         CORPUS_PATHS["TAC2011"], 
         news_org.lower(),
         directory
     )
-    files = os.listfiles(path)
-    file = [doc_id in f for f in files]
+    files = os.listdir(path)
+    file = [f for f in files if doc_id in f]
     assert len(file) == 1, "Found multiple files found in {} satisfying {}".format(path, doc_id)
     path = os.path.join(path, file[0])
     with open(path, 'r') as document:
@@ -137,14 +162,19 @@ def parse_tac(
         if child.tag == 'DOCID':
             assert doc_id in child.text
         elif child.tag == 'BODY':
-            for text in child.iterchildren():
-                if text.tag == "TEXT":
+            article_text = ""
+            for _text in child.iterchildren():
+                if _text.tag == "HEADLINE":
+                    text = replace_spaces(_text.text)
+                    if re.search(r'\w', text):
+                        article_text += (text + ".\n")
+                if _text.tag == "TEXT":
                     text = " ".join(
-                        [p.text for p in text.iter()]
+                        [p.text for p in _text.iter()]
                     )
-                    text = re.sub(r'\s+', ' ', text)
-                    text = re.sub(r'(^\s+|\s+$)', '', text)
-                    return text
+                    text = replace_spaces(text)
+                    article_text += text
+            return article_text
 
 
 def resolve_path(doc_id: str) -> Path:
@@ -217,7 +247,7 @@ def get_xml_document(doc_id: str) -> str:
     elif time_period > 20009999 and time_period <= 20060399:
         return parse_aquaint2(news_org, time_period, doc_id)
     else:
-        return parse_tac(news_org, doc_id, parser)
+        return parse_tac(news_org, doc_id, doc, parser)
 
 
 if __name__ == '__main__':
