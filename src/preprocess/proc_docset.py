@@ -12,6 +12,8 @@ import sys
 import xml.etree.ElementTree as ET
 from typing import Dict, Tuple, List
 from pathlib import Path
+import spacy
+
 
 from get_data_path import resolve_path
 from tokenizer import read_by_corpus_type
@@ -65,13 +67,14 @@ def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_
     in a docset
     """
     Path(output_dir).mkdir(parents=True, exist_ok=True)
+    nlp = spacy.load("en_core_web_sm")
     for docset, value in path_dict.items():
         docset_dir = os.path.join(output_dir, docset)
         if not os.path.exists(docset_dir):
             os.mkdir(docset_dir)
         for data_path, doc_id, corpus_type, category_id in value:
             output_path = os.path.join(docset_dir, doc_id)
-            read_by_corpus_type(data_path, doc_id, category_id, corpus_type, output_path)
+            read_by_corpus_type(data_path, doc_id, category_id, corpus_type, output_path, nlp)
     logger.info("Successfully wrote dictionary to files")
 
 
