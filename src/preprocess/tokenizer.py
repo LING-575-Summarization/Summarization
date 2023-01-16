@@ -5,7 +5,7 @@ import spacy
 
 
 def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str,
-                        nlp: spacy.Language):
+                        nlp):
     output = open(output_path, "w+")
 
     root = get_root(data_path)
@@ -66,7 +66,7 @@ def read_tac(root: etree.Element) -> (str, [str]):
     return headline, body
 
 
-def write_output(output: typing.TextIO, category: int, date: str, headline: str, body: [str], nlp: spacy.Language):
+def write_output(output: typing.TextIO, category: int, date: str, headline: str, body: [str], nlp):
     output.write("DATE_TIME: " + date + "\n")
     output.write("CATEGORY: " + str(category) + "\n")
     output.write("HEADLINE: " + headline + "\n")
@@ -85,7 +85,7 @@ def extract_p(root: etree.Element) -> [str]:
     return result
 
 
-def tokenizer(paragraph: str, nlp: spacy.Language) -> [str]:
+def tokenizer(paragraph: str, nlp) -> [str]:
     for line in paragraph:
         if line:
             doc = nlp(paragraph)
