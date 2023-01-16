@@ -13,8 +13,8 @@ Documents from training and evaltest are found /corpora/LDC/LDC10E12/12/TAC_2010
 import os
 import re
 
-# to include path in typing
-Path = str
+from typing import Tuple
+from pathlib import Path
 
 
 CORPUS_PATHS = {
@@ -88,7 +88,7 @@ def get_tac_path(
     return path
 
 
-def resolve_path(doc_id: str) -> (Path, int):
+def resolve_path(doc_id: str) -> Tuple[Path, int]:
     """
     Like get_xml_document, but only returns path (for debugging)
     Arguments:

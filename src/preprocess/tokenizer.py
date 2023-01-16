@@ -1,12 +1,29 @@
-import typing
+from typing import Tuple, List, TextIO, Union
 import re
 from lxml import etree
-import spacy
+import nltk.data
+from nltk.tokenize import word_tokenize
+
+
+# Wrap the nltk.data.load() tokenizer in a class to avoid downloading punkt
+class SentenceTokenizer:
+    def __init__(self):
+        self.tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+
+    def __call__(self, string: Union[str, List[str]]) -> Union[str, List[List[str]]]:
+        if isinstance(string, str):
+            return self.tokenizer.tokenize(string.strip())
+        elif isinstance(string, list):
+            return [self.tokenizer.tokenize(s.strip()) for s in string]
+        else:
+            raise ValueError("SentenceTokenizer takes strings or lists of strings")
+
+# Set the SentenceTokenizer class as a global callable function
+sent_tokenize = SentenceTokenizer()
 
 
 def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str):
     output = open(output_path, "w+")
-
     root = get_root(data_path)
     date = get_date(doc_id)
     headline = ""
@@ -20,7 +37,7 @@ def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type:
     write_output(output, category, date, headline, body)
 
 
-def read_aquaint(root: etree.Element, doc_id: str) -> (str, [str]):
+def read_aquaint(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
     headline = "NONE"
     body = []
     for child in root.findall("DOC"):
@@ -42,7 +59,7 @@ def read_aquaint(root: etree.Element, doc_id: str) -> (str, [str]):
     return headline, body
 
 
-def read_aquaint2(root: etree.Element, doc_id: str) -> (str, [str]):
+def read_aquaint2(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
     headline = "NONE"
     body = []
     for child in root.find("DOCSTREAM").findall("DOC"):
@@ -56,7 +73,7 @@ def read_aquaint2(root: etree.Element, doc_id: str) -> (str, [str]):
     return headline, body
 
 
-def read_tac(root: etree.Element) -> (str, [str]):
+def read_tac(root: etree.Element) -> Tuple[str, List[str]]:
     body_node = root.find("DOC").find("BODY")
     headline = "NONE"
     if body_node.find("HEADLINE") is not None:
@@ -65,31 +82,25 @@ def read_tac(root: etree.Element) -> (str, [str]):
     return headline, body
 
 
-def write_output(output: typing.TextIO, category: int, date: str, headline: str, body: [str]):
+def write_output(output: TextIO, category: int, date: str, headline: str, body: List[List[str]]):
     output.write("DATE_TIME: " + date + "\n")
     output.write("CATEGORY: " + str(category) + "\n")
     output.write("HEADLINE: " + headline + "\n")
     output.write("\n")
-    for line in body:
-        output.write(str(tokenizer(line)) + "\n")
+    for paragraph in body:
+        for line in paragraph:
+            output.write(str(word_tokenize(line)) + "\n")
+        output.write("\n") # extra line between paragraphs
     output.close()
 
 
-def extract_p(root: etree.Element) -> [str]:
+def extract_p(root: etree.Element) -> List[List[str]]:
     result = []
     for p_node in root.find("TEXT"):
         s = p_node.text.strip().replace('\n', ' ')
         if s != '':
-            result.append(s)
+            result.append(sent_tokenize(s))
     return result
-
-
-def tokenizer(input: str) -> [str]:
-    nlp = spacy.load("en_core_web_sm")
-    for line in input:
-        if line:
-            doc = nlp(input)
-    return [token.text for token in doc]
 
 
 def get_root(input_file: str) -> etree.Element:
