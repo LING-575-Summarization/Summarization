@@ -3,7 +3,7 @@ import unittest
 
 from lxml import etree
 
-from tokenizer import get_root, read_aquaint, read_aquaint2, read_tac, get_date, tokenizer, write_output, \
+from src.preprocess.tokenizer import get_root, read_aquaint, read_aquaint2, read_tac, get_date, tokenizer, write_output, \
     read_by_corpus_type
 
 parser = etree.XMLParser(resolve_entities=False, no_network=True, recover=True)
@@ -22,24 +22,24 @@ temp = "temp.txt"
 
 class TestTokenizer(unittest.TestCase):
     def test_get_root(self):
-        root = get_root("snip/tac.sgm")
+        root = get_root("../snip/tac.sgm")
         headline = root.find("DOC").find("BODY").find("HEADLINE").text.strip().replace('\n', ' ')
         self.assertEqual(headline, master_headline)
 
     def test_read_aquaint(self):
-        root = get_root("snip/aquaint.xml")
+        root = get_root("../snip/aquaint.xml")
         headline, body = read_aquaint(root, "APW19980602.0004")
         self.assertEqual(headline, master_headline)
         self.assertEqual(body, master_body)
 
     def test_read_aquaint2(self):
-        root = get_root("snip/aquaint2.xml")
+        root = get_root("../snip/aquaint2.xml")
         headline, body = read_aquaint2(root, "APW_ENG_19980602.0002")
         self.assertEqual(headline, master_headline)
         self.assertEqual(body, master_body)
 
     def test_read_tac(self):
-        root = get_root("snip/tac.sgm")
+        root = get_root("../snip/tac.sgm")
         headline, body = read_tac(root)
         self.assertEqual(headline, master_headline)
         self.assertEqual(body, master_body)
@@ -55,7 +55,7 @@ class TestTokenizer(unittest.TestCase):
         self.assertEqual(result[2], "it")
 
     def check_two_txt(self):
-        with open(temp) as test, open('snip/gold.txt') as gold:
+        with open(temp) as test, open('../snip/gold.txt') as gold:
             for line1, line2 in zip(test, gold):
                 self.assertEqual(line1, line2)
         os.remove(temp)
@@ -67,11 +67,11 @@ class TestTokenizer(unittest.TestCase):
         self.check_two_txt()
 
     def test_read_by_corpus_type(self):
-        read_by_corpus_type("snip/aquaint.xml", "APW19980602.0004", 1, 1, temp)
+        read_by_corpus_type("../snip/aquaint.xml", "APW19980602.0004", 1, 1, temp)
         self.check_two_txt()
-        read_by_corpus_type("snip/aquaint2.xml", "APW_ENG_19980602.0002", 1, 2, temp)
+        read_by_corpus_type("../snip/aquaint2.xml", "APW_ENG_19980602.0002", 1, 2, temp)
         self.check_two_txt()
-        read_by_corpus_type("snip/tac.sgm", "AFP_ENG_19980602.0149", 1, 3, temp)
+        read_by_corpus_type("../snip/tac.sgm", "AFP_ENG_19980602.0149", 1, 3, temp)
         self.check_two_txt()
 
 
