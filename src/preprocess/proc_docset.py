@@ -11,11 +11,11 @@ import os
 import sys
 import xml.etree.ElementTree as ET
 from typing import Dict, Tuple, List
+from pathlib import Path
 
 from get_data_path import resolve_path
 from tokenizer import read_by_corpus_type
 
-Path = str
 
 logging.basicConfig(
     level=logging.INFO,
@@ -24,7 +24,7 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 
-def get_data_dir(file: Path) -> Dict[str, List[Tuple[str, str, int, int]]]:
+def get_data_dir(file: str) -> Dict[str, List[Tuple[str, str, int, int]]]:
     """
     Go through the metadata file and acquire a dictionary of file codes to text.
     Args:
@@ -59,12 +59,12 @@ def get_data_dir(file: Path) -> Dict[str, List[Tuple[str, str, int, int]]]:
     return path_dict
 
 
-def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir: Path):
+def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir: str):
     """
     Unravel the dictionary output and create directories with files for each document
     in a docset
     """
-    os.makedirs(output_dir, exist_ok=True)
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
     for docset, value in path_dict.items():
         docset_dir = os.path.join(output_dir, docset)
         if not os.path.exists(docset_dir):
