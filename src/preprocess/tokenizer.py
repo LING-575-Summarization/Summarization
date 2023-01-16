@@ -4,7 +4,8 @@ from lxml import etree
 import spacy
 
 
-def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str):
+def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str,
+                        nlp: spacy.Language):
     output = open(output_path, "w+")
 
     root = get_root(data_path)
@@ -17,7 +18,7 @@ def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type:
         headline, body = read_aquaint2(root, doc_id)
     elif corpus_type == 3:
         headline, body = read_tac(root)
-    write_output(output, category, date, headline, body)
+    write_output(output, category, date, headline, body, nlp)
 
 
 def read_aquaint(root: etree.Element, doc_id: str) -> (str, [str]):
@@ -65,13 +66,13 @@ def read_tac(root: etree.Element) -> (str, [str]):
     return headline, body
 
 
-def write_output(output: typing.TextIO, category: int, date: str, headline: str, body: [str]):
+def write_output(output: typing.TextIO, category: int, date: str, headline: str, body: [str], nlp: spacy.Language):
     output.write("DATE_TIME: " + date + "\n")
     output.write("CATEGORY: " + str(category) + "\n")
     output.write("HEADLINE: " + headline + "\n")
     output.write("\n")
     for line in body:
-        output.write(str(tokenizer(line)) + "\n")
+        output.write(str(tokenizer(line, nlp)) + "\n")
     output.close()
 
 
@@ -84,11 +85,10 @@ def extract_p(root: etree.Element) -> [str]:
     return result
 
 
-def tokenizer(input: str) -> [str]:
-    nlp = spacy.load("en_core_web_sm")
-    for line in input:
+def tokenizer(paragraph: str, nlp: spacy.Language) -> [str]:
+    for line in paragraph:
         if line:
-            doc = nlp(input)
+            doc = nlp(paragraph)
     return [token.text for token in doc]
 
 
