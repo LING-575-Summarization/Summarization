@@ -67,7 +67,7 @@ def get_data_dir(file: str) -> Dict[str, List[Tuple[str, str, int, int]]]:
         path_dict[docset_id] = []
         for document in docset_node.findall("doc"):
             doc_id = document.get("id")
-            doc_category = categories[category]
+            doc_category = categories[category] if category else "None"
             try:
                 data_path, corpus_category = resolve_path(doc_id)
                 path_dict[docset_id].append((data_path, doc_id, corpus_category, doc_category))
@@ -99,6 +99,11 @@ def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_
     logger.info("Successfully wrote dictionary to files")
 
 
+def main(input_xml_file: Path, output: Path):
+    dict = get_data_dir(input_xml_file)
+    write_outputs(dict, output)
+
+
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         print("Missing arguments, make sure you contain <input_xml_file> <output_dir>")
@@ -119,5 +124,8 @@ if __name__ == '__main__':
         logger.info("\n======= Script session %s/%s %s:%s:%s =======\n" % now)
         for hndlr in logger.handlers:
             hndlr.setFormatter(logging.Formatter(default_fmt))
-        dict = get_data_dir(input_xml_file)
-        write_outputs(dict, output)
+
+        try:
+            main(input_xml_file, output)
+        except:
+            logger.error("Oops. Encountered an error while running the script")

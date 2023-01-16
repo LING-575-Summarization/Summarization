@@ -85,6 +85,11 @@ def get_tac_path(
         news_org.lower(),
         directory
     )
+    files = os.listdir(path)
+    doc_id = "_".join([news_org, doc_number])
+    file = [f for f in files if doc_id in f]
+    assert len(file) == 1, "Found multiple files found in {} satisfying {}".format(path, doc_id)
+    path = os.path.join(path, file[0])
     return path
 
 
