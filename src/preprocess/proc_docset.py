@@ -14,6 +14,7 @@ from typing import Dict, Tuple, List
 from pathlib import Path
 import spacy
 
+
 from get_data_path import resolve_path
 from tokenizer import read_by_corpus_type
 
