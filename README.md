@@ -10,3 +10,5 @@ Student team:
 - Sam Briggs
 - Junyin Chen
 - Hilly Steinmetz
+-
+- ## Conda
