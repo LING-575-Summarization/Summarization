@@ -1,0 +1,7 @@
+DATE_TIME: 19980602
+CATEGORY: 1
+HEADLINE: "One-in-100-year flood event" devastates Western Australia
+
+['Test', ',', 'Test', '(', 'WIKINEWS', ')', '_', 'Aerial', 'evacuations', 'took', 'place', 'and', 'food', 'was', 'airlifted', 'in', 'yesterday', 'after', 'a', 'devastating', 'flood', 'Western', 'Australia', 'emergency', 'services', 'minister', 'Stephen', 'Dawson', 'called', 'the', "'", 'worst', 'in', 'a', 'century', "'", 'isolated', 'communities', 'in', 'the', 'Kimberley', '.']
+['Flooding', 'began', 'last', 'week', 'after', 'heavy', 'rain', 'from', 'Tropical', 'Cyclone', 'Ellie', 'swelled', 'local', 'rivers', ',', 'bolstered', 'by', 'La', 'Niña', '.', 'Notably', ',', 'the', 'Fitzroy', 'River', 'broke', 'a', '2002', 'record', 'of', '13.95', 'meters', '(', '45.8', 'ft', ')', ',', 'reaching', 'a', 'water', 'level', 'of', '15.81', 'meters', '(', '51.9', 'ft', ')', 'on', 'Wednesday', ',', 'according', 'to', 'a', 'Bureau', 'of', 'Meteorology', 'spokesperson', '.']
+['Authorities', 'estimate', 'it', 'could', 'take', 'months']

@@ -1,11 +1,9 @@
 import os
-import re
 from xml.dom import minidom
 
 """
 All tests must be run at the top level directory of the repository, at Summarization/
 It is assumed you are running this in patas as the data is stored in the patas dropbox on 1/13/23.
-It is also assumed that your user root directory ("~") contains the shared dropbox symbolic link.
 """
 
 def dir_exists():
@@ -62,37 +60,15 @@ def process_xml(path):
     return processed_xml
 
 
-def check_correct_format(string: str):
-    '''Checks if the document is in the correct format or not'''
-    check_regex = re.compile(
-        r'((^[A-Z]*: .*$)*)((\n\n.*)*)', 
-        flags=re.MULTILINE
-    )
-    if check_regex:
-        return True
-    else:
-        return False
-
-
-def run_all_tests():
-    '''
-    Run all the tests listed in this file
-    '''
+if __name__ == '__main__':
     script_exists()
     print("all scripts exist.")
     dir_exists()
     print("all of training, devtest, evaltest, output_dir directories exist.")
 
-    home = os.path.expanduser("~")
-    training_path = os.path.join(
-        home, "dropbox/22-23/575x/Data/Documents/training/2009/UpdateSumm09_test_topics.xml"
-    )
-    devtest_path = os.path.join(
-        home, "dropbox/22-23/575x/Data/Documents/devtest/GuidedSumm10_test_topics.xml"
-    )
-    evaltest_path = os.path.join(
-        home, "dropbox/22-23/575x/Data/Documents/evaltest/GuidedSumm11_test_topics.xml"
-    )
+    training_path = "/home2/briggs3/dropbox/22-23/575x/Data/Documents/training/2009/UpdateSumm09_test_topics.xml"
+    devtest_path = "/home2/briggs3/dropbox/22-23/575x/Data/Documents/devtest/GuidedSumm10_test_topics.xml"
+    evaltest_path = "/home2/briggs3/dropbox/22-23/575x/Data/Documents/evaltest/GuidedSumm11_test_topics.xml"
 
     training_processed = process_xml(training_path)
     devtest_processed = process_xml(devtest_path)
@@ -105,7 +81,4 @@ def run_all_tests():
     print("all docSetA subdirectories and all files in docSetA subdirectories exist.")
 
     print("### All tests passed! :) ###")
-
-
-if __name__ == '__main__':
-    run_all_tests()
+   
