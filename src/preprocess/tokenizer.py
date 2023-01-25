@@ -4,7 +4,6 @@ from lxml import etree
 import nltk.data
 from nltk.tokenize import word_tokenize
 import nltk
-#nltk.download('punkt')
 
 
 # Wrap the nltk.data.load() tokenizer in a class to avoid downloading punkt

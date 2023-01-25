@@ -114,15 +114,6 @@ def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_
     logger.info("Successfully wrote dictionary to files")
 
 
-def save_outputs(category: str, date: str, headline: str, body: List[List[List[str]]], dict_rep):
-    """
-    Saves/dumps representation into a json file for future reading.
-    """
-
-
-
-            
-
 def main(input_xml_file: Path, output: Path):
     dict = get_data_dir(input_xml_file)
     write_outputs(dict, output)
