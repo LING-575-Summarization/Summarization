@@ -25,7 +25,6 @@ sent_tokenize = SentenceTokenizer()
 
 
 def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str):
-    output = open(output_path, "w+")
     root = get_root(data_path)
     date = get_date(doc_id)
     headline = ""
@@ -36,7 +35,7 @@ def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type:
         headline, body = read_aquaint2(root, doc_id)
     elif corpus_type == 3:
         headline, body = read_tac(root)
-    write_output(output, category, date, headline, body)
+    return write_output(output_path, category, date, headline, body)
 
 
 def read_aquaint(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
@@ -84,16 +83,23 @@ def read_tac(root: etree.Element) -> Tuple[str, List[str]]:
     return headline, body
 
 
-def write_output(output: TextIO, category: int, date: str, headline: str, body: List[List[str]]):
+def write_output(output_path: TextIO, category: int, date: str, headline: str, body: List[List[str]]):
+    output = open(output_path, "w+")
     output.write("DATE_TIME: " + date + "\n")
     output.write("CATEGORY: " + str(category) + "\n")
     output.write("HEADLINE: " + headline + "\n")
     output.write("\n")
+    save_paras = list()
     for paragraph in body:
+        save_sents = list()
         for line in paragraph:
-            output.write(str(word_tokenize(line)) + "\n")
+            tokenized_sent = word_tokenize(line)
+            save_sents.append(tokenized_sent)
+            output.write(str(tokenized_sent) + "\n")
+        save_paras.append(save_sents)
         output.write("\n") # extra line between paragraphs
     output.close()
+    return category, date, headline, save_paras
 
 
 def extract_p(root: etree.Element) -> List[List[str]]:

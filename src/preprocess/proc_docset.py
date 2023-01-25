@@ -10,6 +10,7 @@ import logging
 import os
 import sys
 import re
+import json
 import xml.etree.ElementTree as ET
 from typing import Dict, Tuple, List
 from pathlib import Path
@@ -86,28 +87,45 @@ def get_data_dir(file: str) -> Dict[str, List[Tuple[str, str, int, int]]]:
 def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir: str):
     """
     Unravel the dictionary output and create directories with files for each document
-    in a docset
+    in a docset. Also saves/dumps representation into a json file for future reading.
+    The file is output/[training/dev/test].json
+
+    Example of how to open to read it below is:
+
+    with open("output/training.json", "r") as final:
+        read = final.read()
+        docset_rep = json.loads(read)
+        print(docset_rep["D0901A-A"]["AFP_ENG_20050312.0019"])
     """
+    docset_rep = dict()
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     for docset, value in path_dict.items():
         docset_dir = os.path.join(output_dir, docset)
         if not os.path.exists(docset_dir):
             os.mkdir(docset_dir)
+        doc_id_rep = dict()
         for data_path, doc_id, corpus_type, category_id in value:
             output_path = os.path.join(docset_dir, doc_id)
-            read_by_corpus_type(data_path, doc_id, category_id, corpus_type, output_path)
+            category, date, headline, body = read_by_corpus_type(data_path, doc_id, category_id, corpus_type, output_path)
+            doc_id_rep[doc_id] = (date, category, headline, body)
+        docset_rep[docset] = doc_id_rep
+    with open(output_dir + ".json", "w") as final:
+        json.dump(docset_rep, final)
     logger.info("Successfully wrote dictionary to files")
 
 
-def save_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir: str):
-    print(path_dict)
-    print(output_dir)
+def save_outputs(category: str, date: str, headline: str, body: List[List[List[str]]], dict_rep):
+    """
+    Saves/dumps representation into a json file for future reading.
+    """
 
+
+
+            
 
 def main(input_xml_file: Path, output: Path):
     dict = get_data_dir(input_xml_file)
-    # write_outputs(dict, output)
-    save_outputs(dict, output)
+    write_outputs(dict, output)
 
 
 if __name__ == '__main__':
