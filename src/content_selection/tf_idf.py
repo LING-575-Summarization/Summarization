@@ -21,8 +21,6 @@ class TF_IDF:
 
         """
         self.tf_idf = {}
-        self.avg_tf_idf_sent_weights = {}
-        self.max_tf_idf_sent_weights = {}
 
         self._tf = {} # (term_t, doc_d) --> tf(t,d) as float()
         self._idf = {}  # "term_t" --> idf(t, D) as float()
@@ -32,7 +30,6 @@ class TF_IDF:
 
         f_td, n_t = self._get_joint_counts(docset)
         self._build_tf_idf(f_td, n_t)
-        self._calculate_tf_idf_sent_weights(docset)
     
 
     def _get_joint_counts(self, docset):
@@ -76,62 +73,6 @@ class TF_IDF:
             self.tf_idf[term_doc_pair] = term_freq * cur_idf
 
     
-    def _calculate_tf_idf_sent_weights(self, docset):
-        """ 
-            Params: a sentences as a tuple of words, i.e. sent = (w1, w2, ..., wn)
-
-            Builds dictionaries mapping (sentence, document) pairs to their respective tf-idf weights, i.e.
-
-                avg_sent_weight(sentj) = \sum_i tf_idf(word_i, doc_d) / len(sentj)
-
-                max_sent_weight(sentj) = \max_i tf_idf(word_i, doc_d)
-            
-            Returns: a dictionary (senti, doc_j) --> float
-        """
-        for doc_id, doc_data in docset.items():
-            text = doc_data[3]
-            for paragraph in text:
-                sum_tf_idf = 0
-                max_tf_idf = None
-                for sentence in paragraph:
-                    sent_repr = tuple(sentence)
-                    for term in sentence:
-                        cur_weight = self[term, doc_id]
-                        sum_tf_idf += cur_weight
-                        if max_tf_idf is None:
-                            max_tf_idf = cur_weight
-                        elif max_tf_idf < cur_weight:
-                            max_tf_idf = cur_weight
-                
-                avg_tf_idf = sum_tf_idf / len(sentence)
-
-                assert max_tf_idf is not None
-
-                self.avg_tf_idf_sent_weights[sent_repr, doc_id] = avg_tf_idf
-                self.max_tf_idf_sent_weights[sent_repr, doc_id] = max_tf_idf
-
-
-
-    def get_tf_idf_sentence_weight(self, sentence: tuple, document: str, weight_type: str) -> float:
-        """
-            Returns the average tf-idf score over a whole sentence
-
-            Params: sentence as a tuple, document_id as a string, and weight_type either {"average", "max"}
-        """
-        if not ((weight_type == "average") or (weight_type == "max")):
-            err_str = "weight_type parameter [" + str(weight_type) + "] must either be 'average' or 'max'"
-            raise ValueError(err_str)
-
-        sent_doc_pair = (sentence, document)
-        if sent_doc_pair not in self.avg_tf_idf_sent_weights:
-            return 0
-
-        if weight_type == "max":
-            return self.max_tf_idf_sent_weights[sent_doc_pair]
-
-        return self.avg_tf_idf_sent_weights[sent_doc_pair]
-
-
     def __getitem__(self, term_doc_pair: tuple) -> float:
         """
             returns the tf-idf score for the given term, document pair. 
@@ -160,34 +101,16 @@ def create_tf_idf_dict(json_path: str, delta_1: float, delta_2: float):
     """
     with open(json_path, "r") as final:
         read = final.read()
-    docset_rep = json.loads(read)
     
+    docset_rep = json.loads(read)
+
     docset_tf_idf = {}
 
     for docset_id, docset in docset_rep.items():
         docset_tf_idf[docset_id] = TF_IDF(docset, delta_1, delta_2)
-    
-    # for docset_id, docset in docset_rep.items():
-    #     cur_tf_idf = docset_tf_idf[docset_id]
-    #     print(cur_tf_idf.tf_idf)
-    #     print()
-    #     print("max", cur_tf_idf.max_tf_idf_sent_weights)
-    #     print("avg", cur_tf_idf.avg_tf_idf_sent_weights)
-    #     print("##########\n")
-    #     for doc_id, doc_data in docset.items():
-
-    #         for para in doc_data[3]:
-    #             for sentence in para:
-    #                 sent_repr = tuple(sentence)
-    #                 print("avg", cur_tf_idf.get_tf_idf_sentence_weight(sent_repr, doc_id, "average"))
-    #                 print("max", cur_tf_idf.get_tf_idf_sentence_weight(sent_repr, doc_id, "max"))
-    #                 print()
-                    # cur_tf_idf.get_tf_idf_sentence_weight(sent_repr, doc_id, "should error")
-        
-        
-            
 
     return docset_tf_idf
+
 
 
 if __name__ == '__main__':
