@@ -21,6 +21,7 @@ class TF_IDF:
 
         """
         self.tf_idf = {}
+        self.avg_tf_idf_sent_weights = {}
 
         self._tf = {} # (term_t, doc_d) --> tf(t,d) as float()
         self._idf = {}  # "term_t" --> idf(t, D) as float()
@@ -30,6 +31,7 @@ class TF_IDF:
 
         f_td, n_t = self._get_joint_counts(docset)
         self._build_tf_idf(f_td, n_t)
+        self._calculate_avg_tf_idf_sent_weights(docset)
     
 
     def _get_joint_counts(self, docset):
@@ -84,6 +86,40 @@ class TF_IDF:
             return 0
         return self.tf_idf[(term, document)]
 
+    
+    def _calculate_avg_tf_idf_sent_weights(self, docset):
+        """ 
+            Params: a sentences as a tuple of words, i.e. sent = (w1, w2, ..., wn)
+
+            Builds a dictionary mapping (sentence, document) pairs to their respective average tf-idf weights, i.e.
+
+                avg_sent_weight(sentj) = \sum_i tf_idf(word_i, doc_d) / len(sentj)
+            
+            Returns: a dictionary (senti, doc_j) --> float
+        """
+        for doc_id, doc_data in docset.items():
+            text = doc_data[3]
+            for paragraph in text:
+                sum_tf_idf = 0
+                for sentence in paragraph:
+                    sent_repr = tuple(sentence)
+                    for term in sentence:
+                        sum_tf_idf += self[term, doc_id]
+                
+                avg_tf_idf = sum_tf_idf / len(sentence)
+
+                self.avg_tf_idf_sent_weights[sent_repr, doc_id] = avg_tf_idf
+
+
+    def get_avg_tf_idf_sentence_weight(self, sentence: tuple, document: str) -> float:
+        """
+            Returns the average tf-idf score over a whole sentence
+        """
+        sent_doc_pair = (sentence, document)
+        if sent_doc_pair not in self.avg_tf_idf_sent_weights:
+            return 0
+        return self.avg_tf_idf_sent_weights[sent_doc_pair]
+
 
     def __str__(self):
         return str(self.tf_idf)
@@ -110,7 +146,6 @@ def create_tf_idf_dict(json_path: str, delta_1: float, delta_2: float):
         docset_tf_idf[docset_id] = TF_IDF(docset, delta_1, delta_2)
 
     return docset_tf_idf
-
 
 
 if __name__ == '__main__':
