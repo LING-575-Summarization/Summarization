@@ -15,10 +15,8 @@ import xml.etree.ElementTree as ET
 from typing import Dict, Tuple, List
 from pathlib import Path
 
-
 from get_data_path import resolve_path
 from tokenizer import read_by_corpus_type
-
 
 logging.basicConfig(
     level=logging.INFO,
@@ -27,13 +25,13 @@ logging.basicConfig(
 logger = logging.getLogger()
 
 
-def get_categories(category_file: Path) -> Dict[str, str]:
-    '''
+def get_categories(category_file: str) -> Dict[str, str]:
+    """
     Obtain a dictionary of category names to category files
-    '''
+    """
     with open(category_file, 'r') as infile:
         lines = infile.readlines()
-    _categories = [l for l in lines if re.match(r'^\d\..*:$', l)]
+    _categories = [line for line in lines if re.match(r'^\d\..*:$', l)]
     categories = {}
     for c in _categories:
         m = re.split(r'(?<=\d)\. ', c)
@@ -106,17 +104,13 @@ def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_
         doc_id_rep = dict()
         for data_path, doc_id, corpus_type, category_id in value:
             output_path = os.path.join(docset_dir, doc_id)
-            category, date, headline, body = read_by_corpus_type(data_path, doc_id, category_id, corpus_type, output_path)
+            category, date, headline, body = read_by_corpus_type(data_path, doc_id, category_id, corpus_type,
+                                                                 output_path)
             doc_id_rep[doc_id] = (date, category, headline, body)
         docset_rep[docset] = doc_id_rep
     with open(output_dir + ".json", "w") as final:
         json.dump(docset_rep, final)
     logger.info("Successfully wrote dictionary to files")
-
-
-def main(input_xml_file: Path, output: Path):
-    dict = get_data_dir(input_xml_file)
-    write_outputs(dict, output)
 
 
 if __name__ == '__main__':
@@ -140,7 +134,4 @@ if __name__ == '__main__':
         for hndlr in logger.handlers:
             hndlr.setFormatter(logging.Formatter(default_fmt))
 
-        try:
-            main(input_xml_file, output)
-        except:
-            logger.error("Oops. Encountered an error while running the script")
+        write_outputs(get_data_dir(input_xml_file), output)
