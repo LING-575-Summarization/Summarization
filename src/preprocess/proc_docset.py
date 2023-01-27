@@ -32,7 +32,7 @@ def get_categories(category_file: str) -> Dict[str, str]:
     """
     with open(category_file, 'r') as infile:
         lines = infile.readlines()
-    _categories = [line for line in lines if re.match(r'^\d\..*:$', l)]
+    _categories = [line for line in lines if re.match(r'^\d\..*:$', line)]
     categories = {}
     for c in _categories:
         m = re.split(r'(?<=\d)\. ', c)

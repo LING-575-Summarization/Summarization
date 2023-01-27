@@ -17,5 +17,5 @@ def get_args() -> argparse.Namespace:
         action='store_false',
         help="Do not do word level tokenization, only return full sentence",
     )
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
     return args
