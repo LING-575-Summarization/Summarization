@@ -75,7 +75,7 @@ def read_aquaint2(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
     return headline, body
 
 
-def read_tac(root: etree.Element) -> tuple[str | Any, list[list[str]]]:
+def read_tac(root: etree.Element) -> tuple[str, list[list[str]]]:
     body_node = root.find("DOC").find("BODY")
     headline = "NONE"
     if body_node.find("HEADLINE") is not None:
