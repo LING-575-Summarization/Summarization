@@ -17,7 +17,7 @@ from pathlib import Path
 import util
 
 from get_data_path import resolve_path
-from tokenizer import read_by_corpus_type
+from tokenizer import read_by_corpus_type, write_output
 
 logging.basicConfig(
     level=logging.INFO,
@@ -83,7 +83,7 @@ def get_data_dir(file: str) -> Dict[str, List[Tuple[str, str, int, int]]]:
     return path_dict
 
 
-def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir: str, to_tokenize: bool):
+def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir: str):
     """
     Unravel the dictionary output and create directories with files for each document
     in a docset. Also saves/dumps representation into a json file for future reading.
@@ -105,8 +105,8 @@ def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_
         doc_id_rep = dict()
         for data_path, doc_id, corpus_type, category_id in value:
             output_path = os.path.join(docset_dir, doc_id)
-            category, date, headline, body = read_by_corpus_type(data_path, doc_id, category_id, corpus_type,
-                                                                 output_path, to_tokenize)
+            category, date, headline, body = read_by_corpus_type(data_path, doc_id, category_id, corpus_type)
+            category, date, headline, body = write_output(output_path, category, date, headline, body)
             doc_id_rep[doc_id] = (date, category, headline, body)
         docset_rep[docset] = doc_id_rep
     with open(output_dir + ".json", "w") as final:
@@ -114,10 +114,37 @@ def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_
     logger.info("Successfully wrote dictionary to files")
 
 
+def built_json(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir: str, **kwargs):
+    docset_rep = dict()
+    for docset, value in path_dict.items():
+        doc_id_rep = dict()
+        doc_id_rep["category"] = value[3]
+        doc_id_rep["text"] = []
+        for data_path, doc_id, corpus_type, category_id in value:
+            category, date, headline, body = read_by_corpus_type(data_path, doc_id, category_id, corpus_type)
+            doc_id_rep["text"].append(body)
+        doc_id_rep["summary"] = get_gold_test(docset, kwargs["gold_directory"])
+        docset_rep[docset[:-2]] = doc_id_rep
+    with open(output_dir + ".json", "w") as final:
+        json.dump(docset_rep, final)
+
+
+def get_gold_test(docset_id: str, gold_dir: str):
+    result = []
+    gold_dir_list = os.listdir(gold_dir)
+    docset_gold_list = [i for i in gold_dir_list if i.startswith(docset_id)]
+    for gold_file_path in docset_gold_list:
+        gold_file = open(gold_dir + gold_file_path, 'r')
+        gold_file = gold_file.readlines()
+        gold_file = ' '.join(line[0] for line in gold_file)
+        result.append(gold_file)
+    return result
+
+
 if __name__ == '__main__':
     input_xml_file = sys.argv[1]
     output = sys.argv[2]
-    to_tokenize = vars(util.get_args())["no_tokenize"]
+    kwargs = vars(util.get_args())
 
     # Initialize Logger
     no_fmt, default_fmt = '%(message)s', '(%(levelname)s|%(asctime)s) %(message)s'
@@ -134,5 +161,9 @@ if __name__ == '__main__':
     for hndlr in logger.handlers:
         hndlr.setFormatter(logging.Formatter(default_fmt))
 
+    data_path_dict = get_data_dir(input_xml_file)
     # Start dataset parsing
-    write_outputs(get_data_dir(input_xml_file), output, to_tokenize)
+    if kwargs["no_tokenize"]:
+        built_json(data_path_dict, output, **kwargs)
+    else:
+        write_outputs(data_path_dict, output)
