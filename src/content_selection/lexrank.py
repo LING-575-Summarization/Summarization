@@ -9,10 +9,11 @@ References:
 
 import re
 import numpy as np
+import pandas as pd
 from math import log, e, sqrt
 from counterdict import CounterDict
 from functools import reduce
-from typing import *
+from typing import Optional, Union, List, Literal, Tuple, Dict
 
 # term frequency (tf):
     # return count(sentence, word_appears_in_sentence)
@@ -139,8 +140,9 @@ class LexRank(TFIDF):
             self, 
             threshold: float, 
             error: float,
-            d: Optional[float] = 0.15
-        ) -> np.ndarray:
+            d: Optional[float] = 0.15,
+            return_type: Optional[Literal['pandas', 'vector', 'list']] = 'pandas'
+        ) -> Union[np.ndarray, pd.DataFrame]:
         '''
         Find the largest eigenvalue of the modified cosine matrix
         similarity matrix
@@ -149,13 +151,25 @@ class LexRank(TFIDF):
             - error: the minimum error to end the power_method algorithm
             - d: the dampening to ensure aperiodicity
         Returns:
-            Vector (np.ndarray)
+            A list, dataframe, or vector of the resulting eigenvalue
         '''
-        return power_method(
+        eigenvalue = power_method(
             matrix=self.get_cosine_matrix(threshold=threshold),
             error=error,
             d=d
         )
+        if return_type == 'vector':
+            return eigenvalue
+        ranked_list = sorted(
+            [(i, ev, " ".join(lx.body[i])) for i, ev in enumerate(eigenvalue.tolist())],
+            key=lambda x: x[2],
+            reverse=True
+        )
+        if return_type == 'list':
+            ranked_list
+        df = pd.DataFrame(ranked_list).reset_index()
+        df.columns = ['rank', 'index', f'LR Score ({threshold})', 'sentence']
+        return df
 
 
 def power_method(
@@ -197,10 +211,5 @@ if __name__ == '__main__':
         testcase = json.load(testfile)
     testcase = testcase["D1101A-A"]["AFP_ENG_20061002.0523"]
     lx = LexRank(testcase)
-    eig = lx.solve_lexrank(0.1, 1e-8)
-    x = sorted(
-        [(" ".join(lx.body[i]), i, e) for i, e in enumerate(eig.tolist())],
-        key=lambda x: x[2],
-        reverse=True
-    )
-    print(x)
+    result = lx.solve_lexrank(0.1, 1e-8)
+    print(result.to_string())
