@@ -55,7 +55,7 @@ def read_aquaint(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
                 for s in body_node.find("TEXT").text.split('\t'):
                     s = s.strip().replace('\n', ' ')
                     if s != '':
-                        body.append(s)
+                        body.append(sent_tokenize(s))
             # We now find what we need, break so we can move on
             break
     return headline, body
