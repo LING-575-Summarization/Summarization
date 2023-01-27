@@ -14,6 +14,7 @@ import json
 import xml.etree.ElementTree as ET
 from typing import Dict, Tuple, List
 from pathlib import Path
+import util
 
 from get_data_path import resolve_path
 from tokenizer import read_by_corpus_type
@@ -82,7 +83,7 @@ def get_data_dir(file: str) -> Dict[str, List[Tuple[str, str, int, int]]]:
     return path_dict
 
 
-def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir: str):
+def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir: str, to_tokenize: bool):
     """
     Unravel the dictionary output and create directories with files for each document
     in a docset. Also saves/dumps representation into a json file for future reading.
@@ -105,7 +106,7 @@ def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_
         for data_path, doc_id, corpus_type, category_id in value:
             output_path = os.path.join(docset_dir, doc_id)
             category, date, headline, body = read_by_corpus_type(data_path, doc_id, category_id, corpus_type,
-                                                                 output_path)
+                                                                 output_path, to_tokenize)
             doc_id_rep[doc_id] = (date, category, headline, body)
         docset_rep[docset] = doc_id_rep
     with open(output_dir + ".json", "w") as final:
@@ -120,6 +121,9 @@ if __name__ == '__main__':
     else:
         input_xml_file = sys.argv[1]
         output = sys.argv[2]
+        to_tokenize = vars(util.get_args())["no_tokenize"]
+
+        # Initialize Logger
         no_fmt, default_fmt = '%(message)s', '(%(levelname)s|%(asctime)s) %(message)s'
         hndlr = logging.FileHandler("src/preprocess/preprocess.log")
         hndlr.setFormatter(logging.Formatter(no_fmt))
@@ -134,4 +138,5 @@ if __name__ == '__main__':
         for hndlr in logger.handlers:
             hndlr.setFormatter(logging.Formatter(default_fmt))
 
-        write_outputs(get_data_dir(input_xml_file), output)
+        # Start dataset parsing
+        write_outputs(get_data_dir(input_xml_file), output, to_tokenize)

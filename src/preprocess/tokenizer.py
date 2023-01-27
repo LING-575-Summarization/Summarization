@@ -1,4 +1,4 @@
-from typing import Tuple, List, TextIO, Union
+from typing import Tuple, List, TextIO, Union, Any
 import re
 from lxml import etree
 import nltk.data
@@ -19,11 +19,13 @@ class SentenceTokenizer:
         else:
             raise ValueError("SentenceTokenizer takes strings or lists of strings")
 
+
 # Set the SentenceTokenizer class as a global callable function
 sent_tokenize = SentenceTokenizer()
 
 
-def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str):
+def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str,
+                        to_tokenize: bool):
     root = get_root(data_path)
     date = get_date(doc_id)
     headline = ""
@@ -34,7 +36,7 @@ def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type:
         headline, body = read_aquaint2(root, doc_id)
     elif corpus_type == 3:
         headline, body = read_tac(root)
-    return write_output(output_path, category, date, headline, body)
+    return write_output(output_path, category, date, headline, body, to_tokenize)
 
 
 def read_aquaint(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
@@ -73,7 +75,7 @@ def read_aquaint2(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
     return headline, body
 
 
-def read_tac(root: etree.Element) -> Tuple[str, List[str]]:
+def read_tac(root: etree.Element) -> tuple[str | Any, list[list[str]]]:
     body_node = root.find("DOC").find("BODY")
     headline = "NONE"
     if body_node.find("HEADLINE") is not None:
@@ -82,7 +84,8 @@ def read_tac(root: etree.Element) -> Tuple[str, List[str]]:
     return headline, body
 
 
-def write_output(output_path: TextIO, category: int, date: str, headline: str, body: List[List[str]]):
+def write_output(output_path: str, category: int, date: str, headline: str, body: List[List[str]],
+                 to_tokenize: bool):
     output = open(output_path, "w+")
     output.write("DATE_TIME: " + date + "\n")
     output.write("CATEGORY: " + str(category) + "\n")
@@ -93,15 +96,18 @@ def write_output(output_path: TextIO, category: int, date: str, headline: str, b
         save_sents = list()
         for line in paragraph:
             tokenized_sent = word_tokenize(line)
-            save_sents.append(tokenized_sent)
+            if to_tokenize:
+                save_sents.append(tokenized_sent)
+            else:
+                save_sents.append(line)
             output.write(str(tokenized_sent) + "\n")
         save_paras.append(save_sents)
-        output.write("\n") # extra line between paragraphs
+        output.write("\n")  # extra line between paragraphs
     output.close()
     return category, date, headline, save_paras
 
 
-def extract_p(root: etree.Element) -> List[List[str]]:
+def extract_p(root: etree.Element) -> list[str | list[list[str]]]:
     result = []
     for p_node in root.find("TEXT"):
         s = p_node.text.strip().replace('\n', ' ')
