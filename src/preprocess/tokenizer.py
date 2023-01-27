@@ -1,4 +1,4 @@
-from typing import Tuple, List, TextIO, Union, Any
+from typing import Tuple, List, Union
 import re
 from lxml import etree
 import nltk.data
@@ -75,7 +75,7 @@ def read_aquaint2(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
     return headline, body
 
 
-def read_tac(root: etree.Element) -> tuple[str, list[list[str]]]:
+def read_tac(root: etree.Element) -> Tuple[str, List[str]]:
     body_node = root.find("DOC").find("BODY")
     headline = "NONE"
     if body_node.find("HEADLINE") is not None:
@@ -107,7 +107,7 @@ def write_output(output_path: str, category: int, date: str, headline: str, body
     return category, date, headline, save_paras
 
 
-def extract_p(root: etree.Element) -> list[str | list[list[str]]]:
+def extract_p(root: etree.Element) -> List[List[str]]:
     result = []
     for p_node in root.find("TEXT"):
         s = p_node.text.strip().replace('\n', ' ')
