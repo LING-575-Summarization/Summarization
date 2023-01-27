@@ -115,28 +115,24 @@ def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_
 
 
 if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        print("Missing arguments, make sure you contain <input_xml_file> <output_dir>")
-        exit(-1)
-    else:
-        input_xml_file = sys.argv[1]
-        output = sys.argv[2]
-        to_tokenize = vars(util.get_args())["no_tokenize"]
+    input_xml_file = sys.argv[1]
+    output = sys.argv[2]
+    to_tokenize = vars(util.get_args())["no_tokenize"]
 
-        # Initialize Logger
-        no_fmt, default_fmt = '%(message)s', '(%(levelname)s|%(asctime)s) %(message)s'
-        hndlr = logging.FileHandler("src/preprocess/preprocess.log")
-        hndlr.setFormatter(logging.Formatter(no_fmt))
-        logger.handlers.clear()
-        logger.addHandler(hndlr)
-        from datetime import datetime
+    # Initialize Logger
+    no_fmt, default_fmt = '%(message)s', '(%(levelname)s|%(asctime)s) %(message)s'
+    hndlr = logging.FileHandler("src/preprocess/preprocess.log")
+    hndlr.setFormatter(logging.Formatter(no_fmt))
+    logger.handlers.clear()
+    logger.addHandler(hndlr)
+    from datetime import datetime
 
-        _now = datetime.now()
-        now = [_now.day, _now.month, _now.hour, _now.minute, _now.second]
-        now = tuple(map(lambda x: str(x) if x > 9 else "0" + str(x), now))
-        logger.info("\n======= Script session %s/%s %s:%s:%s =======\n" % now)
-        for hndlr in logger.handlers:
-            hndlr.setFormatter(logging.Formatter(default_fmt))
+    _now = datetime.now()
+    now = [_now.day, _now.month, _now.hour, _now.minute, _now.second]
+    now = tuple(map(lambda x: str(x) if x > 9 else "0" + str(x), now))
+    logger.info("\n======= Script session %s/%s %s:%s:%s =======\n" % now)
+    for hndlr in logger.handlers:
+        hndlr.setFormatter(logging.Formatter(default_fmt))
 
-        # Start dataset parsing
-        write_outputs(get_data_dir(input_xml_file), output, to_tokenize)
+    # Start dataset parsing
+    write_outputs(get_data_dir(input_xml_file), output, to_tokenize)
