@@ -118,12 +118,12 @@ def built_json(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir
     docset_rep = dict()
     for docset, value in path_dict.items():
         doc_id_rep = dict()
-        doc_id_rep["category"] = value[3]
+        doc_id_rep["category"] = value[0][2]
         doc_id_rep["text"] = []
         for data_path, doc_id, corpus_type, category_id in value:
             category, date, headline, body = read_by_corpus_type(data_path, doc_id, category_id, corpus_type)
             doc_id_rep["text"].append(body)
-        doc_id_rep["summary"] = get_gold_test(docset, kwargs["gold_directory"])
+        doc_id_rep["summary"] = get_gold_test(docset[:-3], kwargs["gold_directory"])
         docset_rep[docset[:-2]] = doc_id_rep
     with open(output_dir + ".json", "w") as final:
         json.dump(docset_rep, final)
@@ -136,8 +136,8 @@ def get_gold_test(docset_id: str, gold_dir: str):
     for gold_file_path in docset_gold_list:
         gold_file = open(gold_dir + gold_file_path, 'r')
         gold_file = gold_file.readlines()
-        gold_file = ' '.join(line[0] for line in gold_file)
-        result.append(gold_file)
+        gold_line = ' '.join(line for line in gold_file)
+        result.append(gold_line)
     return result
 
 

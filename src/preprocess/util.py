@@ -6,7 +6,7 @@ def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--no_tokenize",
-        action='store_false',
+        action='store_true',
         help="Do not do word level tokenization, only return full sentence",
     )
     parser.add_argument(
