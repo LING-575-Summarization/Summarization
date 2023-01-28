@@ -63,7 +63,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--checkpoint",
         type=str,
-        default="markussagen/xlm-roberta-longformer-base-4096",
+        default="bigscience/bloom",
         help="Which checkpoint to use."
     )
     parser.add_argument(

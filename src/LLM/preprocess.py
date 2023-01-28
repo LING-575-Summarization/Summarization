@@ -29,12 +29,13 @@ def find_best_sentence(input_dict):
                 gold = ""
                 first_sentence = True
                 for j in range(0, len(input_text)):
+                    new_sentence = input_text[j][0].strip()
                     if j != i:
                         if first_sentence:
-                            gold = input_text[j][0]
+                            gold = new_sentence + "\n"
                             first_sentence = False
                         else:
-                            gold = gold + " " + input_text[j][0]
+                            gold = gold + "\n" + new_sentence
                 print(gold)
                 print(cal_metric(current_sentence, gold)["rouge1"].fmeasure)
             break
