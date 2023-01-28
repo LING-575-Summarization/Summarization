@@ -122,11 +122,28 @@ def built_json(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir
         doc_id_rep["text"] = []
         for data_path, doc_id, corpus_type, category_id in value:
             category, date, headline, body = read_by_corpus_type(data_path, doc_id, category_id, corpus_type)
-            doc_id_rep["text"].append(body)
+
+            doc_id_rep["text"].append(to_list_of_str(body))
         doc_id_rep["summary"] = get_gold_test(docset[:-3], kwargs["gold_directory"])
         docset_rep[docset[:-2]] = doc_id_rep
     with open(output_dir + ".json", "w") as final:
         json.dump(docset_rep, final)
+
+
+def to_list_of_str(body):
+    cleaned_body = []
+    for sentence in body:
+        if isinstance(sentence, str):
+            cleaned_body.append(sentence)
+        elif isinstance(sentence, list):
+            for sub_sentence in sentence:
+                if isinstance(sentence, str):
+                    cleaned_body.append(sub_sentence)
+                else:
+                    raise TypeError("List does not contain str")
+        else:
+            raise TypeError("Input is not str or list")
+    return cleaned_body
 
 
 def get_gold_test(docset_id: str, gold_dir: str):
