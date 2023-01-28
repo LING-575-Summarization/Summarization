@@ -22,7 +22,6 @@ def test_tf_idf(docset_rep, tf_idf_repr):
 
 if __name__ == '__main__':
     ## for testing purposes
-    print("here")
     json_path = sys.argv[1]
     delta1 = float(sys.argv[2])
     delta2 = float(sys.argv[3])
