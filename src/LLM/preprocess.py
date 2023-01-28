@@ -18,24 +18,30 @@ def cal_metric(prediction, target):
 
 
 def find_best_sentence(input_dict):
-    print("Type:", type(input_dict))
     for docset_id, docset in input_dict.items():
         print(docset)
-        gold = docset["summary"][0]
         input_texts = docset["text"]
         for input_text in input_texts:
             print(input_text)
-            i = 0
-            for sentence in input_text:
-                print(sentence[0])
-                print(cal_metric(sentence[0], gold))
-                i += 1
-            print(i)
+            for i in range(0, len(input_text)):
+                current_sentence = input_text[i][0]
+                print(current_sentence)
+                gold = ""
+                first_sentence = True
+                for j in range(0, len(input_text)):
+                    if j != i:
+                        if first_sentence:
+                            gold = input_text[j][0]
+                            first_sentence = False
+                        else:
+                            gold = gold + " " + input_text[j][0]
+                print(gold)
+                print(cal_metric(current_sentence, gold)["rouge1"].fmeasure)
             break
         break
     return input_dict
 
 
 if __name__ == "__main__":
-    result = get_json()
+    result = get_json("../../data/training.json")
     result = find_best_sentence(result)
