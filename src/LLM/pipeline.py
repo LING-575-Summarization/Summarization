@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from transformers import AutoTokenizer, TrainingArguments, AutoModelForCausalLM, AutoConfig, DataCollatorForSeq2Seq, \
+from transformers import AutoTokenizer, Seq2SeqTrainingArguments, AutoModelForSeq2SeqLM, AutoConfig, DataCollatorForSeq2Seq, \
     Seq2SeqTrainer
 import evaluate
 from datasets import load_dataset, DatasetDict, concatenate_datasets
@@ -18,10 +18,8 @@ def pipeline(**kwargs):
                                               truncation=True)
 
     def tokenize__data(data):
-        # Max token size is 14536 and 215 for inputs and labels, respectively.
-        # Here I restrict these token size.
-        input_feature = tokenizer(data["text"], truncation=True, max_length=1024)
-        label = tokenizer(data["summary"], truncation=True, max_length=100)
+        input_feature = tokenizer(data["text"], padding=True, truncation=True, max_length=1024)
+        label = tokenizer(data["summary"], padding=True, truncation=True, max_length=100)
         return {
             "input_ids": input_feature["input_ids"],
             "attention_mask": input_feature["attention_mask"],
@@ -44,29 +42,30 @@ def pipeline(**kwargs):
         kwargs["checkpoint"],
         max_length=100
     )
-    model = AutoModelForCausalLM.from_pretrained(kwargs["checkpoint"], config=config)
+    model = AutoModelForSeq2SeqLM.from_pretrained(kwargs["checkpoint"], config=config)
 
     if not kwargs["do_train"]:
         model.load_state_dict(torch.load(kwargs["model_file"], map_location=torch.device(device)))
 
     model.to(device)
 
-    data_collator = DataCollatorForSeq2Seq(tokenizer, model=model, return_tensors="pt")
+    data_collator = DataCollatorForSeq2Seq(tokenizer, model=model, padding="max_length", max_length=1024, return_tensors="pt")
 
-    training_args = TrainingArguments(
+    training_args = Seq2SeqTrainingArguments(
         output_dir=kwargs["train_dir"],
         seed=kwargs["seed"],
         overwrite_output_dir=True,
         label_names=["labels"],
         learning_rate=kwargs["learning_rate"],
         num_train_epochs=kwargs["epoch"],
-        per_device_train_batch_size=kwargs["batch_size"],
+        per_device_train_batch_size=1,
+        per_device_eval_batch_size=1,
         logging_strategy="epoch",
         evaluation_strategy="epoch",
         save_strategy="epoch",
-        remove_unused_columns=False,
         load_best_model_at_end=True,
-        metric_for_best_model="eval_f1"
+        metric_for_best_model="eval_f1",
+        generation_max_length = 100,
     )
 
     rouge_metric = evaluate.load("rouge")
@@ -82,15 +81,12 @@ def pipeline(**kwargs):
         predictions = tokenizer.batch_decode(predictions, skip_special_tokens=True)
         labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
 
-        predictions = ["\n".join(np.char.strip(prediction)) for prediction in predictions]
-        labels = ["\n".join(np.char.strip(label)) for label in labels]
-
         return rouge_metric.compute(predictions=predictions, references=labels, tokenizer=tokenize_sentence)
 
     trainer = Seq2SeqTrainer(
         model=model,
         args=training_args,
-        data_collactor=data_collator,
+        data_collator=data_collator,
         train_dataset=ds["train"],
         eval_dataset=ds["test"],
         tokenizer=tokenizer,
@@ -99,8 +95,7 @@ def pipeline(**kwargs):
 
     if kwargs["do_train"]:
         trainer.train()
-
-    trainer.save_model()
+        trainer.save_model()
 
 
 if __name__ == "__main__":
