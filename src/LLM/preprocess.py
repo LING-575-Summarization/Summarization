@@ -74,9 +74,9 @@ def preprocess(input_path, dataset_type):
 
 
 if __name__ == "__main__":
-    final_dataset = dict()
-    final_dataset["train"] = preprocess("../../data/training.json", "training")
-    final_dataset["validation"] = preprocess("../../data/evaltest.json", "validation")
-    final_dataset["test"] = preprocess("../../data/devtest.json", "test")
-    with open("../../data/dataset.json", "w") as final:
-        json.dump(final_dataset, final)
+    with open("../../data/training_ds.json", "w") as final:
+        json.dump(preprocess("../../data/training.json", "training"), final)
+    with open("../../data/validation_ds.json", "w") as final:
+        json.dump(preprocess("../../data/evaltest.json", "validation"), final)
+    with open("../../data/test_ds.json", "w") as final:
+        json.dump(preprocess("../../data/devtest.json", "test"), final)
