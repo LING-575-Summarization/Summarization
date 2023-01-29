@@ -26,7 +26,7 @@ def build_dataset(input_dict, dataset_type):
             if dataset_type == "training":
                 output_dict["text"].append(mask_sentences(input_text))
             else:
-                output_dict["text"].append(" \n ".join([]))
+                output_dict["text"].append(" \n ".join(input_text))
         output_dict["summary"] = docset["summary"][random.randint(0, len(docset["summary"]) - 1)]
         output.append(output_dict)
     return output
@@ -74,9 +74,9 @@ def preprocess(input_path, dataset_type):
 
 
 if __name__ == "__main__":
-    with open("../../data/training_ds.json", "w") as final:
-        json.dump(preprocess("../../data/training.json", "training"), final)
+    #with open("../../data/training_ds.json", "w") as final:
+    #    json.dump(preprocess("../../data/training.json", "training"), final)
     with open("../../data/validation_ds.json", "w") as final:
         json.dump(preprocess("../../data/evaltest.json", "validation"), final)
-    with open("../../data/test_ds.json", "w") as final:
-        json.dump(preprocess("../../data/devtest.json", "test"), final)
+    #with open("../../data/test_ds.json", "w") as final:
+    #    json.dump(preprocess("../../data/devtest.json", "test"), final)
