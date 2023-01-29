@@ -19,7 +19,7 @@ def build_dataset(input_dict, dataset_type):
     for docset_id, docset in input_dict.items():
         output_dict = dict()
         output_dict["id"] = docset_id
-        output_dict["title"] = docset["title"]
+        # output_dict["title"] = docset["title"]
         input_texts = docset["text"]
         output_dict["text"] = []
         for input_text in input_texts:
