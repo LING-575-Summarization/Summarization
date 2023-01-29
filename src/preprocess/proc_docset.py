@@ -123,7 +123,7 @@ def built_json(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir
         for data_path, doc_id, corpus_type, category_id in value:
             category, date, headline, body = read_by_corpus_type(data_path, doc_id, category_id, corpus_type)
             doc_id_rep["text"].append(to_list_of_str(body))
-            doc_ip_rep["title"] = headline
+            doc_id_rep["title"] = headline
         doc_id_rep["summary"] = get_gold_test(docset[:-3], kwargs["gold_directory"])
         docset_rep[docset[:-2]] = doc_id_rep
     with open(output_dir + ".json", "w") as final:
