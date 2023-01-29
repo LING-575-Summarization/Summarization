@@ -1,10 +1,7 @@
-import evaluate
-import numpy as np
+import random
+
 import json
 from rouge_score import rouge_scorer
-
-
-# rouge_metric = evaluate.load("rouge")
 
 
 def get_json(json_path: str):
@@ -17,32 +14,69 @@ def cal_metric(prediction, target):
     return scorer.score(target, prediction)
 
 
-def find_best_sentence(input_dict):
+def build_dataset(input_dict, dataset_type):
+    output = []
     for docset_id, docset in input_dict.items():
-        print(docset)
+        output_dict = dict()
+        output_dict["id"] = docset_id
+        output_dict["title"] = docset["title"]
         input_texts = docset["text"]
+        output_dict["text"] = []
         for input_text in input_texts:
-            print(input_text)
-            for i in range(0, len(input_text)):
-                current_sentence = input_text[i][0]
-                print(current_sentence)
-                gold = ""
-                first_sentence = True
-                for j in range(0, len(input_text)):
-                    new_sentence = input_text[j][0].strip()
-                    if j != i:
-                        if first_sentence:
-                            gold = new_sentence + "\n"
-                            first_sentence = False
-                        else:
-                            gold = gold + "\n" + new_sentence
-                print(gold)
-                print(cal_metric(current_sentence, gold)["rouge1"].fmeasure)
-            break
-        break
-    return input_dict
+            if dataset_type == "training":
+                output_dict["text"].append(mask_sentences(input_text))
+            else:
+                output_dict["text"].append(" \n ".join([]))
+        output_dict["summary"] = docset["summary"][random.randint(0, len(docset["summary"]) - 1)]
+        output.append(output_dict)
+    return output
+
+
+def mask_sentences(input_text):
+    scores = get_sentence_score(input_text)
+    indexes = generate_index_list(len(input_text))
+    top_30_percent = len(input_text) * 3 // 10
+    compare = [x for _, x in sorted(zip(scores, indexes))][:top_30_percent]
+    output = ""
+    for i in range(0, len(input_text)):
+        if i in compare:
+            output = output + " \n " + "[MASK]"
+        else:
+            output = output + " \n " + input_text[i]
+    return output.strip()
+
+
+def generate_index_list(size: int):
+    output = []
+    index = 0
+    while index < size:
+        output.append(index)
+        index += 1
+    return output
+
+
+def get_sentence_score(input_text):
+    score = []
+    for i in range(0, len(input_text)):
+        current_sentence = input_text[i]
+        gold = ""
+        for j in range(0, len(input_text)):
+            new_sentence = input_text[j].strip()
+            if j != i:
+                gold = gold + "\n" + new_sentence
+        score.append(cal_metric(current_sentence, gold.strip())["rouge1"].fmeasure)
+    return score
+
+
+def preprocess(input_path, dataset_type):
+    input_json = get_json(input_path)
+    return build_dataset(input_json, dataset_type)
 
 
 if __name__ == "__main__":
-    result = get_json("../../data/training.json")
-    result = find_best_sentence(result)
+    final_dataset = dict()
+    final_dataset["train"] = preprocess("../../data/training.json", "training")
+    final_dataset["validation"] = preprocess("../../data/evaltest.json", "validation")
+    final_dataset["test"] = preprocess("../../data/devtest.json", "test")
+    with open("../../data/dataset.json", "w") as final:
+        json.dump(final_dataset, final)
