@@ -29,7 +29,7 @@ def build_dataset(input_dict, dataset_type):
         for input_text in input_texts:
             if over_limit:
                 break
-            new_doc, total_length, over_limit = mask_sentences(input_text, dataset_type, total_length, over_limit, extra_id)
+            new_doc, total_length, over_limit, extra_id = mask_sentences(input_text, dataset_type, total_length, over_limit, extra_id)
             output_dict["text"] = output_dict["text"] + " " + new_doc
         print(total_length)
         print(output_dict["text"])
@@ -48,14 +48,6 @@ def mask_sentences(input_text, dataset_type, total_length, over_limit, extra_id)
     for i in range(0, len(input_text)):
         if over_limit:
             break
-        if i in top_30 and dataset_type == "training":
-            if previous_mask:
-                continue
-            else:
-                output = output + " \n " + "<extra_id_{}>".format(extra_id)
-                extra_id += 1
-                total_length += 1
-                previous_mask = True
         elif i in low_30:
             continue
         else:
@@ -66,7 +58,7 @@ def mask_sentences(input_text, dataset_type, total_length, over_limit, extra_id)
             output = output + " \n " + input_text[i]
             total_length += token_length
             previous_mask = False
-    return output.strip(), total_length, over_limit
+    return output.strip(), total_length, over_limit, extra_id
 
 
 def generate_index_list(size: int):
