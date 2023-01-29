@@ -26,8 +26,6 @@ def pipeline(**kwargs):
             "labels": label["input_ids"],
         }
 
-    tokenizer.add_tokens(['[MASK]'], special_tokens=True)
-
     ds = ds.map(
         tokenize__data,
         remove_columns=["id", "summary", "text"],
@@ -60,12 +58,11 @@ def pipeline(**kwargs):
         num_train_epochs=kwargs["epoch"],
         per_device_train_batch_size=1,
         per_device_eval_batch_size=1,
-        logging_strategy="epoch",
         evaluation_strategy="epoch",
         save_strategy="epoch",
         load_best_model_at_end=True,
-        metric_for_best_model="eval_f1",
-        generation_max_length = 100,
+        metric_for_best_model="rouge1",
+        generation_max_length=100,
     )
 
     rouge_metric = evaluate.load("rouge")

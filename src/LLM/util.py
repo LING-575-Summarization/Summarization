@@ -63,7 +63,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--checkpoint",
         type=str,
-        default="bigscience/bloom",
+        default="google/mt5-small",
         help="Which checkpoint to use."
     )
     parser.add_argument(
