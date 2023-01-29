@@ -20,10 +20,10 @@ def get_args() -> argparse.Namespace:
         help="Specify the random seed."
     )
     parser.add_argument(
-        "--data_dir",
+        "--data_json",
         type=str,
-        default=get_root_dir() + "data/",
-        help="Path to directory containing raw dataset",
+        default=get_root_dir() + "data/dataset.json",
+        help="Path to JSON file containing raw dataset",
     )
     parser.add_argument(
         "--do_train",

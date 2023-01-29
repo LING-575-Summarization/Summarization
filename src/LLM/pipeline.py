@@ -1,24 +1,50 @@
 import numpy as np
 import torch
-from transformers import AutoTokenizer, TrainingArguments, AutoModelForSeq2SeqLM, AutoConfig, DataCollatorForSeq2Seq, \
+from transformers import AutoTokenizer, TrainingArguments, AutoModelForCausalLM, AutoConfig, DataCollatorForSeq2Seq, \
     Seq2SeqTrainer
 import evaluate
+from datasets import load_dataset, DatasetDict, concatenate_datasets
 
 import util
 
 
 def pipeline(**kwargs):
-    # TODO: Process input dataset to DataSet
+    train_dataset = load_dataset('json', data_files=kwargs["data_json"], field="train", split="train")
+    eval_dataset = load_dataset('json', data_files=kwargs["data_json"], field="validation", split="train")
+    test_dataset = load_dataset('json', data_files=kwargs["data_json"], field="test", split="train")
+    ds = DatasetDict({"train": train_dataset, "test": test_dataset, "validation": eval_dataset})
 
     tokenizer = AutoTokenizer.from_pretrained(kwargs["checkpoint"], max_length=1024, padding="max_length",
                                               truncation=True)
+
+    def tokenize__data(data):
+        # Max token size is 14536 and 215 for inputs and labels, respectively.
+        # Here I restrict these token size.
+        input_feature = tokenizer(data["text"], truncation=True, max_length=1024)
+        label = tokenizer(data["summary"], truncation=True, max_length=100)
+        return {
+            "input_ids": input_feature["input_ids"],
+            "attention_mask": input_feature["attention_mask"],
+            "labels": label["input_ids"],
+        }
+
+    tokenizer.add_tokens(['[MASK]'], special_tokens=True)
+
+    ds = ds.map(
+        tokenize__data,
+        remove_columns=["id", "summary", "text"],
+        batched=True,
+        batch_size=kwargs["batch_size"])
 
     # Check GPU
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(device)
 
-    config = AutoConfig.from_pretrained("bigscience/bloom")
-    model = AutoModelForSeq2SeqLM.from_pretrained("bigscience/bloom", config=config)
+    config = AutoConfig.from_pretrained(
+        kwargs["checkpoint"],
+        max_length=100
+    )
+    model = AutoModelForCausalLM.from_pretrained(kwargs["checkpoint"], config=config)
 
     if not kwargs["do_train"]:
         model.load_state_dict(torch.load(kwargs["model_file"], map_location=torch.device(device)))
@@ -65,8 +91,8 @@ def pipeline(**kwargs):
         model=model,
         args=training_args,
         data_collactor=data_collator,
-        train_dataset=train_dataset,
-        eval_dataset=eval_dataset,
+        train_dataset=ds["train"],
+        eval_dataset=ds["test"],
         tokenizer=tokenizer,
         compute_metrics=compute_metrics
     )
@@ -74,7 +100,10 @@ def pipeline(**kwargs):
     if kwargs["do_train"]:
         trainer.train()
 
+    trainer.save_model()
+
 
 if __name__ == "__main__":
     kwargs = vars(util.get_args())
-    print(util.get_root_dir())
+    kwargs["do_train"] = True
+    pipeline(**kwargs)
