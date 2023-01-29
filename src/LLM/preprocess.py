@@ -24,12 +24,13 @@ def build_dataset(input_dict, dataset_type):
         input_texts = docset["text"]
         output_dict["text"] = ""
         total_length = 0
+        extra_id = 0
         over_limit = False
         for input_text in input_texts:
             if over_limit:
                 break
-            new_doc, total_length, over_limit = mask_sentences(input_text, dataset_type, total_length, over_limit)
-            output_dict["text"] = output_dict["text"] + " <|endoftext|> " + new_doc
+            new_doc, total_length, over_limit = mask_sentences(input_text, dataset_type, total_length, over_limit, extra_id)
+            output_dict["text"] = output_dict["text"] + " " + new_doc
         print(total_length)
         print(output_dict["text"])
         output_dict["summary"] = docset["summary"][random.randint(0, len(docset["summary"]) - 1)]
@@ -37,7 +38,7 @@ def build_dataset(input_dict, dataset_type):
     return output
 
 
-def mask_sentences(input_text, dataset_type, total_length, over_limit):
+def mask_sentences(input_text, dataset_type, total_length, over_limit, extra_id):
     scores = get_sentence_score(input_text)
     indexes = generate_index_list(len(input_text))
     top_30 = [x for _, x in sorted(zip(scores, indexes))][:len(input_text) * 2 // 10]
@@ -51,7 +52,8 @@ def mask_sentences(input_text, dataset_type, total_length, over_limit):
             if previous_mask:
                 continue
             else:
-                output = output + " \n " + "[MASK]"
+                output = output + " \n " + "<extra_id_{}>".format(extra_id)
+                extra_id += 1
                 total_length += 1
                 previous_mask = True
         elif i in low_30:
