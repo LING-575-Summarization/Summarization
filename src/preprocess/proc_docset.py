@@ -136,7 +136,7 @@ def to_list_of_str(body):
             cleaned_body.append(sentence)
         elif isinstance(sentence, list):
             for sub_sentence in sentence:
-                if isinstance(sentence, str):
+                if isinstance(sub_sentence, str):
                     cleaned_body.append(sub_sentence)
                 else:
                     raise TypeError("List does not contain str")
