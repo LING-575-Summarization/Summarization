@@ -18,11 +18,8 @@ import logging
 import argparse
 import json, os
 from tqdm import tqdm
-<<<<<<< HEAD
 
 Literal = List
-=======
->>>>>>> 1136de4 (added driver)
 
 logger = logging.getLogger()
 
