@@ -15,6 +15,9 @@ from utils import CounterDict, detokenizer_wrapper
 from functools import reduce
 from typing import Optional, Union, List, Literal, Tuple, Dict, Callable, Any
 import logging
+import argparse
+import json, os
+from tqdm import tqdm
 
 logger = logging.getLogger()
 
@@ -270,26 +273,50 @@ def power_method(
     return p_t
 
 
-# NOTE: want the method to be able to handle both one document
-#   and multiple documents. in each case, you just tokenize the document 
-#   into sentences and run the algorithm like usual
+def parse_args():
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument(
+        '--data_path', '-dpath', type=str, default='data',
+        help='Path to document set directory'
+    )
+    argparser.add_argument(
+        '--data_set', '-ds', type=str, required=True,
+        help='Whether to use the test, dev, or train data split'
+    )
+    argparser.add_argument(
+        '--threshold', '-t', type=float, required=True,
+        help='The threshold to use when creating weighted graph'
+    )
+    argparser.add_argument(
+        '--error', '-e', type=float, required=True,
+        help='The error to use when solving for the eigenvalue'
+    )
+    args, _ = argparser.parse_known_args()
+    return args
 
-if __name__ == '__main__':
-    import json, os
-    from tqdm import tqdm
-    fname = os.path.join('data', 'training.json')
-    with open(fname, 'r') as testfile:
-        training_data = json.load(testfile)
-    with open('output/train-lex-rank.txt', 'w') as outfile:
-        with tqdm(training_data, leave=False, total=len(training_data) * 10) as pbar:
+
+def main():
+    args = parse_args()
+    assert args.data_set in set(['training', 'evaltest', 'devtest'])
+    fname = os.path.join(args.data_path, args.data_set + ".json")
+    with open(fname, 'r') as datafile:
+        data = json.load(datafile)
+    with open(f'output/lexrank_out_{args.data_set}.txt', 'w') as outfile:
+        with tqdm(data, leave=False, total=len(data) * 10) as pbar:
             for docset in pbar:
-                for doc_id in training_data[docset]:
-                    lx = LexRank(training_data[docset][doc_id])
+                for doc_id in data[docset]:
+                    lx = LexRank(data[docset][doc_id])
                     result = lx.obtain_summary(0.1, 1e-8, detokenize=True)
-                    print(result, file=outfile)
-                    pbar.update(1)
                     if isinstance(result, str):
                         from nltk.tokenize import word_tokenize
                         assert len(word_tokenize(result)) < 100, f"{result}"
                     else:
                         assert len(flatten_list(result)) < 100, f"{result}"
+                    print(f"\ndocset_id{doc_id}\nsummary:")
+                    print(result, file=outfile)
+                    print("\n")
+                    pbar.update(1)
+
+
+if __name__ == '__main__':
+    main()
