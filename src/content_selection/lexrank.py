@@ -13,11 +13,13 @@ import pandas as pd
 from math import log, e, sqrt
 from utils import CounterDict, detokenizer_wrapper
 from functools import reduce
-from typing import Optional, Union, List, Literal, Tuple, Dict, Callable, Any
+from typing import Optional, Union, List, Tuple, Dict, Callable, Any
 import logging
 import argparse
 import json, os
 from tqdm import tqdm
+
+Literal = List
 
 logger = logging.getLogger()
 
@@ -166,7 +168,7 @@ class LexRank(TFIDF):
             threshold: float, 
             error: float,
             d: Optional[float] = 0.15,
-            return_type: Optional[Literal['pandas', 'vector', 'list']] = 'pandas'
+            return_type: Optional[Literal["'pandas', 'vector', 'list'"]] = 'pandas'
         ) -> Union[np.ndarray, pd.DataFrame]:
         '''
         Find the largest eigenvalue of the modified cosine matrix
@@ -229,12 +231,12 @@ class LexRank(TFIDF):
         first_sentence = ranked_list['sentence'][0]
         words = len(first_sentence)
         if len(ranked_list['sentence']) == 1:
-            if words <= max_tokens:
+            if words < max_tokens:
                 return detokenize(first_sentence)
             else:
                 logger.warning(f"Highest ranked sentence has more than 100 tokens..." + \
                     "returning a slice of the sentence")
-                return detokenize(first_sentence[0:100])
+                return detokenize(first_sentence[0:max_tokens-1])
         else:
             summary, current_sentence, i = [], first_sentence, 1
             while words < max_tokens and i < ranked_list.shape[0]:
@@ -242,6 +244,8 @@ class LexRank(TFIDF):
                 current_sentence = ranked_list['sentence'][i]
                 i += 1
                 words += len(current_sentence)
+            assert words - len(current_sentence) < max_tokens, \
+                f"words: {words - len(current_sentence)} | sentence: {ranked_list['sentence']}"
             return detokenize(summary)
 
 
@@ -302,20 +306,12 @@ def main():
     with open(fname, 'r') as datafile:
         data = json.load(datafile)
     with open(f'output/lexrank_out_{args.data_set}.txt', 'w') as outfile:
-        with tqdm(data, leave=False, total=len(data) * 10) as pbar:
-            for docset in pbar:
-                for doc_id in data[docset]:
-                    lx = LexRank(data[docset][doc_id])
-                    result = lx.obtain_summary(0.1, 1e-8, detokenize=True)
-                    if isinstance(result, str):
-                        from nltk.tokenize import word_tokenize
-                        assert len(word_tokenize(result)) < 100, f"{result}"
-                    else:
-                        assert len(flatten_list(result)) < 100, f"{result}"
-                    print(f"\ndocset_id{doc_id}\nsummary:")
-                    print(result, file=outfile)
-                    print("\n")
-                    pbar.update(1)
+        for docset in tqdm(data):
+            for doc_id in data[docset]:
+                lx = LexRank(data[docset][doc_id])
+                result = lx.obtain_summary(0.1, 1e-8, detokenize=True)
+                outfile.write(f"docset_id{doc_id}\nsummary:\n")
+                outfile.write(result + "\n\n")
 
 
 if __name__ == '__main__':
