@@ -82,12 +82,15 @@ def pipeline(**kwargs):
         predictions = tokenizer.batch_decode(predictions, skip_special_tokens=True)
         labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
 
-        text_predictions = ["\n".join(np.char.strip(p)) for p in sent_tokenize(predictions)]
-        text_labels = ["\n".join(np.char.strip(l)) for l in sent_tokenize(labels)]
+        print(predictions)
+        print(labels)
 
-        print(text_predictions)
+        text_predicitons = [p.replace("<n>", " \n ") for p in predictions]
+        text_labels = [" \n ".join(sent_tokenize(l)) for l in labels]
+
+        print(text_predicitons)
         print(text_labels)
-        return text_predictions, text_labels
+        return text_predicitons, text_labels
 
     def compute_metrics(eval_preds):
         predictions, labels = eval_preds
