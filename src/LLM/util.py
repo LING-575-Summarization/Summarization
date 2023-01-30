@@ -72,5 +72,17 @@ def get_args() -> argparse.Namespace:
         default=8,
         help="How many examples per batch"
     )
+    parser.add_argument(
+        "--max_output_length",
+        type=int,
+        default=100,
+        help="How many examples per batch"
+    )
+    parser.add_argument(
+        "--raw_json_dir",
+        type=str,
+        default=get_root_dir() + "data/",
+        help="Path to store predictions",
+    )
     args, unknown = parser.parse_known_args()
     return args

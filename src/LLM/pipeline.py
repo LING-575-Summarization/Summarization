@@ -1,13 +1,11 @@
 from pathlib import Path
 
-import evaluate
 import numpy as np
 import torch
-from datasets import load_dataset, DatasetDict
-from transformers import AutoTokenizer, Seq2SeqTrainingArguments, AutoModelForSeq2SeqLM, AutoConfig, \
-    DataCollatorForSeq2Seq, \
+from transformers import AutoTokenizer, Seq2SeqTrainingArguments, AutoModelForSeq2SeqLM, AutoConfig, DataCollatorForSeq2Seq, \
     Seq2SeqTrainer
-from torch.utils.data import DataLoader
+import evaluate
+from datasets import load_dataset, DatasetDict
 from nltk.tokenize import sent_tokenize
 
 import util
@@ -24,7 +22,7 @@ def pipeline(**kwargs):
 
     def tokenize__data(data):
         input_feature = tokenizer(data["text"], padding=True, truncation=True, max_length=1024)
-        label = tokenizer(data["summary"], padding=True, truncation=True, max_length=100)
+        label = tokenizer(data["summary"], padding=True, truncation=True, max_length=kwargs["max_output_length"])
         return {
             "input_ids": input_feature["input_ids"],
             "attention_mask": input_feature["attention_mask"],
@@ -43,9 +41,10 @@ def pipeline(**kwargs):
 
     config = AutoConfig.from_pretrained(
         kwargs["checkpoint"],
-        max_length=100
+        max_length=kwargs["max_output_length"]
     )
     model = AutoModelForSeq2SeqLM.from_pretrained(kwargs["checkpoint"], config=config)
+    model.resize_token_embeddings(len(tokenizer.vocab))
 
     if not kwargs["do_train"]:
         model.load_state_dict(torch.load(kwargs["model_file"], map_location=torch.device(device)))
@@ -68,7 +67,7 @@ def pipeline(**kwargs):
         save_strategy="epoch",
         load_best_model_at_end=True,
         metric_for_best_model="rouge1",
-        generation_max_length=100,
+        generation_max_length=kwargs["max_output_length"],
     )
 
     rouge_metric = evaluate.load("rouge")
@@ -77,13 +76,22 @@ def pipeline(**kwargs):
         encoded_arg = tokenizer(arg)
         return tokenizer.convert_ids_to_tokens(encoded_arg.input_ids)
 
-    def compute_metrics(eval_preds):
-        predictions, labels = eval_preds
+    def get_pred_label(predictions, labels):
         labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
 
         predictions = tokenizer.batch_decode(predictions, skip_special_tokens=True)
         labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
 
+        text_predictions = ["\n".join(np.char.strip(p)) for p in sent_tokenize(predictions)]
+        text_labels = ["\n".join(np.char.strip(l)) for l in sent_tokenize(labels)]
+
+        print(text_predictions)
+        print(text_labels)
+        return text_predictions, text_labels
+
+    def compute_metrics(eval_preds):
+        predictions, labels = eval_preds
+        predictions, labels = get_pred_label(predictions, labels)
         return rouge_metric.compute(predictions=predictions, references=labels, tokenizer=tokenize_sentence)
 
     trainer = Seq2SeqTrainer(
@@ -100,34 +108,14 @@ def pipeline(**kwargs):
         trainer.train()
         trainer.save_model()
 
-    evaluation(ds_for_train, ds["validation"], data_collator, model, device, tokenizer)
-
-
-def evaluation(ds_for_train, eval_dataset, data_collator, model, device, tokenizer):
+    # Start Evaluation
     Path("outputs/D3").mkdir(parents=True, exist_ok=True)
 
-    eval_dataloader = DataLoader(
-        ds_for_train["validation"].with_format("torch"),
-        collate_fn=data_collator,
-        batch_size=len(eval_dataset)
-    )
-    i = 0
-    for batch in eval_dataloader:
-        with torch.no_grad():
-            predictions = model.generate(
-                batch["input_ids"].to(device),
-                num_beams=15,
-                num_return_sequences=1,
-                no_repeat_ngram_size=1,
-                remove_invalid_values=True,
-                max_length=128,
-            )
-        labels = batch["labels"]
+    final_validation_predictions = trainer.predict(ds_for_train["validation"])
+    validation_predictions, validation_labels, validation_metrics = final_validation_predictions
 
-    labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
+    predictions, labels = get_pred_label(validation_predictions, validation_labels)
 
-    predictions = tokenizer.batch_decode(predictions, skip_special_tokens=True)
-    labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
     ids = eval_dataset["id"]
 
     for i in range(0, len(eval_dataset)):
@@ -136,10 +124,8 @@ def evaluation(ds_for_train, eval_dataset, data_collator, model, device, tokeniz
         print("***** Summary Text (Generated Text) *****")
         print(predictions[i])
 
-        raw_prediction = predictions[i]
-        raw_prediction = sent_tokenize(raw_prediction)
-        with open("outputs/D3/{}-A.M.100.{}.3".format(ids[i][-1], ids[i][:-1]), "w") as output_file:
-            output_file.write("\n".join(map(str, raw_prediction)))
+        with open("outputs/D3/{}-A.M.100.{}.3".format(ids[i][:-1], ids[i][-1]), "w") as output_file:
+            output_file.write(predictions[i])
 
 
 if __name__ == "__main__":

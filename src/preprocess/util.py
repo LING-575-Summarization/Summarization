@@ -15,5 +15,11 @@ def get_args() -> argparse.Namespace:
         default="/dropbox/22-23/575x/Data/models/devtest",
         help="Path to the directory containing gold summary",
     )
+    parser.add_argument(
+        "--docset",
+        type=str,
+        default="A",
+        help="Select which docset to parse",
+    )
     args, unknown = parser.parse_known_args()
     return args

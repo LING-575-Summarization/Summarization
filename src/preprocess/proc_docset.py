@@ -40,7 +40,7 @@ def get_categories(category_file: str) -> Dict[str, str]:
     return categories
 
 
-def get_data_dir(file: str) -> Dict[str, List[Tuple[str, str, int, int]]]:
+def get_data_dir(file: str, which_docset: str) -> Dict[str, List[Tuple[str, str, int, int]]]:
     """
     Go through the metadata file and acquire a dictionary of file codes to text.
     Args:
@@ -62,7 +62,7 @@ def get_data_dir(file: str) -> Dict[str, List[Tuple[str, str, int, int]]]:
     errors = 0
     for topic_node in topic_nodes:
         category = topic_node.get("category")
-        docset_node = topic_node.find("docsetA")
+        docset_node = topic_node.find("docset" + which_docset)
         docset_id = docset_node.get("id")
         path_dict[docset_id] = []
         for document in docset_node.findall("doc"):
@@ -178,7 +178,7 @@ if __name__ == '__main__':
     for hndlr in logger.handlers:
         hndlr.setFormatter(logging.Formatter(default_fmt))
 
-    data_path_dict = get_data_dir(input_xml_file)
+    data_path_dict = get_data_dir(input_xml_file, kwargs["docset"])
     # Start dataset parsing
     if kwargs["no_tokenize"]:
         built_json(data_path_dict, output, **kwargs)

@@ -51,7 +51,7 @@ def mask_sentences(input_text, dataset_type, total_length, over_limit):
             if previous_mask:
                 continue
             else:
-                output = output + " \n " + "[MASK]"
+                output = output + " " + "[MASK]"
                 total_length += 1
                 previous_mask = True
         elif i in low_30:
@@ -61,7 +61,7 @@ def mask_sentences(input_text, dataset_type, total_length, over_limit):
             if total_length + token_length > 1024:
                 over_limit = True
                 break
-            output = output + " \n " + input_text[i]
+            output = output + " " + input_text[i]
             total_length += token_length
             previous_mask = False
     return output.strip(), total_length, over_limit
