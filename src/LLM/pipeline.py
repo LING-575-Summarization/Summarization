@@ -115,14 +115,14 @@ def pipeline(**kwargs):
     output_dir_path = util.get_root_dir() + "outputs/D3"
     Path(output_dir_path).mkdir(parents=True, exist_ok=True)
 
-    final_validation_predictions = trainer.predict(ds_for_train["validation"])
+    final_validation_predictions = trainer.predict(ds_for_train["test"])
     validation_predictions, validation_labels, validation_metrics = final_validation_predictions
 
     predictions, labels = get_pred_label(validation_predictions, validation_labels)
 
-    ids = eval_dataset["id"]
+    ids = test_dataset["id"]
 
-    for i in range(0, len(eval_dataset)):
+    for i in range(0, len(test_dataset)):
         print("***** Summary Text (Gold Text) *****")
         print(labels[i])
         print("***** Summary Text (Generated Text) *****")
