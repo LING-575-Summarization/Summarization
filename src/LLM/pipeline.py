@@ -85,7 +85,7 @@ def pipeline(**kwargs):
         print(predictions)
         print(labels)
 
-        text_predicitons = [p.replace("<n>", " \n ") for p in predictions]
+        text_predicitons = [" \n ".join(sent_tokenize(p.replace("<n>", " \n "))) for p in predictions]
         text_labels = [" \n ".join(sent_tokenize(l)) for l in labels]
 
         print(text_predicitons)
@@ -112,7 +112,8 @@ def pipeline(**kwargs):
         trainer.save_model()
 
     # Start Evaluation
-    Path("outputs/D3").mkdir(parents=True, exist_ok=True)
+    output_dir_path = util.get_root_dir() + "outputs/D3"
+    Path(output_dir_path).mkdir(parents=True, exist_ok=True)
 
     final_validation_predictions = trainer.predict(ds_for_train["validation"])
     validation_predictions, validation_labels, validation_metrics = final_validation_predictions
@@ -127,7 +128,7 @@ def pipeline(**kwargs):
         print("***** Summary Text (Generated Text) *****")
         print(predictions[i])
 
-        with open("outputs/D3/{}-A.M.100.{}.3".format(ids[i][:-1], ids[i][-1]), "w") as output_file:
+        with open(output_dir_path + "/{}-A.M.100.{}.3".format(ids[i][:-1], ids[i][-1]), "w") as output_file:
             output_file.write(predictions[i])
 
 
