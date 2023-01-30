@@ -56,7 +56,7 @@ class TFIDF:
             - document: sentences stored in a list of lists and 
               sentences are separated by paragraphs
         '''
-        body = document.pop()
+        body = document[-1]
         self.headers = document
 
         self.raw_body = flatten_list(body)
@@ -228,12 +228,13 @@ class LexRank(TFIDF):
         ranked_list = self.solve_lexrank(threshold, error, d, 'pandas')
         first_sentence = ranked_list['sentence'][0]
         words = len(first_sentence)
-        if words == max_tokens:
-            return detokenize(first_sentence)
-        elif words > max_tokens:
-            logger.warning(f"Highest ranked sentence has more than 100 tokens..." + \
-                "returning a slice of the sentence")
-            return detokenize(first_sentence[0:100])
+        if len(ranked_list['sentence']) == 1:
+            if words <= max_tokens:
+                return detokenize(first_sentence)
+            else:
+                logger.warning(f"Highest ranked sentence has more than 100 tokens..." + \
+                    "returning a slice of the sentence")
+                return detokenize(first_sentence[0:100])
         else:
             summary, current_sentence, i = [], first_sentence, 1
             while words < max_tokens and i < ranked_list.shape[0]:
@@ -286,16 +287,9 @@ if __name__ == '__main__':
         with tqdm(training_data, leave=False, total=len(training_data) * 10) as pbar:
             for docset in pbar:
                 for doc_id in training_data[docset]:
-                    try:
-                        lx = LexRank(training_data[docset][doc_id])
-                        result = lx.obtain_summary(0.1, 1e-8, detokenize=True)
-                        print(result, file=outfile)
-                    except TypeError:
-                        print(f"(Type error) Couldn't calculate LexRank for training_data[{docset}][{doc_id}]!!!")
-                        print(f"article is:\n{training_data[docset][doc_id]}")
-                    except ZeroDivisionError:
-                        print(f"(Division by zero) Couldn't calculate LexRank for training_data[{docset}][{doc_id}]!!!")
-                        print(f"article is:\n{training_data[docset][doc_id]}")
+                    lx = LexRank(training_data[docset][doc_id])
+                    result = lx.obtain_summary(0.1, 1e-8, detokenize=True)
+                    print(result, file=outfile)
                     pbar.update(1)
                     if isinstance(result, str):
                         from nltk.tokenize import word_tokenize
