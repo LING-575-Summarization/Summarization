@@ -31,15 +31,9 @@ def get_args() -> argparse.Namespace:
         help="Train the model and store to default directory",
     )
     parser.add_argument(
-        "--train_dir",
-        type=str,
-        default=get_root_dir() + "outputs/model_storage",
-        help="Path to store checkpoints",
-    )
-    parser.add_argument(
         "--model_file",
         type=str,
-        default=get_root_dir() + "outputs/D3/pytorch_model.bin",
+        default=get_root_dir() + "outputs/D3/LLM/pytorch_model.bin",
         help="Path to stored model",
     )
     parser.add_argument(
@@ -51,7 +45,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--result_dir",
         type=str,
-        default=get_root_dir() + "results/D3/LLM",
+        default=get_root_dir() + "outputs/D3/",
         help="Path to store results"
     )
     parser.add_argument(
@@ -63,7 +57,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--checkpoint",
         type=str,
-        default="google/mt5-small",
+        default="google/pegasus-cnn_dailymail",
         help="Which checkpoint to use."
     )
     parser.add_argument(

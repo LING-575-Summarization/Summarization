@@ -1,9 +1,14 @@
+from pathlib import Path
+
+import evaluate
 import numpy as np
 import torch
-from transformers import AutoTokenizer, Seq2SeqTrainingArguments, AutoModelForSeq2SeqLM, AutoConfig, DataCollatorForSeq2Seq, \
+from datasets import load_dataset, DatasetDict
+from transformers import AutoTokenizer, Seq2SeqTrainingArguments, AutoModelForSeq2SeqLM, AutoConfig, \
+    DataCollatorForSeq2Seq, \
     Seq2SeqTrainer
-import evaluate
-from datasets import load_dataset, DatasetDict, concatenate_datasets
+from torch.utils.data import DataLoader
+from nltk.tokenize import sent_tokenize
 
 import util
 
@@ -26,7 +31,7 @@ def pipeline(**kwargs):
             "labels": label["input_ids"],
         }
 
-    ds = ds.map(
+    ds_for_train = ds.map(
         tokenize__data,
         remove_columns=["id", "summary", "text"],
         batched=True,
@@ -47,10 +52,11 @@ def pipeline(**kwargs):
 
     model.to(device)
 
-    data_collator = DataCollatorForSeq2Seq(tokenizer, model=model, padding="max_length", max_length=1024, return_tensors="pt")
+    data_collator = DataCollatorForSeq2Seq(tokenizer, model=model, padding="max_length", max_length=1024,
+                                           return_tensors="pt")
 
     training_args = Seq2SeqTrainingArguments(
-        output_dir=kwargs["train_dir"],
+        output_dir=kwargs["output_dir"],
         seed=kwargs["seed"],
         overwrite_output_dir=True,
         label_names=["labels"],
@@ -84,8 +90,8 @@ def pipeline(**kwargs):
         model=model,
         args=training_args,
         data_collator=data_collator,
-        train_dataset=ds["train"],
-        eval_dataset=ds["test"],
+        train_dataset=ds_for_train["train"],
+        eval_dataset=ds_for_train["test"],
         tokenizer=tokenizer,
         compute_metrics=compute_metrics
     )
@@ -93,6 +99,47 @@ def pipeline(**kwargs):
     if kwargs["do_train"]:
         trainer.train()
         trainer.save_model()
+
+    evaluation(ds_for_train, ds["validation"], data_collator, model, device, tokenizer)
+
+
+def evaluation(ds_for_train, eval_dataset, data_collator, model, device, tokenizer):
+    Path("outputs/D3").mkdir(parents=True, exist_ok=True)
+
+    eval_dataloader = DataLoader(
+        ds_for_train["validation"].with_format("torch"),
+        collate_fn=data_collator,
+        batch_size=len(eval_dataset)
+    )
+    i = 0
+    for batch in eval_dataloader:
+        with torch.no_grad():
+            predictions = model.generate(
+                batch["input_ids"].to(device),
+                num_beams=15,
+                num_return_sequences=1,
+                no_repeat_ngram_size=1,
+                remove_invalid_values=True,
+                max_length=128,
+            )
+        labels = batch["labels"]
+
+    labels = np.where(labels != -100, labels, tokenizer.pad_token_id)
+
+    predictions = tokenizer.batch_decode(predictions, skip_special_tokens=True)
+    labels = tokenizer.batch_decode(labels, skip_special_tokens=True)
+    ids = eval_dataset["id"]
+
+    for i in range(0, len(eval_dataset)):
+        print("***** Summary Text (Gold Text) *****")
+        print(labels[i])
+        print("***** Summary Text (Generated Text) *****")
+        print(predictions[i])
+
+        raw_prediction = predictions[i]
+        raw_prediction = sent_tokenize(raw_prediction)
+        with open("outputs/D3/{}-A.M.100.{}.3".format(ids[i][-1], ids[i][:-1]), "w") as output_file:
+            output_file.write("\n".join(map(str, raw_prediction)))
 
 
 if __name__ == "__main__":
