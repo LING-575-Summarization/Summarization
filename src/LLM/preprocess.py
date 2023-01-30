@@ -4,6 +4,7 @@ import json
 from nltk.tokenize import word_tokenize
 from rouge_score import rouge_scorer
 
+import util
 
 def get_json(json_path: str):
     with open(json_path) as json_file:
@@ -95,9 +96,11 @@ def preprocess(input_path, dataset_type):
 
 
 if __name__ == "__main__":
+    kwargs = vars(util.get_args())
+    dir_prefix = util.get_root_dir() + kwargs["raw_json_dir"]
     dataset = dict()
-    dataset["train"] = preprocess("../../data/training.json", "training")
-    dataset["validation"] = preprocess("../../data/evaltest.json", "validation")
-    dataset["test"] = preprocess("../../data/devtest.json", "test")
-    with open("../../data/dataset.json", "w") as final:
+    dataset["train"] = preprocess(dir_prefix + "training.json", "training")
+    dataset["validation"] = preprocess(dir_prefix + "evaltest.json", "validation")
+    dataset["test"] = preprocess(dir_prefix + "devtest.json", "test")
+    with open(dir_prefix + "dataset.json", "w") as final:
         json.dump(dataset, final)

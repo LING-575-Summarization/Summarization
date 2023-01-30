@@ -81,7 +81,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--raw_json_dir",
         type=str,
-        default=get_root_dir() + "data/",
+        default="data/A_",
         help="Path to store predictions",
     )
     args, unknown = parser.parse_known_args()
