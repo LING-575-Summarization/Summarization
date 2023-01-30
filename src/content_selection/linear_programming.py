@@ -158,14 +158,13 @@ def read_json(json_path):
 if __name__ == '__main__':
     json_path = sys.argv[1]
     max_summary_length = sys.argv[2]
-    output_summary_file = sys.argv[3]
     docset_rep = read_json(json_path)
 
-    with open(output_summary_file, 'w') as output:
-        for docset_id, docset in docset_rep.items():
-            model = LinearProgramSummarizer(docset_id, docset, 100)
-            summary = model.make_summary()
-            output.write("docset_id:" + docset_id + "\n")
-            output.write("summary:\n")
-            output.write(summary + "\n\n")
-
+    for docset_id, docset in docset_rep.items():
+        model = LinearProgramSummarizer(docset_id, docset, 100)
+        summary = model.make_summary()
+        id_part1 = docset_id[:-1]
+        id_part2 = docset_id[-1]
+        output_summary_file = "output/D3/devtest/" + id_part1 + "-A.M.100." + id_part2 + ".1"
+        with open(output_summary_file, 'w') as output:
+            output.write(summary)
