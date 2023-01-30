@@ -130,10 +130,7 @@ class LexRank(TFIDF):
                 sum([(self.tf[s][x] * self.idf[x]) ** 2 for x in s_t])
             )
             denominator = denom_term(s_i, sent_i_terms) * denom_term(s_j, sent_j_terms)
-            if denominator == 0:
-                print("\t", sent_i_terms, sent_j_terms)
-                print("\t", denom_term(s_i, sent_i_terms), denom_term(s_j, sent_j_terms))
-                print(self.tf, self.idf)
+            assert denominator != 0, f"Denominator of modified cosine is 0. Terms: {sent_i_terms}, {sent_j_terms}"
             return numerator/denominator
 
 
