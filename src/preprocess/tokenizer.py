@@ -30,6 +30,13 @@ COPYRIGHT_STRINGS = [
 ]
 
 
+# copyright strings to avoid including
+COPYRIGHT_STRINGS = [
+    'COPYRIGHT 1998 BY WORLDSOURCES',
+    "NO PORTION OF THE MATERIALS CONTAINED HEREIN MAY BE USED IN ANY MEDIA WITHOUT ATTRIBUTION TO WORLDSOURCES, INC."
+]
+
+
 def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str):
     root = get_root(data_path)
     date = get_date(doc_id)
