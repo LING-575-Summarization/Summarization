@@ -68,7 +68,10 @@ def read_aquaint2(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
         if child.get("id").strip() == doc_id:
             if child.find("HEADLINE") is not None:
                 headline = child.find("HEADLINE").text.strip().replace('\n', ' ')
-            body = extract_p(child)
+            if child.find("TEXT").find("P") is not None:
+                body = extract_p(child)
+            else:
+                body = extract_p_manual(child)
             # We now find what we need, break so we can move on
             break
     return headline, body
@@ -97,7 +100,7 @@ def write_output(output_path: str, category: int, date: str, headline: str, body
             save_sents.append(tokenized_sent)
             output.write(str(tokenized_sent) + "\n")
         save_paras.append(save_sents)
-        output.write("\n")  # extra line between paragraphs
+        output.write("\n") # extra line between paragraphs
     output.close()
     return category, date, headline, save_paras
 
@@ -108,6 +111,21 @@ def extract_p(root: etree.Element) -> List[List[str]]:
         s = p_node.text.strip().replace('\n', ' ')
         if s != '':
             result.append(sent_tokenize(s))
+    return result
+
+
+def extract_p_manual(body_node: etree.Element) -> List[List[str]]:
+    result = []
+    for s in re.split(r'(?<=\.|_)\s+(?!.*INC.)(?=\w)', body_node.find("TEXT").text):
+        s = re.sub('[\n\t\s]+', ' ', s)
+        s = re.sub('(^\s+|\s+$)', '', s)
+        if s != '' and not any([cs in s for cs in COPYRIGHT_STRINGS]):
+            if re.search(r'^[A-Z]{3,}\s*\([A-Z]{2,}\):', s):
+                for _s in re.split(r':', s):
+                    result.append(sent_tokenize(_s))
+            else:
+                result.append(sent_tokenize(s))
+
     return result
 
 
