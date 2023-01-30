@@ -11,12 +11,34 @@ import re
 import numpy as np
 import pandas as pd
 from math import log, e, sqrt
-from counterdict import CounterDict
+from utils import CounterDict, detokenizer_wrapper
 from functools import reduce
-from typing import Optional, Union, List, Literal, Tuple, Dict
+from typing import Optional, Union, List, Literal, Tuple, Dict, Callable, Any
+import logging
 
-# term frequency (tf):
-    # return count(sentence, word_appears_in_sentence)
+logger = logging.getLogger()
+
+# get body as list of sentences
+def flatten_list(x: List[List[Any]]) -> List[Any]: 
+    '''
+    Utility function to flatten lists of lists
+    '''
+    def flatten(x, y):
+        x.extend(y)
+        return x
+    return reduce(flatten, x)
+
+
+def process_body(body: List[List[str]]) -> List[List[Any]]: 
+    '''
+    Utility function to remove punctuation from a body and
+    put all terms to lowercase
+    '''
+    new_body = []
+    for sentence_i in range(len(body)):
+        new_body.append([w.lower() for w in body[sentence_i] if re.search(r'\w', w)])
+    return new_body
+
 
 class TFIDF:
     '''Get TF-IDF values from *just* one document with multiple sentences'''
@@ -34,14 +56,11 @@ class TFIDF:
             - document: sentences stored in a list of lists and 
               sentences are separated by paragraphs
         '''
-        body = document.pop()
+        body = document[-1]
         self.headers = document
 
-        # get body as list of sentences
-        def flatten(x,y): 
-            x.extend(y)
-            return x
-        self.body = reduce(flatten, body)
+        self.raw_body = flatten_list(body)
+        self.body = process_body(self.raw_body)
         self.N = len(self.body)
 
         # checks
@@ -96,11 +115,13 @@ class LexRank(TFIDF):
         '''Helper method to get the modified cosine score specific in Erkan and Radev
             Arguments:
                 - s_i, s_j: indices to the sentences in self.body and self.tf
+            NOTE: Self links (i = j) are allowed
         '''
-        if s_i == s_j:
+        sent_i_terms, sent_j_terms = set(self.body[s_i]), set(self.body[s_j])
+        one_sentence_has_no_terms = len(sent_i_terms) == 0 or len(sent_j_terms) == 0
+        if one_sentence_has_no_terms: # i.e. sentence is entirely punctuation
             return 0.
         else:
-            sent_i_terms, sent_j_terms = set(self.body[s_i]), set(self.body[s_j])
             overlap_w = sent_i_terms.intersection(sent_j_terms)
             numerator = sum(
                 [self.tf[s_i][w] * self.tf[s_i][w] * (self.idf[w] ** 2) for w in overlap_w]
@@ -109,6 +130,7 @@ class LexRank(TFIDF):
                 sum([(self.tf[s][x] * self.idf[x]) ** 2 for x in s_t])
             )
             denominator = denom_term(s_i, sent_i_terms) * denom_term(s_j, sent_j_terms)
+            assert denominator != 0, f"Denominator of modified cosine is 0. Terms: {sent_i_terms}, {sent_j_terms}"
             return numerator/denominator
 
 
@@ -150,19 +172,26 @@ class LexRank(TFIDF):
             - threshold: the threshold for constructing graph connections
             - error: the minimum error to end the power_method algorithm
             - d: the dampening to ensure aperiodicity
+            - return_type: whether to return one of the following options:
+                a. the vector of eigenvalues
+                b. a list of ranked of tuples (index, eigenvalue, sentence)
+                c. (default) a pandas dataframe constructed from list of tuples
         Returns:
             A list, dataframe, or vector of the resulting eigenvalue
         '''
-        eigenvalue = power_method(
+        if len(self.body) > 1:
+            eigenvalue = power_method(
             matrix=self.get_cosine_matrix(threshold=threshold),
             error=error,
             d=d
         )
+        else: # if document only consists of one sentence
+            eigenvalue = np.ones(shape=(1))
         if return_type == 'vector':
             return eigenvalue
         ranked_list = sorted(
-            [(i, ev, " ".join(lx.body[i])) for i, ev in enumerate(eigenvalue.tolist())],
-            key=lambda x: x[2],
+            [(i, ev, self.raw_body[i]) for i, ev in enumerate(eigenvalue.tolist())],
+            key=lambda x: x[1],
             reverse=True
         )
         if return_type == 'list':
@@ -170,6 +199,47 @@ class LexRank(TFIDF):
         df = pd.DataFrame(ranked_list).reset_index()
         df.columns = ['rank', 'index', f'LR Score ({threshold})', 'sentence']
         return df
+
+
+    @detokenizer_wrapper
+    def obtain_summary(
+            self, 
+            threshold: float, 
+            error: float,
+            d: Optional[float] = 0.15,
+            max_tokens: Optional[int] = 100,
+            detokenize: Optional[Union[Callable, bool]] = False
+        ) -> Union[str, List[List[str]]]:
+        '''
+        Obtain a "summary" of the document by running the method `solve_lexrank`
+        and then selecting sentences until it reaches the max number of words
+        Arguments:
+            - threshold: the threshold for constructing graph connections
+            - error: the minimum error to end the power_method algorithm
+            - d: the dampening to ensure aperiodicity
+            - max_words: max tokens in the summary
+            - detokenize: whether to combine the tokens into a typical English sentence
+                or leave as a list of whitespace delimited tokens. The decorator 
+                wrap_detokenizer transforms the tokenize bool into a function behind the scenes
+        '''
+        ranked_list = self.solve_lexrank(threshold, error, d, 'pandas')
+        first_sentence = ranked_list['sentence'][0]
+        words = len(first_sentence)
+        if len(ranked_list['sentence']) == 1:
+            if words <= max_tokens:
+                return detokenize(first_sentence)
+            else:
+                logger.warning(f"Highest ranked sentence has more than 100 tokens..." + \
+                    "returning a slice of the sentence")
+                return detokenize(first_sentence[0:100])
+        else:
+            summary, current_sentence, i = [], first_sentence, 1
+            while words < max_tokens and i < ranked_list.shape[0]:
+                summary.append(detokenize(current_sentence))
+                current_sentence = ranked_list['sentence'][i]
+                i += 1
+                words += len(current_sentence)
+            return detokenize(summary)
 
 
 def power_method(
@@ -206,10 +276,20 @@ def power_method(
 
 if __name__ == '__main__':
     import json, os
-    fname = os.path.join(os.path.dirname(__file__), 'testcase.json')
+    from tqdm import tqdm
+    fname = os.path.join('data', 'training.json')
     with open(fname, 'r') as testfile:
-        testcase = json.load(testfile)
-    testcase = testcase["D1101A-A"]["AFP_ENG_20061002.0523"]
-    lx = LexRank(testcase)
-    result = lx.solve_lexrank(0.1, 1e-8)
-    print(result.to_string())
+        training_data = json.load(testfile)
+    with open('output/train-lex-rank.txt', 'w') as outfile:
+        with tqdm(training_data, leave=False, total=len(training_data) * 10) as pbar:
+            for docset in pbar:
+                for doc_id in training_data[docset]:
+                    lx = LexRank(training_data[docset][doc_id])
+                    result = lx.obtain_summary(0.1, 1e-8, detokenize=True)
+                    print(result, file=outfile)
+                    pbar.update(1)
+                    if isinstance(result, str):
+                        from nltk.tokenize import word_tokenize
+                        assert len(word_tokenize(result)) < 100, f"{result}"
+                    else:
+                        assert len(flatten_list(result)) < 100, f"{result}"

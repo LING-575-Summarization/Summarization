@@ -110,7 +110,7 @@ def write_outputs(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_
             doc_id_rep[doc_id] = (date, category, headline, body)
         docset_rep[docset] = doc_id_rep
     with open(output_dir + ".json", "w") as final:
-        json.dump(docset_rep, final)
+        json.dump(docset_rep, final, indent=4)
     logger.info("Successfully wrote dictionary to files")
 
 
