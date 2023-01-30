@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-import sys
->>>>>>> b486536 (feat: Add Graph and tf_idf Content Selection methods)
 import json
 import math
 """
@@ -115,7 +111,6 @@ class TF_IDF:
 
 
 
-<<<<<<< HEAD
     def get_tf_idf_sentence_weight(self, sentence, document: str, weight_type: str) -> float:
         """
             Returns the average tf-idf score over a whole sentence
@@ -123,14 +118,6 @@ class TF_IDF:
             Params: sentence as an iterable of strings, document_id as a string, and weight_type either {"average", "max"}
         """
         sentence = tuple(sentence)
-=======
-    def get_tf_idf_sentence_weight(self, sentence: tuple, document: str, weight_type: str) -> float:
-        """
-            Returns the average tf-idf score over a whole sentence
-
-            Params: sentence as a tuple, document_id as a string, and weight_type either {"average", "max"}
-        """
->>>>>>> b486536 (feat: Add Graph and tf_idf Content Selection methods)
         if not ((weight_type == "average") or (weight_type == "max")):
             err_str = "weight_type parameter [" + str(weight_type) + "] must either be 'average' or 'max'"
             raise ValueError(err_str)
@@ -179,40 +166,5 @@ def create_tf_idf_dict(json_path: str, delta_1: float, delta_2: float):
 
     for docset_id, docset in docset_rep.items():
         docset_tf_idf[docset_id] = TF_IDF(docset, delta_1, delta_2)
-<<<<<<< HEAD
 
     return docset_tf_idf
-=======
-    
-    # for docset_id, docset in docset_rep.items():
-    #     cur_tf_idf = docset_tf_idf[docset_id]
-    #     print(cur_tf_idf.tf_idf)
-    #     print()
-    #     print("max", cur_tf_idf.max_tf_idf_sent_weights)
-    #     print("avg", cur_tf_idf.avg_tf_idf_sent_weights)
-    #     print("##########\n")
-    #     for doc_id, doc_data in docset.items():
-
-    #         for para in doc_data[3]:
-    #             for sentence in para:
-    #                 sent_repr = tuple(sentence)
-    #                 print("avg", cur_tf_idf.get_tf_idf_sentence_weight(sent_repr, doc_id, "average"))
-    #                 print("max", cur_tf_idf.get_tf_idf_sentence_weight(sent_repr, doc_id, "max"))
-    #                 print()
-                    # cur_tf_idf.get_tf_idf_sentence_weight(sent_repr, doc_id, "should error")
-        
-        
-            
-
-    return docset_tf_idf
-
-
-if __name__ == '__main__':
-
-    ## for testing purposes
-    json_path = sys.argv[1]
-    delta1 = float(sys.argv[2])
-    delta2 = float(sys.argv[3])
-
-    create_tf_idf_dict(json_path, delta1, delta2)
->>>>>>> b486536 (feat: Add Graph and tf_idf Content Selection methods)
