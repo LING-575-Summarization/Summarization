@@ -280,4 +280,8 @@ https://conda.anaconda.org/conda-forge/noarch/librosa-0.9.2-pyhd8ed1ab_0.tar.bz2
 https://conda.anaconda.org/conda-forge/noarch/transformers-4.24.0-pyhd8ed1ab_0.tar.bz2
 https://repo.anaconda.com/pkgs/main/linux-64/mkl_random-1.2.2-py310h00e6091_0.conda
 https://repo.anaconda.com/pkgs/main/linux-64/numpy-1.23.5-py310hd5efca6_0.conda
+<<<<<<< HEAD
 https://conda.anaconda.org/pytorch/linux-64/torchaudio-0.13.1-py310_cu116.tar.bz2
+=======
+https://conda.anaconda.org/pytorch/linux-64/torchaudio-0.13.1-py310_cu116.tar.bz2
+>>>>>>> a8cfe6e (feat: Add environment file and D3.cmd)
