@@ -19,8 +19,15 @@ class SentenceTokenizer:
         else:
             raise ValueError("SentenceTokenizer takes strings or lists of strings")
 
+
 # Set the SentenceTokenizer class as a global callable function
 sent_tokenize = SentenceTokenizer()
+
+# copyright strings to avoid including
+COPYRIGHT_STRINGS = [
+    'COPYRIGHT 1998 BY WORLDSOURCES',
+    "NO PORTION OF THE MATERIALS CONTAINED HEREIN MAY BE USED IN ANY MEDIA WITHOUT ATTRIBUTION TO WORLDSOURCES, INC."
+]
 
 
 def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str):
@@ -34,7 +41,7 @@ def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type:
         headline, body = read_aquaint2(root, doc_id)
     elif corpus_type == 3:
         headline, body = read_tac(root)
-    return write_output(output_path, category, date, headline, body)
+    return category, date, headline, body
 
 
 def read_aquaint(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
@@ -50,10 +57,7 @@ def read_aquaint(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
             if body_node.find("TEXT").find("P") is not None:
                 body = extract_p(body_node)
             else:
-                for s in body_node.find("TEXT").text.split('\t'):
-                    s = s.strip().replace('\n', ' ')
-                    if s != '':
-                        body.append(s)
+                body = extract_p_manual(body_node)
             # We now find what we need, break so we can move on
             break
     return headline, body
@@ -67,7 +71,10 @@ def read_aquaint2(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
         if child.get("id").strip() == doc_id:
             if child.find("HEADLINE") is not None:
                 headline = child.find("HEADLINE").text.strip().replace('\n', ' ')
-            body = extract_p(child)
+            if child.find("TEXT").find("P") is not None:
+                body = extract_p(child)
+            else:
+                body = extract_p_manual(child)
             # We now find what we need, break so we can move on
             break
     return headline, body
@@ -96,7 +103,7 @@ def write_output(output_path: TextIO, category: int, date: str, headline: str, b
             save_sents.append(tokenized_sent)
             output.write(str(tokenized_sent) + "\n")
         save_paras.append(save_sents)
-        output.write("\n") # extra line between paragraphs
+        output.write("\n")  # extra line between paragraphs
     output.close()
     return category, date, headline, save_paras
 
@@ -107,6 +114,21 @@ def extract_p(root: etree.Element) -> List[List[str]]:
         s = p_node.text.strip().replace('\n', ' ')
         if s != '':
             result.append(sent_tokenize(s))
+    return result
+
+
+def extract_p_manual(body_node: etree.Element) -> List[List[str]]:
+    result = []
+    for s in re.split(r'(?<=\.|_)\s+(?!.*INC.)(?=\w)', body_node.find("TEXT").text):
+        s = re.sub('[\n\t\s]+', ' ', s)
+        s = re.sub('(^\s+|\s+$)', '', s)
+        if s != '' and not any([cs in s for cs in COPYRIGHT_STRINGS]):
+            if re.search(r'^[A-Z]{3,}\s*\([A-Z]{2,}\):', s):
+                for _s in re.split(r':', s):
+                    result.append(sent_tokenize(_s))
+            else:
+                result.append(sent_tokenize(s))
+
     return result
 
 

@@ -162,6 +162,9 @@ cython_debug/
 # CUSTOM IGNORE
 metadata
 metadata/**
+**/testcase*
 results/**
-outputs/**
 **/.DS_Store
+data/**
+data
+
