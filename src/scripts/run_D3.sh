@@ -7,4 +7,4 @@ conda activate ~/anaconda3/envs/575wi-env
 
 which python
 
-rc/scripts/./run_LLM.sh
+src/scripts/./run_LLM.sh
