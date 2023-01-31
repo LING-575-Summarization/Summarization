@@ -1,4 +1,3 @@
-import sys
 import json
 import math
 """
@@ -169,13 +168,3 @@ def create_tf_idf_dict(json_path: str, delta_1: float, delta_2: float):
         docset_tf_idf[docset_id] = TF_IDF(docset, delta_1, delta_2)
 
     return docset_tf_idf
-
-
-if __name__ == '__main__':
-
-    ## for testing purposes
-    json_path = sys.argv[1]
-    delta1 = float(sys.argv[2])
-    delta2 = float(sys.argv[3])
-
-    create_tf_idf_dict(json_path, delta1, delta2)

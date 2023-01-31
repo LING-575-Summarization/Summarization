@@ -31,7 +31,7 @@ def detokenizer_wrapper(f: Callable):
             if kwargs['detokenize']:
                 from nltk.tokenize.treebank import TreebankWordDetokenizer
                 detokenizer = TreebankWordDetokenizer()
-                detokenize = lambda x: detokenizer.detokenize(x)
+                detokenize = lambda x: detokenizer.detokenize(x, True)
             else:
                 detokenize = lambda x: x
             kwargs['detokenize'] = detokenize
