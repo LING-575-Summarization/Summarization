@@ -323,7 +323,7 @@ def main():
     for docset_id in tqdm(data):
         docset = list(data[docset_id].values())
         lx = LexRank(docset, multidocument=True)
-        result = lx.obtain_summary(0.1, 1e-8, detokenize=True)
+        result = lx.obtain_summary(args.threshold, args.error, detokenize=True)
         spl = str(docset_id).split("-", maxsplit=1)
         id0, id1 = spl[0], spl[1]
         output_file = os.path.join('outputs', 'D3', f'{id0}-A.M.100.{id1}.2')
