@@ -163,6 +163,7 @@ if __name__ == '__main__':
     for docset_id, docset in docset_rep.items():
         model = LinearProgramSummarizer(docset_id, docset, 100)
         summary = model.make_summary()
+        docset_id = docset_id.split("-")[0]
         id_part1 = docset_id[:-1]
         id_part2 = docset_id[-1]
         output_summary_file = "outputs/D3/" + id_part1 + "-A.M.100." + id_part2 + ".1"
