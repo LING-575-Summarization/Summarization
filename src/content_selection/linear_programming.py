@@ -165,6 +165,6 @@ if __name__ == '__main__':
         summary = model.make_summary()
         id_part1 = docset_id[:-1]
         id_part2 = docset_id[-1]
-        output_summary_file = "output/D3/devtest/" + id_part1 + "-A.M.100." + id_part2 + ".1"
+        output_summary_file = "outputs/D3/" + id_part1 + "-A.M.100." + id_part2 + ".1"
         with open(output_summary_file, 'w') as output:
             output.write(summary)
