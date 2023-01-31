@@ -305,13 +305,16 @@ def main():
     fname = os.path.join(args.data_path, args.data_set + ".json")
     with open(fname, 'r') as datafile:
         data = json.load(datafile)
-    with open(f'output/lexrank_out_{args.data_set}.txt', 'w') as outfile:
-        for docset in tqdm(data):
-            for doc_id in data[docset]:
-                lx = LexRank(data[docset][doc_id])
-                result = lx.obtain_summary(0.1, 1e-8, detokenize=True)
-                outfile.write(f"docset_id{doc_id}\nsummary:\n")
-                outfile.write(result + "\n\n")
+    for docset_id in tqdm(data):
+        docset = " ".join(
+            [data[docset_id][doc_id] for doc_id in data[docset_id]]
+        )
+        lx = LexRank(docset)
+        result = lx.obtain_summary(0.1, 1e-8, detokenize=True)
+        spl = str(docset_id).split("-", maxsplit=1)
+        id0, id1 = spl[0], spl[1]
+        with open(f'outputs/{id0}-A.M.100.{id1}.2', 'w') as outfile:
+            outfile.write(result)
 
 
 if __name__ == '__main__':
