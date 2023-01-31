@@ -51,7 +51,8 @@ class TFIDF:
     def __init__(
             self, 
             document: List[List[List[str]]], 
-            log_base: Optional[Union[float, int]] = e
+            log_base: Optional[Union[float, int]] = e,
+            multidocument: Optional[bool] = False
         ) -> None:
         '''
         Obtain a two dictionaries: 
@@ -60,8 +61,19 @@ class TFIDF:
         Argument:
             - document: sentences stored in a list of lists and 
               sentences are separated by paragraphs
+            - log_base: whether to use log base of 2 or e
+            - multidocument: flag to process multiple similar documents
+              as a single document (i.e. concatenate the sentence lists)
         '''
-        body = document[-1]
+        if multidocument:
+            body = flatten_list([doc[-1] for doc in document])
+        else:
+            body = document[-1]
+            if any([not(isinstance(s, list)) for s in document]):
+                raise TypeError(
+                    "Not a list of sentences. Check if the multidocument flag is correct. " +
+                    f"Current flag is {multidocument}."
+                )
         self.headers = document
 
         self.raw_body = flatten_list(body)
@@ -111,9 +123,10 @@ class LexRank(TFIDF):
     def __init__(
             self, 
             document: List[List[List[str]]], 
-            log_base: Optional[Union[float, int]] = e
+            log_base: Optional[Union[float, int]] = e,
+            multidocument: Optional[bool] = False
         ) -> None:
-        super().__init__(document, log_base)
+        super().__init__(document, log_base, multidocument)
 
 
     def modified_cosine(self, s_i: int, s_j: int) -> float:
@@ -246,6 +259,8 @@ class LexRank(TFIDF):
                 words += len(current_sentence)
             assert words - len(current_sentence) < max_tokens, \
                 f"words: {words - len(current_sentence)} | sentence: {ranked_list['sentence']}"
+            if isinstance(summary[-1], str):
+                summary = list(map(lambda x: x + "\n", summary))
             return detokenize(summary)
 
 
@@ -306,14 +321,13 @@ def main():
     with open(fname, 'r') as datafile:
         data = json.load(datafile)
     for docset_id in tqdm(data):
-        docset = " ".join(
-            [data[docset_id][doc_id] for doc_id in data[docset_id]]
-        )
-        lx = LexRank(docset)
+        docset = list(data[docset_id].values())
+        lx = LexRank(docset, multidocument=True)
         result = lx.obtain_summary(0.1, 1e-8, detokenize=True)
         spl = str(docset_id).split("-", maxsplit=1)
         id0, id1 = spl[0], spl[1]
-        with open(f'outputs/{id0}-A.M.100.{id1}.2', 'w') as outfile:
+        output_file = os.path.join('outputs', 'D3', f'{id0}-A.M.100.{id1}.2')
+        with open(output_file, 'w') as outfile:
             outfile.write(result)
 
 
