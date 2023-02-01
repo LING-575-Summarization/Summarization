@@ -1,13 +1,36 @@
-import typing
+from typing import Tuple, List, TextIO, Union
 import re
 from lxml import etree
-import spacy
+import nltk.data
+from nltk.tokenize import word_tokenize
+import nltk
 
 
-def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str,
-                        nlp):
-    output = open(output_path, "w+")
+# Wrap the nltk.data.load() tokenizer in a class to avoid downloading punkt
+class SentenceTokenizer:
+    def __init__(self):
+        self.tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
 
+    def __call__(self, string: Union[str, List[str]]) -> Union[str, List[List[str]]]:
+        if isinstance(string, str):
+            return self.tokenizer.tokenize(string.strip())
+        elif isinstance(string, list):
+            return [self.tokenizer.tokenize(s.strip()) for s in string]
+        else:
+            raise ValueError("SentenceTokenizer takes strings or lists of strings")
+
+
+# Set the SentenceTokenizer class as a global callable function
+sent_tokenize = SentenceTokenizer()
+
+# copyright strings to avoid including
+COPYRIGHT_STRINGS = [
+    'COPYRIGHT 1998 BY WORLDSOURCES',
+    "NO PORTION OF THE MATERIALS CONTAINED HEREIN MAY BE USED IN ANY MEDIA WITHOUT ATTRIBUTION TO WORLDSOURCES, INC."
+]
+
+
+def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str):
     root = get_root(data_path)
     date = get_date(doc_id)
     headline = ""
@@ -18,10 +41,10 @@ def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type:
         headline, body = read_aquaint2(root, doc_id)
     elif corpus_type == 3:
         headline, body = read_tac(root)
-    write_output(output, category, date, headline, body, nlp)
+    return category, date, headline, body
 
 
-def read_aquaint(root: etree.Element, doc_id: str) -> (str, [str]):
+def read_aquaint(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
     headline = "NONE"
     body = []
     for child in root.findall("DOC"):
@@ -34,16 +57,13 @@ def read_aquaint(root: etree.Element, doc_id: str) -> (str, [str]):
             if body_node.find("TEXT").find("P") is not None:
                 body = extract_p(body_node)
             else:
-                for s in body_node.find("TEXT").text.split('\t'):
-                    s = s.strip().replace('\n', ' ')
-                    if s != '':
-                        body.append(s)
+                body = extract_p_manual(body_node)
             # We now find what we need, break so we can move on
             break
     return headline, body
 
 
-def read_aquaint2(root: etree.Element, doc_id: str) -> (str, [str]):
+def read_aquaint2(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
     headline = "NONE"
     body = []
     for child in root.find("DOCSTREAM").findall("DOC"):
@@ -51,13 +71,16 @@ def read_aquaint2(root: etree.Element, doc_id: str) -> (str, [str]):
         if child.get("id").strip() == doc_id:
             if child.find("HEADLINE") is not None:
                 headline = child.find("HEADLINE").text.strip().replace('\n', ' ')
-            body = extract_p(child)
+            if child.find("TEXT").find("P") is not None:
+                body = extract_p(child)
+            else:
+                body = extract_p_manual(child)
             # We now find what we need, break so we can move on
             break
     return headline, body
 
 
-def read_tac(root: etree.Element) -> (str, [str]):
+def read_tac(root: etree.Element) -> Tuple[str, List[str]]:
     body_node = root.find("DOC").find("BODY")
     headline = "NONE"
     if body_node.find("HEADLINE") is not None:
@@ -66,30 +89,47 @@ def read_tac(root: etree.Element) -> (str, [str]):
     return headline, body
 
 
-def write_output(output: typing.TextIO, category: int, date: str, headline: str, body: [str], nlp):
+def write_output(output_path: TextIO, category: int, date: str, headline: str, body: List[List[str]]):
+    output = open(output_path, "w+")
     output.write("DATE_TIME: " + date + "\n")
     output.write("CATEGORY: " + str(category) + "\n")
     output.write("HEADLINE: " + headline + "\n")
     output.write("\n")
-    for line in body:
-        output.write(str(tokenizer(line, nlp)) + "\n")
+    save_paras = list()
+    for paragraph in body:
+        save_sents = list()
+        for line in paragraph:
+            tokenized_sent = word_tokenize(line)
+            save_sents.append(tokenized_sent)
+            output.write(str(tokenized_sent) + "\n")
+        save_paras.append(save_sents)
+        output.write("\n")  # extra line between paragraphs
     output.close()
+    return category, date, headline, save_paras
 
 
-def extract_p(root: etree.Element) -> [str]:
+def extract_p(root: etree.Element) -> List[List[str]]:
     result = []
     for p_node in root.find("TEXT"):
         s = p_node.text.strip().replace('\n', ' ')
         if s != '':
-            result.append(s)
+            result.append(sent_tokenize(s))
     return result
 
 
-def tokenizer(paragraph: str, nlp) -> [str]:
-    for line in paragraph:
-        if line:
-            doc = nlp(paragraph)
-    return [token.text for token in doc]
+def extract_p_manual(body_node: etree.Element) -> List[List[str]]:
+    result = []
+    for s in re.split(r'(?<=\.|_)\s+(?!.*INC.)(?=\w)', body_node.find("TEXT").text):
+        s = re.sub('[\n\t\s]+', ' ', s)
+        s = re.sub('(^\s+|\s+$)', '', s)
+        if s != '' and not any([cs in s for cs in COPYRIGHT_STRINGS]):
+            if re.search(r'^[A-Z]{3,}\s*\([A-Z]{2,}\):', s):
+                for _s in re.split(r':', s):
+                    result.append(sent_tokenize(_s))
+            else:
+                result.append(sent_tokenize(s))
+
+    return result
 
 
 def get_root(input_file: str) -> etree.Element:

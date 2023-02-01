@@ -13,8 +13,8 @@ Documents from training and evaltest are found /corpora/LDC/LDC10E12/12/TAC_2010
 import os
 import re
 
-# to include path in typing
-Path = str
+from typing import Tuple
+from pathlib import Path
 
 
 CORPUS_PATHS = {
@@ -70,15 +70,13 @@ def get_aquaint2_path(
 
 
 def get_tac_path(
-        news_org: str,
-        doc_id: str,
+        news_org: str, 
         doc_number: str,
     ) -> str:
     """
     Get TAC file path based on provided info
     Arguments:
         - news_org: the news organization associated with the file (e.g., NYT)
-        - doc_id: the full document ID to find and extract from
         - doc_number: the document ID number following the news org
     """
     directory = doc_number.split(".")[0]
@@ -88,13 +86,14 @@ def get_tac_path(
         directory
     )
     files = os.listdir(path)
+    doc_id = "_".join([news_org, doc_number])
     file = [f for f in files if doc_id in f]
     assert len(file) == 1, "Found multiple files found in {} satisfying {}".format(path, doc_id)
     path = os.path.join(path, file[0])
     return path
 
 
-def resolve_path(doc_id: str) -> (Path, int):
+def resolve_path(doc_id: str) -> Tuple[Path, int]:
     """
     Like get_xml_document, but only returns path (for debugging)
     Arguments:
@@ -109,7 +108,7 @@ def resolve_path(doc_id: str) -> (Path, int):
     elif 20009999 < time_period <= 20060399:
         return get_aquaint2_path(news_org, time_period), 2
     else:
-        return get_tac_path(news_org, doc_id, doc), 3
+        return get_tac_path(news_org, doc), 3
 
 
 if __name__ == '__main__':
