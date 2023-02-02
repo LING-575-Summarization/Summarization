@@ -304,7 +304,7 @@ if __name__ == '__main__':
         smoothing=True
     )
     print(tfidf)
-    val, string = tfidf.get('columbine', 'NYT19990424.0231.2', True)
+    val, string = tfidf.get('columbine', 'NYT19990424.0231.1', True)
     print(val, string)
     print("df", string.count('columbine'))
     # del tfidf
