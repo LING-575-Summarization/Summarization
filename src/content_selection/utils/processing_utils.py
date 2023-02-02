@@ -6,6 +6,17 @@ string depend on a function/method's arguments
 from inspect import signature, Parameter
 import re
 from typing import *
+from functools import reduce
+
+
+def flatten_list(x: List[List[Any]]) -> List[Any]: 
+    '''
+    Utility function to flatten lists of lists to a single list
+    '''
+    def flatten(x, y):
+        x.extend(y)
+        return x
+    return reduce(flatten, x)
 
 
 def detokenizer_wrapper(f: Callable):
