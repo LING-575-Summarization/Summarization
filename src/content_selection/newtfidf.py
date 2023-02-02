@@ -6,22 +6,23 @@ from typing import *
 from math import e, log
 import re
 import logging
+import json
 from utils import CounterDict, flatten_list
 
 logger = logging.getLogger()
 Literal = List
 
 
-''' ####### Utility function ####### '''
+''' ####### Utility functions ####### '''
 
 
-def process_body(
+def process_docset(
         docset: List[List[List[str]]], 
         punctuation: bool,
         lowercase: bool
     ) -> List[List[Any]]: 
     '''
-    Utility function to remove punctuation from a body and
+    Utility function to remove punctuation from a document set and
     put all terms to lowercase
     Arguments:
         - docset: a of documents which contain lists of tokenized sentences
@@ -38,8 +39,7 @@ def process_body(
         casing = lambda w: w
     new_docset = []
     for doc_i in docset:
-        for sentence_i in range(len(doc_i)):
-            new_docset.append([casing(w) for w in docset[sentence_i] if punctuation_filter(w)])
+        new_docset.append([casing(w) for w in doc_i if punctuation_filter(w)])
     return new_docset
 
 
@@ -48,27 +48,31 @@ def process_body(
 class TFIDF:
     '''Get TF-IDF values from *just* one document with multiple sentences'''
 
+
     def __init__(
-            self, 
-            document: List[List[List[str]]], 
-            punctuation: bool,
-            lowercase: bool,
-            doc_level: Literal["sentence", "document"],
-            log_tf: Optional[bool] = False,
-            log_idf: Optional[bool] = False,
-            smoothing: Optional[bool] = True,
-            delta_tf: float = 1.,
-            delta_idf: float = 1.,
-            log_base: Optional[Union[float, int]] = e,
-        ) -> None:
+        self, 
+        document_set: Dict[str, List[List[str]]],
+        punctuation: bool,
+        lowercase: bool,
+        doc_level: Literal["sentence, document"],
+        log_tf: Optional[bool] = False,
+        log_idf: Optional[bool] = False,
+        smoothing: Optional[bool] = True,
+        delta_tf: float = 0.01,
+        delta_idf: float = 0.01,
+        log_base: Optional[Union[float, int]] = e,
+        post_init: Optional[bool] = True
+    ) -> None:
         '''
         Initialize a TF-IDF class to obtain a two dictionaries: 
             1. term frequency for each sentence
             2. inverse term frequency for each term
         Argument:
-            - document: sentences stored in a list of lists and 
-              sentences are separated by paragraphs
+            - document_set: a dictionary with the docset name mapping
+              to a dictionary that maps document ids to lists of tokenized 
+              sentences
             - punctuation: whether to include or eliminate punctuation
+            - lowercase: whether to lowercase the words
             - level: whether to consider passages or sentences as
               documents for TF-IDF calculations
             - log_ff: whether to take the log of the TF value or not
@@ -79,10 +83,14 @@ class TFIDF:
             - log_base: whether to use log base of 2 or e
         '''
 
-        self.headers = []
-        self.raw_docs = [doc[-1] for doc in document]
-        self.docs = process_body(self.raw_docs, punctuation, lowercase)
+        self.headers = [doc[0:-1] for doc in document_set.values()]
+        raw_docs = [doc[-1] for doc in document_set.values()]
+        # flatten paragraphs:
+        self.raw_docs = [flatten_list(doc) for doc in raw_docs]
+        self.doc_ids = list(document_set.keys())
         self.doc_level = doc_level
+        self.punctuation = punctuation
+        self.lowercase = lowercase
         self.log_tf = log_tf
         self.log_idf = log_idf
         self.log_base = log_base
@@ -91,6 +99,47 @@ class TFIDF:
             self.delta_tf, self.delta_idf = delta_tf, delta_idf
         else:
             self.delta_tf, self.delta_idf = 0., 0.
+
+        # tf and idf functions
+        if smoothing:
+            _function_tf = lambda x: x + self.delta_tf
+            _function_idf = lambda x: x + self.delta_idf
+        else:
+            _function_tf = lambda x: x
+            _function_idf = lambda x: x
+        if self.log_tf:
+            function_tf = lambda x: log(_function_tf(x), self.log_base)
+        else:
+            function_tf = lambda x: _function_tf(x)
+        if self.log_idf:
+            function_idf = lambda x: log(_function_idf(x), self.log_base) + self.delta_idf
+        else:
+            function_idf = lambda x: _function_idf(x)
+
+        self.function_tf, self.function_idf = function_tf, function_idf
+
+        # set up docs for `for loop`
+        if self.doc_level == 'sentence':
+            # turn each document set into a list of sentences
+            new_doc_ids = []
+            for doc_id, doc in zip(self.doc_ids, self.raw_docs):
+                new_doc_ids.extend([doc_id + f".{i+1}" for i in range(len(doc))])
+            self.doc_ids = new_doc_ids
+            self.raw_docs = flatten_list(self.raw_docs)
+            documents = process_docset(self.raw_docs, self.punctuation, self.lowercase)
+            self.docs = documents
+        elif self.doc_level == 'document':
+            # turn each document into a list of tokens
+            documents = process_docset(
+                [flatten_list(doc) for doc in self.raw_docs], self.punctuation, self.lowercase
+            )
+            self.docs = documents
+        else:
+            raise ValueError(
+                f"doc_level argument must be either sentence or document, not {self.doc_level}"
+            )
+
+        self.N = len(self.docs)
 
         # checks            
         if not(self.log_idf) and self.log_base != e:
@@ -101,10 +150,9 @@ class TFIDF:
             logger.warning(
                 f"smoothing is False but self.delta_tf or self.delta_idf is specified. Ignoring smoothing..."
             )
-        if self.doc_level not in ['sentence', 'document']:
-            raise ValueError(
-                f"doc_level argument must be either sentence or document, not {self.doc_level}"
-            )
+
+        if post_init:
+            self.__post_init__()
 
 
     def __post_init__(self):
@@ -112,62 +160,90 @@ class TFIDF:
         Get the tf and idf dictionaries from the specified document set
             (apply after __init__, but as a separate call)
         '''
-        self.tf, self.idf = self._freq_counter(self.log_base)
+        tf, idf = self._counter()
+        idf = idf.map(lambda x: self.N/x)
+        self.tf, self.idf = self._smoothing_and_log(tf, idf)
 
 
-    def _sentence_freq_counter(self) -> Tuple[List[Dict[str, int]], Dict[str, int]]:
+    def _counter(self) -> Tuple[List[Dict[str, int]], Dict[str, int]]:
         '''
         Driver for __post_init__
+        Idea: Convert document to a list of lists so that the same `for loop`
+              can be applied to both sentence-level and doc-level data
         '''
-        
-        tf, df = _sentence_counter(self.docs)
 
-        return self._tf_idf_modifier(tf, df)
-
-
-    def _freq_counter(self) -> Tuple[List[Dict[str, int]], Dict[str, int]]:
-        '''
-        Driver for __post_init__
-        '''
-        self.docs = flatten_list(self.docs)
-        self.N = len(self.docs)
-
-        tf, df = [], CounterDict()
-        for document in self.docs:
+        tf, df = {}, CounterDict()
+        for id, doc in zip(self.doc_ids, self.docs):
             tf_doc = CounterDict()
-            list_of_tf_sent, df_sent = _sentence_counter(document)
-            df.update_from_wordset(df_sent.keys())
-            for tf_sent in list_of_tf_sent:
-                tf_doc.update(tf_sent)
-            tf.append(tf_doc)
+            seen_words = set()
+            for word in doc:
+                tf_doc[word] += 1
+                if word not in seen_words:
+                    seen_words.add(word)
+                    df[word] += 1
+            tf[id] = tf_doc
 
-        return self._tf_idf_modifier(tf, df)
+        return tf, df
 
-
-    def _tf_idf_modifier(
-            self, 
-            tf: List[CounterDict], 
-            idf: CounterDict
-        ) -> Tuple[List[CounterDict], CounterDict]:
+    
+    def _smoothing_and_log(self, tf: Dict[str, Any], idf: CounterDict):
         '''
-        Takes a list of term frequency counts and inverse document frequencies
-        and modifies them based on class specifications (e.g. applies log function
-        or delta corrections) 
-        Part of the driver for __init__
+        Applies smoothing and log transformations as defined by the class
         '''
-        if self.log_tf:
-            for tf_doc in tf:
-                tf_doc.map(
-                    lambda x: log(x + self.delta_tf, self.log_base)
-                )
+        for doc_i, tf_doc in tf.items():
+            tf[doc_i] = tf_doc.map(self.function_tf)
 
-        idf.map(lambda x: self.N/x)
-        if self.log_idf:
-            idf.map(
-                lambda x: log(self.N/x + self.delta_idf, self.log_base) + self.delta_idf
-            )
+        idf = idf.map(self.function_idf)
 
         return tf, idf
+
+
+    def get(self, word: str, document_id: str, return_doc: Optional[bool] = False):
+        term_freq, inv_doc_freq = self.tf[document_id][word], self.idf[word]
+        print(term_freq, "(", sum([1 if self.tf[d][word]>=1 else 0 for d in self.doc_ids]), self.N, ")", inv_doc_freq)
+        
+        if term_freq == 0 and self.smoothing:
+           term_freq = self.function_tf(0)
+        if inv_doc_freq == 0 and self.smoothing:
+            inv_doc_freq = self.function_idf(0)
+
+        if return_doc:
+            index = self.doc_ids.index(document_id)
+            return term_freq * inv_doc_freq, self.docs[index]
+        else:
+            return term_freq * inv_doc_freq
+
+
+    def __getitem__(self, doc_and_word: Tuple[str]):
+        word, doc_id = doc_and_word
+        return self.get(word, doc_id)
+
+
+    def _tf_count(self) -> Tuple[List[Dict[str, int]], Dict[str, int]]:
+        '''
+        Count just term frequencies
+        '''
+        tf = {}
+        for i, doc in enumerate(self.docs):
+            tf_doc = CounterDict()
+            for word in doc:
+                tf_doc[word] += 1
+            tf[self.doc_ids[i]] = tf_doc
+        return tf
+
+
+    def _idf_count(self) -> Tuple[List[Dict[str, int]], Dict[str, int]]:
+        '''
+        Count just document frequencies
+        '''
+        df = CounterDict()
+        for doc in self.docs:
+            seen_words = set()
+            for word in doc:
+                if word not in seen_words:
+                    seen_words.add(word)
+                    df[word] += 1
+        return df
 
 
     @classmethod
@@ -177,21 +253,61 @@ class TFIDF:
             idf_documents: List[List[List[str]]], 
             punctuation: bool,
             lowercase: bool,
-            doc_level: Literal["sentence", "document"],
+            doc_level: Literal["sentence, document"],
             **kwargs,
         ) -> None:
         '''
             Create a TF-IDF dictionary using separate document sets for
             TF and IDF
+            Use with TFIDF.idf_from_docset(...)
         '''
-        tfidf = cls.__init__(tf_documents, punctuation, lowercase, doc_level, **kwargs)
-        tf, idf = [], CounterDict()
+        tfidf = cls.__init__(tf_documents, punctuation, lowercase, doc_level, post_init=False, **kwargs)
+        _idf = cls.__init__(idf_documents, punctuation, lowercase, doc_level, post_init=False, **kwargs)
 
-        if tfidf.doc_level == 'sentence':
-            # turn each document set into a list of sentences
-            idf_documents = flatten_list(idf_documents)
-        else:
-            # turn each document into a list of tokens
-            idf_documents = [flatten_list(idf_doc) for idf_doc in idf_documents]
-        for idf_doc_i in idf_documents:
-            idf_documents =  
+        tf, idf = tfidf._tf_count(), _idf.idf_count()
+
+        tfidf.tf, tfidf.idf = tfidf._smoothing_and_log(tf, idf)
+
+        return tfidf
+
+
+    def __str__(self):
+        _d = self.__dict__
+        d = _d.copy()
+        d['doc_ids'] = list(set(_d['doc_ids']))
+        for key, val in _d.items():
+            if key in ['headers', 'raw_docs', 'docs', 'tf', 'idf']:
+                if isinstance(val, list):
+                    d[key] = f"list of {type(val[0])}"
+                elif isinstance(val, CounterDict):
+                    d[key] = f"CounterDict ({key})"
+                elif isinstance(val, dict):
+                    d[key] = f"dict ({key})"
+                else:
+                    d[key] = f"{type(val)}"
+            else:
+                d[key] = f"{type(val)}"
+        return "Class: TFIDF " + json.dumps(d, indent=4)
+        
+
+if __name__ == '__main__':
+    with open('/home2/hsteinm/575-Summarization/data/devtest.json', 'r') as infile:
+        docset_rep = json.load(infile)
+    docset = docset_rep['D1001A-A']
+    tfidf = TFIDF(
+        docset, 
+        punctuation=True, 
+        lowercase=True, 
+        doc_level='sentence', 
+        log_tf=False, 
+        log_idf=True, 
+        smoothing=True
+    )
+    print(tfidf)
+    val, string = tfidf.get('columbine', 'NYT19990424.0231.2', True)
+    print(val, string)
+    print("df", string.count('columbine'))
+    # del tfidf
+    # tfidf = TFIDF(docset, True, True, 'sentence')
+    # val, string = tfidf.get('columbine', 'NYT19990424.0231.1', True)
+    # print("tf", string)
