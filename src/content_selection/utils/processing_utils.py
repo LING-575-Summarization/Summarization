@@ -4,6 +4,7 @@ string depend on a function/method's arguments
 '''
 
 from inspect import signature, Parameter
+from copy import deepcopy
 import re
 from typing import *
 from functools import reduce
@@ -13,10 +14,11 @@ def flatten_list(x: List[List[Any]]) -> List[Any]:
     '''
     Utility function to flatten lists of lists to a single list
     '''
-    def flatten(x, y):
-        x.extend(y)
-        return x
-    return reduce(flatten, x)
+    x_n = deepcopy(x)
+    def flatten(a, b):
+        a.extend(b)
+        return a
+    return reduce(flatten, x_n)
 
 
 def detokenizer_wrapper(f: Callable):

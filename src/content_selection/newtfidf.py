@@ -56,7 +56,7 @@ class TFIDF:
         lowercase: bool,
         doc_level: Literal["sentence, document"],
         log_tf: Optional[bool] = False,
-        log_idf: Optional[bool] = False,
+        log_idf: Optional[bool] = True,
         smoothing: Optional[bool] = True,
         delta_tf: float = 0.01,
         delta_idf: float = 0.01,
@@ -83,8 +83,10 @@ class TFIDF:
             - log_base: whether to use log base of 2 or e
         '''
 
+        # prepare documents to get attributes
         self.headers = [doc[0:-1] for doc in document_set.values()]
         raw_docs = [doc[-1] for doc in document_set.values()]
+        
         # flatten paragraphs:
         self.raw_docs = [flatten_list(doc) for doc in raw_docs]
         self.doc_ids = list(document_set.keys())
@@ -95,13 +97,37 @@ class TFIDF:
         self.log_idf = log_idf
         self.log_base = log_base
         self.smoothing = smoothing
+
+        # set deltas based on smoothing
         if self.smoothing:
             self.delta_tf, self.delta_idf = delta_tf, delta_idf
         else:
             self.delta_tf, self.delta_idf = 0., 0.
 
+        self._set_up_tf_idf_functions()
+
+        self._set_up_documents()
+
+        self.N = len(self.docs)
+
+        # checks
+        if not(self.log_idf) and self.log_base != e:
+            logger.warning(
+                f"log_idf is False but self.log_base is specified. Ignoring self.log_base ({self.log_base})..."
+            )
+        if not(self.smoothing) and (self.delta_tf != 0 or self.delta_idf != 0):
+            logger.warning(
+                f"smoothing is False but self.delta_tf or self.delta_idf is specified. Ignoring smoothing..."
+            )
+
+        if post_init:
+            self.__post_init__()
+
+
+    def _set_up_tf_idf_functions(self):
+        '''Set up the tf and idf functions based on smoothing and delta'''
         # tf and idf functions
-        if smoothing:
+        if self.smoothing:
             _function_tf = lambda x: x + self.delta_tf
             _function_idf = lambda x: x + self.delta_idf
         else:
@@ -118,7 +144,9 @@ class TFIDF:
 
         self.function_tf, self.function_idf = function_tf, function_idf
 
-        # set up docs for `for loop`
+
+    # set up docs for `for loop`
+    def _set_up_documents(self):
         if self.doc_level == 'sentence':
             # turn each document set into a list of sentences
             new_doc_ids = []
@@ -139,39 +167,12 @@ class TFIDF:
                 f"doc_level argument must be either sentence or document, not {self.doc_level}"
             )
 
-        self.N = len(self.docs)
-
-        # checks            
-        if not(self.log_idf) and self.log_base != e:
-            logger.warning(
-                f"log_idf is False but self.log_base is specified. Ignoring self.log_base ({self.log_base})..."
-            )
-        if not(self.smoothing) and (self.delta_tf != 1 or self.delta_idf != 1):
-            logger.warning(
-                f"smoothing is False but self.delta_tf or self.delta_idf is specified. Ignoring smoothing..."
-            )
-
-        if post_init:
-            self.__post_init__()
-
 
     def __post_init__(self):
         '''
         Get the tf and idf dictionaries from the specified document set
             (apply after __init__, but as a separate call)
         '''
-        tf, idf = self._counter()
-        idf = idf.map(lambda x: self.N/x)
-        self.tf, self.idf = self._smoothing_and_log(tf, idf)
-
-
-    def _counter(self) -> Tuple[List[Dict[str, int]], Dict[str, int]]:
-        '''
-        Driver for __post_init__
-        Idea: Convert document to a list of lists so that the same `for loop`
-              can be applied to both sentence-level and doc-level data
-        '''
-
         tf, df = {}, CounterDict()
         for id, doc in zip(self.doc_ids, self.docs):
             tf_doc = CounterDict()
@@ -182,8 +183,8 @@ class TFIDF:
                     seen_words.add(word)
                     df[word] += 1
             tf[id] = tf_doc
-
-        return tf, df
+        idf = df.map(lambda x: self.N/x)
+        self.tf, self.idf = self._smoothing_and_log(tf, idf)
 
     
     def _smoothing_and_log(self, tf: Dict[str, Any], idf: CounterDict):
@@ -294,6 +295,7 @@ if __name__ == '__main__':
     with open('/home2/hsteinm/575-Summarization/data/devtest.json', 'r') as infile:
         docset_rep = json.load(infile)
     docset = docset_rep['D1001A-A']
+    print(docset)
     tfidf = TFIDF(
         docset, 
         punctuation=True, 
