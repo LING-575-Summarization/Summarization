@@ -1,5 +1,6 @@
 #!/bin/sh
 
+
 #/nopt/python-3.6/bin/python3 src/content_selection/linear_programming.py $1 $2 > output/ILP_solver_output
 python3 src/content_selection/linear_programming.py $1 $2 > output/ILP_solver_output
 

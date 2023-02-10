@@ -19,9 +19,9 @@ class SentenceTokenizer:
         else:
             raise ValueError("SentenceTokenizer takes strings or lists of strings")
 
+
 # Set the SentenceTokenizer class as a global callable function
 sent_tokenize = SentenceTokenizer()
-
 
 # copyright strings to avoid including
 COPYRIGHT_STRINGS = [
@@ -41,7 +41,7 @@ def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type:
         headline, body = read_aquaint2(root, doc_id)
     elif corpus_type == 3:
         headline, body = read_tac(root)
-    return write_output(output_path, category, date, headline, body)
+    return category, date, headline, body
 
 
 def read_aquaint(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
@@ -103,7 +103,7 @@ def write_output(output_path: TextIO, category: int, date: str, headline: str, b
             save_sents.append(tokenized_sent)
             output.write(str(tokenized_sent) + "\n")
         save_paras.append(save_sents)
-        output.write("\n") # extra line between paragraphs
+        output.write("\n")  # extra line between paragraphs
     output.close()
     return category, date, headline, save_paras
 
