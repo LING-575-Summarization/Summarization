@@ -301,7 +301,7 @@ class TFIDF:
             idf_documents: Dict[str, List[List[str]]],
             punctuation: bool,
             lowercase: bool,
-            doc_level: Literal["sentence, document, docset"],
+            doc_level: Literal["sentence, document"],
             docset_id: Optional[str] = None,
             **kwargs,
         ) -> None:
