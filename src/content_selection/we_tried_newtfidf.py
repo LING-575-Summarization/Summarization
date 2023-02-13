@@ -4,6 +4,7 @@ Document for new TF-IDF class
 
 from typing import *
 from math import e, log
+import sys
 import re
 import logging
 import json
@@ -20,7 +21,8 @@ Literal = List
 def process_docset(
         docset: List[List[List[str]]], 
         punctuation: bool,
-        lowercase: bool
+        lowercase: bool,
+        ngram: int,
     ) -> List[List[Any]]: 
     '''
     Utility function to remove punctuation from a document set and
@@ -39,9 +41,13 @@ def process_docset(
         casing = lambda w: w.lower()
     else:
         casing = lambda w: w
+
     new_docset = []
     for doc_i in docset:
-        new_docset.append([casing(w) for w in doc_i if punctuation_filter(w)])
+        cur_doc = [casing(w) for w in doc_i if punctuation_filter(w)]
+        ngram_docs = list(ngrams(cur_doc, ngram, pad_left=True, pad_right=True, left_pad_symbol='<s>', right_pad_symbol='</s>'))
+        new_docset.append(ngram_docs)
+
     return new_docset
 
 
@@ -56,7 +62,7 @@ class TFIDF:
         document_set: Dict[str, List[List[str]]],
         punctuation: bool,
         lowercase: bool,
-        doc_level: Literal["sentence, document, docset"],
+        doc_level: Literal["sentence, docset"],
         docset_id: Optional[str] = None,
         ngram: int = 1,
         log_tf: Optional[bool] = False,
@@ -77,7 +83,7 @@ class TFIDF:
             - punctuation: whether to include or eliminate punctuation
             - lowercase: whether to lowercase the words
             - doc_level: whether to consider passages or sentences as
-              documents for TF-IDF calculations
+              docsets for TF-IDF calculations
             - docset_id: Needed if we want tf-score over docSet level, default is None
             - ngram: whether to use ngram of 1, 2, or 3, default is 1
             - log_ff: whether to take the log of the TF value or not
@@ -170,18 +176,31 @@ class TFIDF:
                 new_doc_ids.extend([doc_id + f".{i+1}" for i in range(len(doc))])
             self.doc_ids = new_doc_ids
             self.raw_docs = flatten_list(self.raw_docs)
-            documents = process_docset(self.raw_docs, self.punctuation, self.lowercase)
+            documents = process_docset(self.raw_docs, self.punctuation, self.lowercase, self.ngram)
             self.docs = documents
-        elif self.doc_level == 'document':
-            # turn each document into a list of tokens
-            self.raw_docs = [flatten_list(doc) for doc in self.raw_docs]
-            documents = process_docset(
-                self.raw_docs, self.punctuation, self.lowercase
-            )
-            self.docs = documents
+        # elif self.doc_level == 'document':
+        #     # turn each document into a list of tokens
+        #
+        #     self.raw_docs = [flatten_list(doc) for doc in self.raw_docs]
+        #     documents = process_docset(
+        #         self.raw_docs, self.punctuation, self.lowercase, self.ngram
+        #     )
+        #     self.docs = documents
+        elif self.doc_level == "docset":
+            # turn the given docset into a list of tokens, wrapped in a list
+            # makes sure to pad each sentence for ngram, and not just the entire docset
+            sentences = flatten_list(self.raw_docs)
+            self.raw_docs = [flatten_list(flatten_list(self.raw_docs))]
+            documents = process_docset(sentences, self.punctuation, self.lowercase, self.ngram)
+            self.docs = [flatten_list(documents)]
+            if self.docset_id is None:
+                raise ValueError(
+                    f"docset_id argument must be a str, not default None for docset level only"
+                )
+            self.doc_ids = [self.docset_id]
         else:
             raise ValueError(
-                f"doc_level argument must be either sentence or document, not {self.doc_level}"
+                f"doc_level argument must be either sentence or docset, not {self.doc_level}"
             )
 
 
@@ -216,7 +235,7 @@ class TFIDF:
         return tf, idf
 
 
-    def get(self, word: str, document_query: str, return_doc: Optional[bool] = False):
+    def get(self, word: Tuple, document_query: str, return_doc: Optional[bool] = False):
         """
             Arguments:
                 - word: which ngram you want the tfidf score for
@@ -227,7 +246,7 @@ class TFIDF:
         """
 
         # checks
-        if isinstance(document_query, str) and self.doc_level == 'document':
+        if isinstance(document_query, str) and self.doc_level == 'docset':
             if document_query in self.doc_ids:
                 doc = self.doc_ids.index(document_query)
             else:
@@ -240,11 +259,12 @@ class TFIDF:
             raise ValueError(
                 f"Can't search dictionary with document_query: {document_query}\n" +
                 f"To calculate TF-IDF for doc_level = 'sentence', document_query must be int\n" +
-                f"To calculate TF-IDF for doc_level = 'document', document_query can be either int or str\n" +
+                f"To calculate TF-IDF for doc_level = 'docset', document_query can be either int or str\n" +
                 f"Your doc_level and document_query: {(self.doc_level, document_query)}"
             )
 
         term_freq, inv_doc_freq = self.tf[doc][word], self.idf[word]
+
         # print(term_freq, "(", sum([1 if self.tf[d][word]>=1 else 0 for d in self.doc_ids]), self.N, ")", inv_doc_freq)
         
         if term_freq == 0 and self.smoothing:
@@ -301,7 +321,8 @@ class TFIDF:
             idf_documents: Dict[str, List[List[str]]],
             punctuation: bool,
             lowercase: bool,
-            doc_level: Literal["sentence, document"],
+            doc_level: Literal["sentence, docset"],
+            ngram: int = 1,
             docset_id: Optional[str] = None,
             **kwargs,
         ) -> None:
@@ -310,8 +331,8 @@ class TFIDF:
             TF and IDF
             Use with TFIDF.idf_from_docset(...)
         '''
-        tfidf = cls(document_set=tf_documents, punctuation=punctuation, lowercase=lowercase, doc_level=doc_level, docset_id=docset_id, post_init=True, **kwargs)
-        _idf = cls(document_set=idf_documents, punctuation=punctuation, lowercase=lowercase, doc_level=doc_level, docset_id=docset_id, post_init=False, **kwargs)
+        tfidf = cls(document_set=tf_documents, punctuation=punctuation, lowercase=lowercase, doc_level=doc_level, docset_id=docset_id, ngram=ngram, post_init=True, **kwargs)
+        _idf = cls(document_set=idf_documents, punctuation=punctuation, lowercase=lowercase, doc_level=doc_level, docset_id=docset_id, ngram=ngram, post_init=False, **kwargs)
 
         tf, idf = tfidf._tf_count(), _idf._idf_count()
 
@@ -365,7 +386,8 @@ if __name__ == '__main__':
 
     #############################
     # for Sam's testing
-    with open('data/devtest.json', 'r') as infile:
+    json_file_path = sys.argv[1]
+    with open(json_file_path, 'r') as infile:
         docset_rep = json.load(infile)
     tf_docset_id = 'D1001A-A'
     sample_doc_id = 'NYT19990424.0231'
@@ -381,23 +403,30 @@ if __name__ == '__main__':
         tf_docset,
         punctuation=True,
         lowercase=True,
-        doc_level='document',
+        doc_level='sentence',
         docset_id = tf_docset_id,
+        ngram = 1,
         log_tf=False,
         log_idf=False,
         smoothing=True
     )
 
-    val, string = tfidf.get('peace', sample_doc_id, True)
+    # sample_doc_id = tf_docset_id
+
+    test_trigram = ("to", "peace", "</s>")
+    test_bigram = ("peace", "</s>")
+    test_unigram = ("peace")
+
+    val, string = tfidf.get(test_unigram, sample_doc_id, True)
     print("(docset) tfidf of 'peace'", val)
-    print("(docset) idf of 'peace'", len([d for d in tfidf.docs if 'peace' in d]), f"(docset_total = {len(tfidf.docs)})")
-    print(f"(doc) tf of 'peace' in {sample_doc_id}", len([d for d in tfidf.docs[tfidf.doc_ids.index(sample_doc_id)] if d=='peace']))
+    # print("(docset) idf of 'peace'", len([d for d in tfidf.docs if 'peace' in d]), f"(docset_total = {len(tfidf.docs)})")
+    # print(f"(doc) tf of 'peace' in {sample_doc_id}", len([d for d in tfidf.docs[tfidf.doc_ids.index(sample_doc_id)] if d=='peace']))
 
-    tfidf = TFIDF.idf_from_docset(tf_docset, idf_docset, True, True, "document", docset_id=tf_docset_id, smoothing=False, log_idf=False)
+    tfidf = TFIDF.idf_from_docset(tf_docset, idf_docset, True, True, "sentence", docset_id=tf_docset_id, ngram=1, smoothing=True, log_idf=False, log_tf=False)
 
-    val, string = tfidf.get('peace', sample_doc_id, True)
+    val, string = tfidf.get(test_unigram, sample_doc_id, True)
     print("(whole dataset) tfidf of 'peace'", val)
-    _idfdocs = [flatten_list(d) for d in [flatten_list(doc[-1]) for doc in idf_docset.values()]]
-    print("(whole dataset) idf of 'peace'", len([d for d in _idfdocs if 'peace' in d]), f"(dataset_total = {len(_idfdocs)})")
-    _idfdoc = flatten_list([d for d in [flatten_list(doc) for doc in idf_docset[f'{tf_docset_id}.{sample_doc_id}'][-1]]])
-    print(f"(doc) tf of 'peace' in {tf_docset_id}.{sample_doc_id}", len([d for d in _idfdoc if d=='peace']))
+    # _idfdocs = [flatten_list(d) for d in [flatten_list(doc[-1]) for doc in idf_docset.values()]]
+    # print("(whole dataset) idf of 'peace'", len([d for d in _idfdocs if 'peace' in d]), f"(dataset_total = {len(_idfdocs)})")
+    # _idfdoc = flatten_list([d for d in [flatten_list(doc) for doc in idf_docset[f'{tf_docset_id}.{sample_doc_id}'][-1]]])
+    # print(f"(doc) tf of 'peace' in {tf_docset_id}.{sample_doc_id}", len([d for d in _idfdoc if d=='peace']))
