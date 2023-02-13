@@ -13,6 +13,7 @@ import pandas as pd
 from math import log, e, sqrt
 from we_tried_newtfidf import TFIDF
 from utils import CounterDict, detokenizer_wrapper, flatten_list
+from nltk.metrics.distance import jaccard_distance
 from typing import Optional, Union, List, Tuple, Dict, Callable, Any
 import logging
 import argparse
@@ -27,8 +28,20 @@ logger = logging.getLogger()
 class LexRank(TFIDF):
     '''Subclass with methods specific to LexRank'''
 
-    def __init__(self, doc_set, max_length = None, **kwargs):
+    def __init__(
+            self, 
+            doc_set: Dict[str, Dict[str, List[str]]], 
+            max_length: Optional[int] = None, 
+            min_jaccard_dist: Optional[float] = None, 
+            **kwargs
+        ):
+        '''
+        max_length is the maximum length (maximum number of tokens) as sentence can have
+        min_jaccard_dist will reject sentences that are below a certain jaccard distance 
+            (a difference measure between sets)
+        '''
         self.max_length = max_length
+        self.min_jaccard_dist = min_jaccard_dist
         super().__init__(document_set=doc_set, **kwargs)
 
     def modified_cosine(self, s_i: int, s_j: int) -> float:
@@ -157,12 +170,28 @@ class LexRank(TFIDF):
                     "returning a slice of the sentence")
                 return detokenize(first_sentence[0:max_tokens-1])
         else:
-            summary, current_sentence, i = [], first_sentence, 1
+            i = 0
+            summary_ids = []
+            current_sentence = first_sentence
             while words < max_tokens and i < ranked_list.shape[0]:
-                summary.append(detokenize(current_sentence))
-                current_sentence = ranked_list['sentence'][i]
-                i += 1
-                words += len(current_sentence)
+                if self.min_jaccard_dist:
+                    too_similar = False
+                    for previous_sent_id in summary_ids:
+                        prev_sent = ranked_list['sentence'][previous_sent_id]
+                        jaccard_d = jaccard_distance(set(current_sentence), set(prev_sent))
+                        if jaccard_d <= self.min_jaccard_dist:
+                            too_similar = True
+                            break
+                if self.min_jaccard_dist and too_similar:
+                    i += 1
+                    current_sentence = ranked_list['sentence'][i]
+                    continue
+                else:
+                    summary_ids.append(i)
+                    i += 1
+                    current_sentence = ranked_list['sentence'][i]
+                    words += len(current_sentence)
+            summary = [detokenize(ranked_list['sentence'][sum_id]) for sum_id in summary_ids]
             assert words - len(current_sentence) < max_tokens, \
                 f"words: {words - len(current_sentence)} | sentence: {ranked_list['sentence']}"
             if isinstance(summary[-1], str):
@@ -173,7 +202,8 @@ class LexRank(TFIDF):
 def power_method(
         matrix: np.ndarray, 
         error: float,
-        d: float
+        d: float,
+        max_iter: int = 10_000
     ) -> np.ndarray:
     '''
     Power method for solving stochastic, irreducible, aperiodic matrices
@@ -185,7 +215,8 @@ def power_method(
     p_t = np.ones(shape=(matrix.shape[0]))/matrix.shape[0]
     t, delta = 0, None
     U = np.ones(shape=matrix.shape)/matrix.shape[0]
-    while delta is None or delta > error:
+    iterations = 0
+    while (delta is None or delta > error) and iterations < max_iter:
         t += 1
         p_t_1 = p_t
         p_t = np.matmul(
@@ -193,8 +224,10 @@ def power_method(
             p_t
         )
         delta = np.linalg.norm(p_t - p_t_1)
+        iterations += 1
     # normalize ranking
     p_t = p_t/p_t.sum()
+    # print("Iterations:", iterations)
     return p_t
 
 
@@ -228,7 +261,8 @@ def main():
         data = json.load(datafile)
     for docset_id in tqdm(data):
         docset = data[docset_id]
-        lx = LexRank(docset, max_length=5, doc_level='sentence', punctuation=True, lowercase=True)
+        lx = LexRank(docset, max_length=5, doc_level='sentence', 
+            punctuation=True, lowercase=True, min_jaccard_dist=0.6)
         result = lx.obtain_summary(args.threshold, args.error, detokenize=True)
         print(result)
         # spl = str(docset_id).split("-", maxsplit=1)
