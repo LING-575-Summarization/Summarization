@@ -86,7 +86,9 @@ class TFIDF:
             - delta_tf: TF smoothing value
             - delta_idf: IDF smoothing value
             - log_base: whether to use log base of 2 or e
-            - TODO: post_init: ????
+            - post_init: whether to initialize tf and idf dictionaries when creating a new class
+                         using the __post_init__ method which uses the same document_set for obtaining
+                         both tf and idf counts
         '''
         # prepare documents to get attributes
         self.headers = [doc[0:-1] for doc in document_set.values()]
@@ -177,21 +179,9 @@ class TFIDF:
                 self.raw_docs, self.punctuation, self.lowercase
             )
             self.docs = documents
-        elif self.doc_level == "docset":
-            # turn the given docset into a list of tokens, wrapped in a list
-            self.raw_docs = [flatten_list(flatten_list(self.raw_docs))]
-            documents = process_docset(
-                self.raw_docs, self.punctuation, self.lowercase
-            )
-            if self.docset_id is None:
-                raise ValueError(
-                    f"docset_id argument must be a str, not default None for docset level only"
-                )
-            self.doc_ids = [self.docset_id]
-            self.docs = documents
         else:
             raise ValueError(
-                f"doc_level argument must be either sentence, document, or docset, not {self.doc_level}"
+                f"doc_level argument must be either sentence or document, not {self.doc_level}"
             )
 
 
@@ -200,8 +190,8 @@ class TFIDF:
         Get the tf and idf dictionaries from the specified document set
             (apply after __init__, but as a separate call)
         '''
-        tf, df = {}, CounterDict()
-        for id, doc in zip(self.doc_ids, self.docs):
+        tf, df = [], CounterDict()
+        for doc_id, doc in zip(self.doc_ids, self.docs):
             tf_doc = CounterDict()
             seen_words = set()
             for word in doc:
@@ -209,7 +199,7 @@ class TFIDF:
                 if word not in seen_words:
                     seen_words.add(word)
                     df[word] += 1
-            tf[id] = tf_doc
+            tf.append(tf_doc)
         idf = df.map(lambda x: self.N/x)
         self.tf, self.idf = self._smoothing_and_log(tf, idf)
 
@@ -218,7 +208,7 @@ class TFIDF:
         '''
         Applies smoothing and log transformations as defined by the class
         '''
-        for doc_i, tf_doc in tf.items():
+        for doc_i, tf_doc in enumerate(tf):
             tf[doc_i] = tf_doc.map(self.function_tf)
 
         idf = idf.map(self.function_idf)
@@ -226,14 +216,35 @@ class TFIDF:
         return tf, idf
 
 
-    def get(self, word: str, document_id: str, return_doc: Optional[bool] = False):
+    def get(self, word: str, document_query: str, return_doc: Optional[bool] = False):
         """
             Arguments:
                 - word: which ngram you want the tfidf score for
-                - document_id: which document this ngram comes from
-                - return_doc: verbose output, optional default is False
+                - document_query: querying a document. can be either the:
+                    - index of the document this ngram comes from
+                    - doc_id string from the document file
+                - return_doc: verbose output (optional--default is False)
         """
-        term_freq, inv_doc_freq = self.tf[document_id][word], self.idf[word]
+
+        # checks
+        if isinstance(document_query, str) and self.doc_level == 'document':
+            if document_query in self.doc_ids:
+                doc = self.doc_ids.index(document_query)
+            else:
+                raise ValueError(f"Can't find document {document_query} in self.doc_ids list.\n" +
+                    f"First few self.doc_ids entries: {self.doc_ids[0:4]} ..."
+                )
+        elif isinstance(document_query, int):
+            doc = document_query
+        else:
+            raise ValueError(
+                f"Can't search dictionary with document_query: {document_query}\n" +
+                f"To calculate TF-IDF for doc_level = 'sentence', document_query must be int\n" +
+                f"To calculate TF-IDF for doc_level = 'document', document_query can be either int or str\n" +
+                f"Your doc_level and document_query: {(self.doc_level, document_query)}"
+            )
+
+        term_freq, inv_doc_freq = self.tf[doc][word], self.idf[word]
         # print(term_freq, "(", sum([1 if self.tf[d][word]>=1 else 0 for d in self.doc_ids]), self.N, ")", inv_doc_freq)
         
         if term_freq == 0 and self.smoothing:
@@ -242,8 +253,7 @@ class TFIDF:
             inv_doc_freq = self.function_idf(0)
 
         if return_doc:
-            index = self.doc_ids.index(document_id)
-            return term_freq * inv_doc_freq, self.docs[index]
+            return term_freq * inv_doc_freq, self.docs[doc]
         else:
             return term_freq * inv_doc_freq
 
@@ -257,12 +267,12 @@ class TFIDF:
         '''
         Count just term frequencies
         '''
-        tf = {}
+        tf = []
         for i, doc in enumerate(self.docs):
             tf_doc = CounterDict()
             for word in doc:
                 tf_doc[word] += 1
-            tf[self.doc_ids[i]] = tf_doc
+            tf.append(tf_doc)
         return tf
 
 
@@ -271,13 +281,17 @@ class TFIDF:
         Count just document frequencies
         '''
         df = CounterDict()
+        num_a = 0
         for doc in self.docs:
             seen_words = set()
             for word in doc:
                 if word not in seen_words:
+                    if word == 'a':
+                        num_a += 1
                     seen_words.add(word)
                     df[word] += 1
-        return df
+        idf = df.map(lambda x: self.N/x)
+        return idf
 
 
     @classmethod
@@ -301,11 +315,7 @@ class TFIDF:
 
         tf, idf = tfidf._tf_count(), _idf._idf_count()
 
-
-        print("old idf", tfidf.idf)
-
-        tfidf.tf, idf2 = tfidf._smoothing_and_log(tf, idf)
-        print("new idf", idf2)
+        tfidf.tf, tfidf.idf = tfidf._smoothing_and_log(tf, idf)
 
         return tfidf
 
@@ -355,38 +365,39 @@ if __name__ == '__main__':
 
     #############################
     # for Sam's testing
-    with open('output/data/devtest.json', 'r') as infile:
+    with open('data/devtest.json', 'r') as infile:
         docset_rep = json.load(infile)
     tf_docset_id = 'D1001A-A'
+    sample_doc_id = 'NYT19990424.0231'
     tf_docset = docset_rep[tf_docset_id]
 
     idf_docset = {}
     for docset_id, docset in docset_rep.items():
-        new_key = docset_id
-
         for document, data in docset.items():
-            new_key += "." + document
-            idf_docset[new_key] = data
+            doc_key = docset_id + "." + document
+            idf_docset[doc_key] = data
 
-    # tfidf = TFIDF(
-    #     tf_docset,
-    #     punctuation=True,
-    #     lowercase=True,
-    #     doc_level='docset',
-    #     docset_id = tf_docset_id,
-    #     log_tf=False,
-    #     log_idf=True,
-    #     smoothing=True
-    # )
+    tfidf = TFIDF(
+        tf_docset,
+        punctuation=True,
+        lowercase=True,
+        doc_level='document',
+        docset_id = tf_docset_id,
+        log_tf=False,
+        log_idf=False,
+        smoothing=True
+    )
 
-    # print(tf_docset)
-    tfidf = TFIDF.idf_from_docset(tf_docset, idf_docset, True, True, "docset", docset_id=tf_docset_id)
+    val, string = tfidf.get('peace', sample_doc_id, True)
+    print("(docset) tfidf of 'peace'", val)
+    print("(docset) idf of 'peace'", len([d for d in tfidf.docs if 'peace' in d]), f"(docset_total = {len(tfidf.docs)})")
+    print(f"(doc) tf of 'peace' in {sample_doc_id}", len([d for d in tfidf.docs[tfidf.doc_ids.index(sample_doc_id)] if d=='peace']))
 
-    # print(tfidf.idf)
+    tfidf = TFIDF.idf_from_docset(tf_docset, idf_docset, True, True, "document", docset_id=tf_docset_id, smoothing=False, log_idf=False)
 
-    # print(tfidf)
-    val, string = tfidf.get('a', tf_docset_id, True)
-    # print(val, string)
-    # val = tfidf.get('columbine', docset_id, False)
-    print(val)
-    # print("df", string.count('columbine'))
+    val, string = tfidf.get('peace', sample_doc_id, True)
+    print("(whole dataset) tfidf of 'peace'", val)
+    _idfdocs = [flatten_list(d) for d in [flatten_list(doc[-1]) for doc in idf_docset.values()]]
+    print("(whole dataset) idf of 'peace'", len([d for d in _idfdocs if 'peace' in d]), f"(dataset_total = {len(_idfdocs)})")
+    _idfdoc = flatten_list([d for d in [flatten_list(doc) for doc in idf_docset[f'{tf_docset_id}.{sample_doc_id}'][-1]]])
+    print(f"(doc) tf of 'peace' in {tf_docset_id}.{sample_doc_id}", len([d for d in _idfdoc if d=='peace']))

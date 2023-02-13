@@ -11,7 +11,7 @@ import re
 import numpy as np
 import pandas as pd
 from math import log, e, sqrt
-from newtfidf import TFIDF
+from we_tried_newtfidf import TFIDF
 from utils import CounterDict, detokenizer_wrapper, flatten_list
 from typing import Optional, Union, List, Tuple, Dict, Callable, Any
 import logging
@@ -47,14 +47,13 @@ class LexRank(TFIDF):
                 if too_few_terms:
                     return 0.
             overlap_w = sent_i_terms.intersection(sent_j_terms)
-            s_i_r, s_j_r = self.doc_ids[s_i], self.doc_ids[s_j]
             numerator = sum(
-                [self.tf[s_i_r][w] * self.tf[s_i_r][w] * (self.idf[w] ** 2) for w in overlap_w]
+                [self.tf[s_i][w] * self.tf[s_i][w] * (self.idf[w] ** 2) for w in overlap_w]
             )
             denom_term = lambda s, s_t: sqrt(
                 sum([(self.tf[s][x] * self.idf[x]) ** 2 for x in s_t])
             )
-            denominator = denom_term(s_i_r, sent_i_terms) * denom_term(s_j_r, sent_j_terms)
+            denominator = denom_term(s_i, sent_i_terms) * denom_term(s_j, sent_j_terms)
             assert denominator != 0, f"Denominator of modified cosine is 0. Terms: {sent_i_terms}, {sent_j_terms}"
             return numerator/denominator
 
