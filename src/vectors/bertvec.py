@@ -1,5 +1,6 @@
 from vector_api import VectorModel, DocumentToVectors
-from transformers import DistilBertModel, DistilBertTokenizerFast
+from transformers import DistilBertForSequenceClassification, DistilBertTokenizerFast
+import torch
 import numpy as np
 from typing import *
 
@@ -27,8 +28,15 @@ class DistilBertModel(VectorModel):
                 - normalized_sum: normalize the vectors with L2 norm then
                   sum all the word vectors in the sentence 
         '''
-        self.tokenizer = DistilBertTokenizerFast.from_pretrained("distilbert-base-uncased")
-        self.model = DistilBertModel.from_pretrained("distilbert-base-uncased")
+        self.tokenizer = DistilBertTokenizerFast.from_pretrained(
+            "distilbert-base-uncased",
+            add_special_tokens=True
+        )
+        self.model = DistilBertForSequenceClassification.from_pretrained(
+            "distilbert-base-uncased",
+            output_hidden_states=True
+        )
+        self.max_length = self.model.config.max_length
 
         # set up the function used to obtain sentence vector
 
@@ -47,21 +55,28 @@ class DistilBertModel(VectorModel):
         else:
             raise ValueError(f"Unrecognized reduction method: {reduction}")
         
+
     def vectorize_sentence(self, sentence: List[str]) -> List[float]:
         '''
         Return a vector representation of the sentece
-        Also removes punctuation since punctuation is not accepted by word2vec
+        Also truncates sentences that are too long
         Args:
             - sentence: a tokenized list of words
         Returns:
             - 1 dimensional np.ndarray of floats
         '''
-        tokenized_sentence = self.tokenizer(sentence)
-        vector = self.model()
-        return self.reduction_fn(list_of_word_vectors)
+        sentence_as_string = " ".join(sentence)
+        print(len(sentence))
+        tokenized_sentence = self.tokenizer(
+            sentence_as_string, return_tensors='pt', max_length=self.max_length
+        )
+        with torch.no_grad():
+            hidden_states = self.model(**tokenized_sentence).hidden_states
+        cls_token = hidden_states[0].squeeze()[:, 0]
+        return cls_token
     
 
-class Word2VecToDocument(DocumentToVectors, Word2VecModel):
+class DistilBertToDocument(DocumentToVectors, DistilBertModel):
     
     def similarity_measure(self, i: int, j:int) -> float:
         '''
@@ -94,4 +109,5 @@ if __name__ == '__main__':
         data = json.load(datafile)
     data = data['D1001A-A']
     docs = [flatten_list(d) for d in [flatten_list(doc[-1]) for doc in data.values()]]
-    x = Word2VecToDocument(documents=docs, reduction='centroid')
+    x = DistilBertToDocument(documents=docs, reduction='centroid')
+    print(x.similarity_matrix())
