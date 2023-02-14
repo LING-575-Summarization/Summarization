@@ -163,7 +163,7 @@ class LexRank(TFIDF):
         '''
         f = lambda i, j: self.modified_cosine(i, j)
         matrix = np.array(
-            [[f(i, j) for j in range(self.N)] for i in range(self.N)]
+            [[f(i, j) if i!=j else 0. for j in range(self.N)] for i in range(self.N)]
         )
         matrix[matrix < threshold] = 0.
         # normalize row sums
@@ -216,6 +216,7 @@ class LexRank(TFIDF):
             ranked_list
         df = pd.DataFrame(ranked_list).reset_index()
         df.columns = ['rank', 'index', f'LR Score ({threshold})', 'sentence']
+        print(df)
         return df
 
 
@@ -281,9 +282,9 @@ def power_method(
     U = np.ones(shape=matrix.shape)/matrix.shape[0]
     while delta is None or delta > error:
         t += 1
-        p_t_1 = p_t
+        p_t_1 = p_t.copy()
         p_t = np.matmul(
-            (U * d) + (matrix.T * (1-d)), 
+            (U * d) + (matrix * (1-d)).transpose(), 
             p_t
         )
         delta = np.linalg.norm(p_t - p_t_1)
@@ -324,11 +325,12 @@ def main():
         docset = list(data[docset_id].values())
         lx = LexRank(docset, multidocument=True)
         result = lx.obtain_summary(args.threshold, args.error, detokenize=True)
-        spl = str(docset_id).split("-", maxsplit=1)
-        id0, id1 = spl[0], spl[1]
-        output_file = os.path.join('outputs', 'D3', f'{id0}-A.M.100.{id1}.2')
-        with open(output_file, 'w') as outfile:
-            outfile.write(result)
+        print(result)
+        # spl = str(docset_id).split("-", maxsplit=1)
+        # id0, id1 = spl[0], spl[1]
+        # output_file = os.path.join('outputs', 'D3', f'{id0}-A.M.100.{id1}.2')
+        # with open(output_file, 'w') as outfile:
+        #     outfile.write(result)
 
 
 if __name__ == '__main__':
