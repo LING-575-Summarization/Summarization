@@ -84,7 +84,7 @@ class LexRank(DocumentToVectors):
         Citation: https://stackoverflow.com/q/21226610/
         '''
         matrix = self.similarity_matrix()
-        print(matrix)
+        print(matrix, "\n")
         matrix[matrix < threshold] = 0.
         # normalize row sums
         matrix = np.apply_along_axis(
@@ -93,6 +93,7 @@ class LexRank(DocumentToVectors):
             arr=matrix
         )
         # compute 
+        print(matrix)
         return matrix
 
 
@@ -100,7 +101,7 @@ class LexRank(DocumentToVectors):
             self, 
             threshold: float, 
             error: float,
-            d: Optional[float] = 0.15,
+            d: Optional[float] = 0.1,
             return_type: Optional[Literal["'pandas', 'vector', 'list'"]] = 'pandas'
         ) -> Union[np.ndarray, pd.DataFrame]:
         '''
@@ -145,7 +146,7 @@ class LexRank(DocumentToVectors):
             self, 
             threshold: float, 
             error: float,
-            d: Optional[float] = 0.15,
+            d: Optional[float] = 0.1,
             max_tokens: Optional[int] = 100,
             detokenize: Optional[Union[Callable, bool]] = False
         ) -> Union[str, List[List[str]]]:
@@ -222,7 +223,7 @@ def power_method(
         t += 1
         p_t_1 = p_t
         p_t = np.matmul(
-            (U * d) + (matrix.T * (1-d)), 
+            (U * d) + (matrix * (1-d)).transpose(), 
             p_t
         )
         delta = np.linalg.norm(p_t - p_t_1)
