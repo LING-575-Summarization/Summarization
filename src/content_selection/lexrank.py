@@ -133,7 +133,7 @@ class LexRank(TFIDF):
         '''Helper method to get the modified cosine score specific in Erkan and Radev
             Arguments:
                 - s_i, s_j: indices to the sentences in self.body and self.tf
-            NOTE: Self links (i = j) are allowed
+            NOTE: Self links (i = j) are NOT allowed (see get_cosine_matrix)
         '''
         sent_i_terms, sent_j_terms = set(self.body[s_i]), set(self.body[s_j])
         one_sentence_has_no_terms = len(sent_i_terms) == 0 or len(sent_j_terms) == 0
