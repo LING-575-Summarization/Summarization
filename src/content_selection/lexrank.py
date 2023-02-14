@@ -7,14 +7,13 @@ References:
       https://www.jair.org/index.php/jair/article/view/10396
 '''
 
-import re
 import numpy as np
 import pandas as pd
-from math import log, e, sqrt
-from .we_tried_newtfidf import TFIDF
-from utils import CounterDict, detokenizer_wrapper, flatten_list
+from vectorizer import DocumentToVectors
+from math import sqrt
+from utils import detokenizer_wrapper
 from nltk.metrics.distance import jaccard_distance
-from typing import Optional, Union, List, Tuple, Dict, Callable, Any
+from typing import Optional, Union, List, Dict, Callable, Any
 import logging
 import argparse
 import json, os
@@ -25,12 +24,13 @@ Literal = List
 logger = logging.getLogger()
 
 
-class LexRank(TFIDF):
+class LexRank(DocumentToVectors):
     '''Subclass with methods specific to LexRank'''
 
     def __init__(
             self, 
-            doc_set: Dict[str, Dict[str, List[str]]], 
+            documents: List[List[str]],
+            indices: Dict[str, Union[np.array, List[float]]],
             max_length: Optional[int] = None, 
             min_jaccard_dist: Optional[float] = None, 
             **kwargs
@@ -42,35 +42,36 @@ class LexRank(TFIDF):
         '''
         self.max_length = max_length
         self.min_jaccard_dist = min_jaccard_dist
-        super().__init__(document_set=doc_set, **kwargs)
+        self.raw_docs = documents
+        super().__init__(documents=documents, indices=indices, **kwargs)
 
 
-    def modified_cosine(self, s_i: int, s_j: int) -> float:
-        '''Helper method to get the modified cosine score specific in Erkan and Radev
-            Arguments:
-                - s_i, s_j: indices to the sentences in self.docs and self.tf
-            NOTE: Self links (i = j) are allowed
-        '''
-        sent_i_terms, sent_j_terms = set(self.docs[s_i]), set(self.docs[s_j])
-        one_sentence_has_no_terms = len(sent_i_terms) == 0 or len(sent_j_terms) == 0
-        if one_sentence_has_no_terms: # i.e. sentence is entirely punctuation
-            return 0.
-        else:
-            if self.max_length:
-                too_few_terms = len(sent_i_terms) <= self.max_length or len(sent_j_terms) <= self.max_length
-                if too_few_terms:
-                    return 0.
-            overlap_w = sent_i_terms.intersection(sent_j_terms)
-            numerator = sum(
-                [self.tf[s_i][w] * self.tf[s_i][w] * (self.idf[w] ** 2) for w in overlap_w]
-            )
-            denom_term = lambda s, s_t: sqrt(
-                sum([(self.tf[s][x] * self.idf[x]) ** 2 for x in s_t])
-            )
-            denominator = denom_term(s_i, sent_i_terms) * denom_term(s_j, sent_j_terms)
-            assert denominator != 0, \
-                f"Denominator of modified cosine is 0. Terms: {sent_i_terms}, {sent_j_terms}"
-            return numerator/denominator
+    # def modified_cosine(self, s_i: int, s_j: int) -> float:
+    #     '''Helper method to get the modified cosine score specific in Erkan and Radev
+    #         Arguments:
+    #             - s_i, s_j: indices to the sentences in self.docs and self.tf
+    #         NOTE: Self links (i = j) are allowed
+    #     '''
+    #     sent_i_terms, sent_j_terms = set(self.docs[s_i]), set(self.docs[s_j])
+    #     one_sentence_has_no_terms = len(sent_i_terms) == 0 or len(sent_j_terms) == 0
+    #     if one_sentence_has_no_terms: # i.e. sentence is entirely punctuation
+    #         return 0.
+    #     else:
+    #         if self.max_length:
+    #             too_few_terms = len(sent_i_terms) <= self.max_length or len(sent_j_terms) <= self.max_length
+    #             if too_few_terms:
+    #                 return 0.
+    #         overlap_w = sent_i_terms.intersection(sent_j_terms)
+    #         numerator = sum(
+    #             [self.tf[s_i][w] * self.tf[s_i][w] * (self.idf[w] ** 2) for w in overlap_w]
+    #         )
+    #         denom_term = lambda s, s_t: sqrt(
+    #             sum([(self.tf[s][x] * self.idf[x]) ** 2 for x in s_t])
+    #         )
+    #         denominator = denom_term(s_i, sent_i_terms) * denom_term(s_j, sent_j_terms)
+    #         assert denominator != 0, \
+    #             f"Denominator of modified cosine is 0. Terms: {sent_i_terms}, {sent_j_terms}"
+    #         return numerator/denominator
 
 
     def get_cosine_matrix(self, threshold: float) -> np.ndarray:
@@ -82,10 +83,8 @@ class LexRank(TFIDF):
             np.ndarray
         Citation: https://stackoverflow.com/q/21226610/
         '''
-        f = lambda i, j: self.modified_cosine(i, j)
-        matrix = np.array(
-            [[f(i, j) for j in range(self.N)] for i in range(self.N)]
-        )
+        matrix = self.similarity_matrix()
+        print(matrix)
         matrix[matrix < threshold] = 0.
         # normalize row sums
         matrix = np.apply_along_axis(
@@ -118,7 +117,7 @@ class LexRank(TFIDF):
         Returns:
             A list, dataframe, or vector of the resulting eigenvalue
         '''
-        if len(self.docs) > 1:
+        if self.N > 1:
             eigenvalue = power_method(
             matrix=self.get_cosine_matrix(threshold=threshold),
             error=error,
@@ -129,14 +128,15 @@ class LexRank(TFIDF):
         if return_type == 'vector':
             return eigenvalue
         ranked_list = sorted(
-            [(i, ev, self.raw_docs[i], self.docs[i]) for i, ev in enumerate(eigenvalue.tolist())],
+            [(i, ev, self.raw_docs[i]) for i, ev in enumerate(eigenvalue.tolist())],
             key=lambda x: x[1],
             reverse=True
         )
         if return_type == 'list':
             ranked_list
         df = pd.DataFrame(ranked_list).reset_index()
-        df.columns = ['rank', 'index', f'LR Score ({threshold})', 'sentence', 's']
+        df.columns = ['rank', 'index', f'LR Score ({threshold})', 'sentence']
+        print(df)
         return df
 
 

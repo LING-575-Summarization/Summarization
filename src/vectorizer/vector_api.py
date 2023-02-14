@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import numpy as np
-from utils import docset_loader, dataset_loader
+from utils import docset_loader
 from pathlib import Path
 from typing import *
 
@@ -124,3 +124,4 @@ class DocumentToVectors(VectorModel):
         else:
             documents, indices = docset_loader(datafile, documentset, sentences_are_documents)
         return cls(documents=documents, indices=indices, **kwargs)
+    
