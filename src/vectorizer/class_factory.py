@@ -1,4 +1,5 @@
 import numpy as np
+from inspect import signature
 from typing import *
 
 from .vector_api import DocumentToVectors
@@ -9,6 +10,7 @@ from .bertvec import DocumentToDistilBert
 def DocumentToVectorsFactory(
         subclass: DocumentToVectors,
         vector_generator: Literal['word2vec', 'tfidf', 'distilbert'],
+        init_function: Callable,
         **kwargs
     ):
 
@@ -25,18 +27,14 @@ def DocumentToVectorsFactory(
             self, 
             documents: List[List[str]],
             indices: Dict[str, Union[np.array, List[float]]],
-            max_length: Optional[int] = None, 
-            min_jaccard_dist: Optional[float] = None, 
             **kwargs
         ):
-        '''
-        max_length is the maximum length (maximum number of tokens) as sentence can have
-        min_jaccard_dist will reject sentences that are below a certain jaccard distance 
-            (a difference measure between sets)
-        '''
-        self.max_length = max_length
-        self.min_jaccard_dist = min_jaccard_dist
-        self.raw_docs = documents
+        init_fn_signature = signature(init_function)
+        init_fn_kwargs = {}
+        for parameter in init_fn_signature.parameters:
+            if parameter in kwargs:
+                init_fn_kwargs[parameter] = kwargs.pop(parameter)
+        init_function(self, documents, indices, **init_fn_kwargs)
         subclass_generator.__init__(self, documents=documents, indices=indices, **kwargs)
     
     name = f"{subclass.__name__}{subclass_generator.__name__.split('To')[-1]}"

@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import numpy as np
-from utils import docset_loader
+from utils import docset_loader, dataset_loader
 from pathlib import Path
 from typing import *
 
@@ -78,29 +78,28 @@ class DocumentToVectors(VectorModel):
         '''
         Get the cosine similarity of documents using indices i and j
         Used by similarity_matrix method
-        Return 0. if i=j to prevent self-directed values from receiving
-        too much weight
         Args:
             - i: document index i 
             - j: document index j
         '''
-        if i != j:
-            v_i, v_j = self[i], self[j]
-            return np.dot(v_i, v_j)/(np.linalg.norm(v_i) * np.linalg.norm(v_j))
-        else:
-            return 0.
+        v_i, v_j = self[i], self[j]
+        return np.dot(v_i, v_j)/(np.linalg.norm(v_i) * np.linalg.norm(v_j))
 
 
     def similarity_matrix(self, normalize: Optional[bool] = False) -> np.ndarray:
         '''
         Create a similarity matrix comparing the all documents in self.document_vectors
+        
         Arguments:
             - normalize: Whether to normalize the rows in the matrix (can be helpful before
               applying a threshold to a sparse or low-value matrix)
         '''
         if self.document_vectors:
             matrix = np.array(
-                [[self.similarity_measure(i, j) for j in range(self.N)] for i in range(self.N)]
+                [[
+                    self.similarity_measure(i, j) if i!=j else 0. for j in range(self.N)
+                    ] for i in range(self.N)
+                ]
             )
             if normalize:
                 matrix = np.apply_along_axis(
@@ -136,6 +135,6 @@ class DocumentToVectors(VectorModel):
         if documentset:
             documents, indices = docset_loader(datafile, documentset, sentences_are_documents)
         else:
-            documents, indices = docset_loader(datafile, documentset, sentences_are_documents)
+            documents, indices = dataset_loader(datafile, sentences_are_documents)
         return cls(documents=documents, indices=indices, **kwargs)
     

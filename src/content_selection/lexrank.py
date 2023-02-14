@@ -9,11 +9,11 @@ References:
 
 import numpy as np
 import pandas as pd
-from vectorizer import DocumentToVectors
+from vectorizer import DocumentToVectors, DocumentToVectorsFactory
 from math import sqrt
 from utils import detokenizer_wrapper
 from nltk.metrics.distance import jaccard_distance
-from typing import Optional, Union, List, Dict, Callable, Any
+from typing import *
 import logging
 import argparse
 import json, os
@@ -24,55 +24,48 @@ Literal = List
 logger = logging.getLogger()
 
 
-class LexRank(DocumentToVectors):
-    '''Subclass with methods specific to LexRank'''
-
-    def __init__(
-            self, 
+def LexRankFactory(
+        vector_generator: Literal['word2vec, tfidf, distilbert'],
+        **kwargs
+    ):
+    '''
+    Pass the __init__ function used to initiliaze a LexRank class to the
+    data factory function
+    Arguments:
+        - vector_generator: whether to use 'word2vec', 'tfidf', 'distilbert' vectors
+        - kwargs: additional arguments for the vector_generator (e.g., eval_documents for tfidf)
+                  and arguments for lexrank (e.g., min_jaccard_dist)
+    '''
+    def LexRankInit(
+            self,
             documents: List[List[str]],
             indices: Dict[str, Union[np.array, List[float]]],
-            max_length: Optional[int] = None, 
-            min_jaccard_dist: Optional[float] = None, 
+            min_length: Optional[int] = None, 
+            min_jaccard_dist: Optional[float] = None,
             **kwargs
         ):
         '''
-        max_length is the maximum length (maximum number of tokens) as sentence can have
+        min_length is the minimum length (minimum number of tokens) as sentence needs tos have
         min_jaccard_dist will reject sentences that are below a certain jaccard distance 
             (a difference measure between sets)
         '''
-        self.max_length = max_length
+        self.min_length = min_length
         self.min_jaccard_dist = min_jaccard_dist
         self.raw_docs = documents
-        super().__init__(documents=documents, indices=indices, **kwargs)
+    return DocumentToVectorsFactory(
+        LexRank, vector_generator, LexRankInit, **kwargs
+    )
 
 
-    # def modified_cosine(self, s_i: int, s_j: int) -> float:
-    #     '''Helper method to get the modified cosine score specific in Erkan and Radev
-    #         Arguments:
-    #             - s_i, s_j: indices to the sentences in self.docs and self.tf
-    #         NOTE: Self links (i = j) are allowed
-    #     '''
-    #     sent_i_terms, sent_j_terms = set(self.docs[s_i]), set(self.docs[s_j])
-    #     one_sentence_has_no_terms = len(sent_i_terms) == 0 or len(sent_j_terms) == 0
-    #     if one_sentence_has_no_terms: # i.e. sentence is entirely punctuation
-    #         return 0.
-    #     else:
-    #         if self.max_length:
-    #             too_few_terms = len(sent_i_terms) <= self.max_length or len(sent_j_terms) <= self.max_length
-    #             if too_few_terms:
-    #                 return 0.
-    #         overlap_w = sent_i_terms.intersection(sent_j_terms)
-    #         numerator = sum(
-    #             [self.tf[s_i][w] * self.tf[s_i][w] * (self.idf[w] ** 2) for w in overlap_w]
-    #         )
-    #         denom_term = lambda s, s_t: sqrt(
-    #             sum([(self.tf[s][x] * self.idf[x]) ** 2 for x in s_t])
-    #         )
-    #         denominator = denom_term(s_i, sent_i_terms) * denom_term(s_j, sent_j_terms)
-    #         assert denominator != 0, \
-    #             f"Denominator of modified cosine is 0. Terms: {sent_i_terms}, {sent_j_terms}"
-    #         return numerator/denominator
+class LexRank(DocumentToVectors):
+    '''Subclass with methods specific to LexRank
+    Can only be initialized with DocumentToVectorsFactory
+    '''
 
+    def __init__(self, **kwargs) -> None:
+        raise AttributeError("LexRank cannot be instantiated on its own.\n"+
+                             "Use the LexRankFactory function to dynamically create " +
+                             "a class and instantiated it with that new class.")
 
     def get_cosine_matrix(self, threshold: float) -> np.ndarray:
         '''
@@ -84,7 +77,6 @@ class LexRank(DocumentToVectors):
         Citation: https://stackoverflow.com/q/21226610/
         '''
         matrix = self.similarity_matrix()
-        print(matrix, "\n")
         matrix[matrix < threshold] = 0.
         # normalize row sums
         matrix = np.apply_along_axis(
@@ -94,6 +86,7 @@ class LexRank(DocumentToVectors):
         )
         # compute 
         print(matrix)
+        print("non-zero", np.sum(np.where(matrix > 0., 1., 0.)), "size", matrix.shape)
         return matrix
 
 
@@ -221,7 +214,7 @@ def power_method(
     iterations = 0
     while (delta is None or delta > error) and iterations < max_iter:
         t += 1
-        p_t_1 = p_t
+        p_t_1 = p_t.copy()
         p_t = np.matmul(
             (U * d) + (matrix * (1-d)).transpose(), 
             p_t
@@ -229,7 +222,7 @@ def power_method(
         delta = np.linalg.norm(p_t - p_t_1)
         iterations += 1
     # normalize ranking
-    p_t = p_t/p_t.sum()
+    p_t = p_t/np.max(p_t)
     # print("Iterations:", iterations)
     return p_t
 

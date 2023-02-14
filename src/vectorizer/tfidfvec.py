@@ -20,7 +20,7 @@ def create_idf_dictionary(documents: List[List[str]]) -> Dict[str, float]:
         for word in doc:
             if word not in seen_words:
                 dictionary[word] += 1
-    dictionary = dictionary.map(lambda x: log(len(documents)/(x + 1)) + 1)
+    dictionary = dictionary.map(lambda x: log(len(documents)/x))
     return dictionary
 
 
