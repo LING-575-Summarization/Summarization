@@ -75,6 +75,6 @@ class DocumentToWord2Vec(DocumentToVectors, Word2VecModel):
 
 if __name__ == '__main__':
     from utils import docset_loader
-    docs = docset_loader('D1001A-A', 'data/devtest.json')
-    x = DocumentToWord2Vec(documents=docs, reduction='centroid')
+    docs, indices = docset_loader('D1001A-A', 'data/devtest.json')    
+    x = DocumentToWord2Vec(documents=docs, indices=indices, reduction='centroid')
     print(x.similarity_matrix())

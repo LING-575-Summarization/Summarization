@@ -54,7 +54,5 @@ class DocumentToDistilBert(DocumentToVectors, DistilBertModel):
     
 
 if __name__ == '__main__':
-    from utils import docset_loader
-    docs = docset_loader('D1001A-A', 'data/devtest.json')
-    x = DocumentToDistilBert(documents=docs)
+    x = DocumentToDistilBert.from_data('D1001A-A', 'data/devtest.json')
     print(x.similarity_matrix())

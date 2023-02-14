@@ -11,7 +11,7 @@ import re
 import numpy as np
 import pandas as pd
 from math import log, e, sqrt
-from we_tried_newtfidf import TFIDF
+from .we_tried_newtfidf import TFIDF
 from utils import CounterDict, detokenizer_wrapper, flatten_list
 from nltk.metrics.distance import jaccard_distance
 from typing import Optional, Union, List, Tuple, Dict, Callable, Any
@@ -43,6 +43,7 @@ class LexRank(TFIDF):
         self.max_length = max_length
         self.min_jaccard_dist = min_jaccard_dist
         super().__init__(document_set=doc_set, **kwargs)
+
 
     def modified_cosine(self, s_i: int, s_j: int) -> float:
         '''Helper method to get the modified cosine score specific in Erkan and Radev
