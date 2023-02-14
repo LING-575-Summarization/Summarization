@@ -51,7 +51,7 @@ class Word2VecModel(VectorModel):
         else:
             raise ValueError(f"Unrecognized reduction method: {reduction}")
         
-    def vectorize_sentence(self, sentence: List[str]) -> List[float]:
+    def vectorize_sentence(self, sentence: List[str]) -> np.ndarray:
         '''
         Return a vector representation of the sentece
         Also removes punctuation since punctuation is not accepted by word2vec
@@ -73,18 +73,7 @@ class Word2VecModel(VectorModel):
     
 
 class Word2VecToDocument(DocumentToVectors, Word2VecModel):
-    
-    
-    def similarity_measure(self, i: int, j:int) -> float:
-        '''
-        Get the cosine similarity of documents using indices i and j
-        Used by similarity_matrix method
-        Args:
-            - i: document index i 
-            - j: document index j
-        '''
-        v_i, v_j = self.document_vectors[i], self.document_vectors[j]
-        return np.dot(v_i, v_j)/(np.linalg.norm(v_i) * np.linalg.norm(v_j))
+    pass
     
 
 if __name__ == '__main__':

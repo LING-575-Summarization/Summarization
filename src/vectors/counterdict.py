@@ -6,6 +6,7 @@ If a key is not in the dictionary, it adds it to zero
 from typing import *
 from numbers import Number
 from collections import OrderedDict
+import numpy as np
 
 class CounterDict(OrderedDict):
 
@@ -38,11 +39,5 @@ class CounterDict(OrderedDict):
             self[k] *= dictionary[k]
         return self
     
-    def update(self, dictionary: dict):
-        for key, value in dictionary.items():
-            self[key] += value
-
-    def update_from_wordset(self, wordset: Iterable):
-        assert len(wordset) == len(set(wordset)), "Provided word set contains duplicate entries"
-        for word in wordset:
-            self[word] += 1
+    def to_numpy(self) -> np.ndarray:
+        return np.array(list(self.values()))

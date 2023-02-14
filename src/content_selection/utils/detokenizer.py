@@ -4,7 +4,6 @@ string depend on a function/method's arguments
 '''
 
 from inspect import signature, Parameter
-import re
 from typing import *
 
 
