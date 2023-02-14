@@ -41,7 +41,7 @@ def process_body(body: List[List[str]]) -> List[List[Any]]:
     '''
     new_body = []
     for sentence_i in range(len(body)):
-        new_body.append([w.lower() for w in body[sentence_i] if re.search(r'\w', w)])
+        new_body.append([w.lower() for w in body[sentence_i]])
     return new_body
 
 
@@ -101,13 +101,10 @@ class TFIDF:
             tf_sentence = CounterDict()
             for word in sentence:
                 word = word.lower()
-                if re.search(r'\w+', word) is None: # avoid punctuation
-                    pass
-                else:
-                    tf_sentence[word] += 1
-                    if word not in seen_words:
-                        df[word] += 1
-                        seen_words.add(word)
+                tf_sentence[word] += 1
+                if word not in seen_words:
+                    df[word] += 1
+                    seen_words.add(word)
             tf.append(tf_sentence)
 
         idf = df.map(
@@ -133,11 +130,11 @@ class LexRank(TFIDF):
         '''Helper method to get the modified cosine score specific in Erkan and Radev
             Arguments:
                 - s_i, s_j: indices to the sentences in self.body and self.tf
-            NOTE: Self links (i = j) are NOT allowed (see get_cosine_matrix)
         '''
         sent_i_terms, sent_j_terms = set(self.body[s_i]), set(self.body[s_j])
         one_sentence_has_no_terms = len(sent_i_terms) == 0 or len(sent_j_terms) == 0
         if one_sentence_has_no_terms: # i.e. sentence is entirely punctuation
+            print(sent_i_terms, sent_j_terms)
             return 0.
         else:
             overlap_w = sent_i_terms.intersection(sent_j_terms)
@@ -166,13 +163,6 @@ class LexRank(TFIDF):
             [[f(i, j) if i!=j else 0. for j in range(self.N)] for i in range(self.N)]
         )
         matrix[matrix < threshold] = 0.
-        # normalize row sums
-        matrix = np.apply_along_axis(
-            func1d=lambda x: x/x.sum() if x.sum() > 0 else x,
-            axis=0,
-            arr=matrix
-        )
-        # compute 
         return matrix
 
 
@@ -277,16 +267,19 @@ def power_method(
         - error: when the error is low enough to finish algorithm
         - d: dampening factor (to ensure convergence)
     '''
-    p_t = np.ones(shape=(matrix.shape[0]))/matrix.shape[0]
+    N = matrix.shape[0]
+    p_t = np.ones(shape=(N))/N
     t, delta = 0, None
-    U = np.ones(shape=matrix.shape)/matrix.shape[0]
+    U = np.ones(shape=matrix.shape)
+    M = ((U * d)/N + (matrix * (1-d))/N).transpose()
+    for i in range(N):
+        if np.sum(M[:, i]) == 0.:
+            print(f"Replacing column {i}")
+            M[:, i] = np.ones(shape=(N))/N
     while delta is None or delta > error:
         t += 1
         p_t_1 = p_t.copy()
-        p_t = np.matmul(
-            (U * d) + (matrix * (1-d)).transpose(), 
-            p_t
-        )
+        p_t = M @ p_t
         delta = np.linalg.norm(p_t - p_t_1)
     # normalize ranking
     p_t = p_t/p_t.sum()
