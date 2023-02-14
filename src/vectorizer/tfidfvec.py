@@ -8,6 +8,7 @@ from typing import *
 
 
 # FOR TF-IDF, what you need to do is generate one hot vectors and create a matrix that way
+# TODO: Add all the specification details from tfidf
 
 
 def create_idf_dictionary(documents: List[List[str]]) -> Dict[str, float]:

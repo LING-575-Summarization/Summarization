@@ -169,3 +169,4 @@ data/**
 data
 src/test.py
 .gitignore
+bin/**
