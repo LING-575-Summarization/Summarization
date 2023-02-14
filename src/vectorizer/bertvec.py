@@ -1,4 +1,4 @@
-from vector_api import VectorModel, DocumentToVectors
+from .vector_api import VectorModel, DocumentToVectors
 from transformers import DistilBertForMaskedLM, DistilBertTokenizerFast
 import torch
 import numpy as np
@@ -45,32 +45,16 @@ class DistilBertModel(VectorModel):
         )
         with torch.no_grad():
             hidden_states = self.model(**tokenized_sentence).hidden_states
-        cls_token = hidden_states[0].squeeze()[:, 0].numpy()
+        cls_token = hidden_states[0][:, 1].squeeze().numpy()
         return cls_token
     
 
-class DistilBertToDocument(DocumentToVectors, DistilBertModel):
+class DocumentToDistilBert(DocumentToVectors, DistilBertModel):
     pass
     
 
 if __name__ == '__main__':
-    import json
-    from functools import reduce
-
-    # get body as list of sentences
-    def flatten_list(x: List[List[Any]]) -> List[Any]: 
-        '''
-        Utility function to flatten lists of lists
-        '''
-        def flatten(x, y):
-            x.extend(y)
-            return x
-        return reduce(flatten, x)
-
-
-    with open('data/devtest.json', 'r') as datafile:
-        data = json.load(datafile)
-    data = data['D1001A-A']
-    docs = [flatten_list(d) for d in [flatten_list(doc[-1]) for doc in data.values()]]
-    x = DistilBertToDocument(documents=docs)
+    from utils import docset_loader
+    docs = docset_loader('D1001A-A', 'data/devtest.json')
+    x = DocumentToDistilBert(documents=docs)
     print(x.similarity_matrix())

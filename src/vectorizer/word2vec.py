@@ -1,8 +1,5 @@
-from vector_api import VectorModel, DocumentToVectors
-import gensim
-from gensim.models import FastText, KeyedVectors
+from .vector_api import VectorModel, DocumentToVectors
 import gensim.downloader as api
-import os
 import numpy as np
 import re
 from typing import *
@@ -68,32 +65,16 @@ class Word2VecModel(VectorModel):
             # if in vocabulary
             if word in self.model:
                 vec = self.model[word]
-            list_of_word_vectors.append(vec)
+                list_of_word_vectors.append(vec)
         return self.reduction_fn(list_of_word_vectors)
     
 
-class Word2VecToDocument(DocumentToVectors, Word2VecModel):
+class DocumentToWord2Vec(DocumentToVectors, Word2VecModel):
     pass
     
 
 if __name__ == '__main__':
-    import json
-    from functools import reduce
-
-    # get body as list of sentences
-    def flatten_list(x: List[List[Any]]) -> List[Any]: 
-        '''
-        Utility function to flatten lists of lists
-        '''
-        def flatten(x, y):
-            x.extend(y)
-            return x
-        return reduce(flatten, x)
-
-
-    with open('data/devtest.json', 'r') as datafile:
-        data = json.load(datafile)
-    data = data['D1001A-A']
-    docs = [flatten_list(d) for d in [flatten_list(doc[-1]) for doc in data.values()]]
-    x = Word2VecToDocument(documents=docs, reduction='centroid')
+    from utils import docset_loader
+    docs = docset_loader('D1001A-A', 'data/devtest.json')
+    x = DocumentToWord2Vec(documents=docs, reduction='centroid')
     print(x.similarity_matrix())

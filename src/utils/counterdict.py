@@ -6,6 +6,7 @@ If a key is not in the dictionary, it adds it to zero
 from typing import *
 from numbers import Number
 from collections import OrderedDict
+import numpy as np
 
 class CounterDict(OrderedDict):
 
@@ -37,6 +38,9 @@ class CounterDict(OrderedDict):
         for k in self.keys():
             self[k] *= dictionary[k]
         return self
+    
+    def to_numpy(self):
+        return np.array(list(self.values()))
     
     def update(self, dictionary: dict):
         for key, value in dictionary.items():

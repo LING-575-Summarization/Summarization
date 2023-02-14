@@ -1,9 +1,9 @@
-from vector_api import VectorModel, DocumentToVectors
-from counterdict import CounterDict
+from .vector_api import VectorModel, DocumentToVectors
+from utils import CounterDict
+import numpy as np
 from math import log
 import re
 from copy import deepcopy
-import numpy as np
 from typing import *
 
 
@@ -29,8 +29,7 @@ class TFIDFModel(VectorModel):
             self, 
             documents: List[List[str]],
             ignore_punctuation: bool = True,
-            lowercase: bool = True,
-            reduction: Literal['centroid', 'normalized_mean', 'normalized_sum'] = 'centroid'
+            lowercase: bool = True
         ) -> None:
         '''
         Instantiate a TFIDF dictionary from the Google News Corpus and select
@@ -48,9 +47,11 @@ class TFIDFModel(VectorModel):
                   sum all the word vectors in the sentence 
         '''
         docs = deepcopy(documents)
-        if ignore_punctuation:
+        self.ignore_punctuation, self.lowercase = ignore_punctuation, lowercase
+
+        if self.ignore_punctuation:
             docs = [[w for w in doc if re.search(r'\w', w)] for doc in docs]
-        if lowercase:
+        if self.lowercase:
             docs = [[w.lower() for w in doc] for doc in docs]
 
         self.idf = create_idf_dictionary(docs)
@@ -64,38 +65,38 @@ class TFIDFModel(VectorModel):
         Returns:
             - dictionary that maps words to tfidf values
         '''
-        idf = self.idf if self.idf is not None else create_idf_dictionary(sentence)
-        tf = CounterDict(keys=list(idf.keys()))
-        for word in sentence:
+        tf = CounterDict(keys=list(self.idf.keys()))
+        for _word in sentence:
+            if self.ignore_punctuation and re.search(r'\w', _word) is None:
+                continue
+            word = _word.lower() if self.lowercase else _word
             if word in tf:
                 tf[word] += 1
-        tfidf = tf * idf
+        tfidf = tf * self.idf
         tfidf_vector = tfidf.to_numpy()
         return tfidf_vector
     
 
-class TFIDFDocument(DocumentToVectors, TFIDFModel):
-    pass
+class DocumentToTFIDF(DocumentToVectors, TFIDFModel):
+    def __init__(
+            self, 
+            documents: List[List[str]], 
+            indices: Dict[str, int],
+            eval_documents: Optional[List[List[str]]] = None, 
+            **kwargs
+        ) -> None:
+        '''
+        Override metaclass __init__ method since DocumentToTFIDF takes additional arguments
+        '''
+        TFIDFModel.__init__(self, documents, **kwargs)
+        eval_docs = eval_documents if eval_documents else documents
+        self.document_vectors = [self.vectorize_sentence(doc) for doc in eval_docs]
+        self.N = len(eval_docs)
+        self.indices = indices
     
 
 if __name__ == '__main__':
-    import json
-    from functools import reduce
-
-    # get body as list of sentences
-    def flatten_list(x: List[List[Any]]) -> List[Any]: 
-        '''
-        Utility function to flatten lists of lists
-        '''
-        def flatten(x, y):
-            x.extend(y)
-            return x
-        return reduce(flatten, x)
-
-
-    with open('data/devtest.json', 'r') as datafile:
-        data = json.load(datafile)
-    data = data['D1001A-A']
-    docs = [flatten_list(d) for d in [flatten_list(doc[-1]) for doc in data.values()]]
-    x = TFIDFDocument(documents=docs, reduction='centroid')
+    from utils import docset_loader
+    docs = docset_loader('D1001A-A', 'data/devtest.json')
+    x = DocumentToTFIDF(documents=docs)
     print(x.similarity_matrix())
