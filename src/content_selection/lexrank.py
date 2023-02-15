@@ -146,30 +146,27 @@ class LexRank(DocumentToVectors):
         ranked_list = self.solve_lexrank('pandas')
         first_sentence = ranked_list['sentence'][0]
         words = len(first_sentence)
-        if len(ranked_list['sentence']) == 1:
-            if words < max_tokens:
-                return detokenize(first_sentence)
-            else:
-                logger.warning(f"Highest ranked sentence has more than 100 tokens..." + \
+        if words >= max_tokens: 
+            logger.warning(f"Highest ranked sentence has more than 100 tokens..." + \
                     "returning a slice of the sentence")
-                return detokenize(first_sentence[0:max_tokens-1])
+            return detokenize(first_sentence[0:max_tokens])
         else:
             i = 0
             summary_ids = []
             current_sentence = first_sentence
-            while words < max_tokens and i + 1 < ranked_list.shape[0]:
+            while words < max_tokens and i < ranked_list.shape[0]:
                 if self.min_jaccard_dist is not None:
                     too_similar = False
                     for previous_sent_id in summary_ids:
                         prev_sent = ranked_list['sentence'][previous_sent_id]
                         jaccard_d = jaccard_distance(set(current_sentence), set(prev_sent))
-                        print(jaccard_d, self.min_jaccard_dist, too_similar, jaccard_d <= self.min_jaccard_dist)
                         if jaccard_d <= self.min_jaccard_dist:
                             too_similar = True
                             break
                 if self.min_jaccard_dist is not None and too_similar:
                     i += 1
                     current_sentence = ranked_list['sentence'][i]
+                    print(current_sentence)
                     continue
                 else:
                     summary_ids.append(i)
