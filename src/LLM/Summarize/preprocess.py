@@ -6,6 +6,7 @@ from rouge_score import rouge_scorer
 
 import util
 
+
 def get_json(json_path: str):
     with open(json_path) as json_file:
         return json.load(json_file)

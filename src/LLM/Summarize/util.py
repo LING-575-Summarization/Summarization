@@ -4,7 +4,7 @@ from os.path import abspath, dirname
 
 def get_root_dir():
     result = dirname(abspath(__file__))
-    src = "/src/LLM"
+    src = "/src/LLM/Summarize"
     print(result)
     if result.endswith(src):
         result = result[:-len(src) + 1]
