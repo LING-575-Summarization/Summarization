@@ -170,3 +170,4 @@ data
 src/test.py
 .gitignore
 bin/**
+.vscode/**
