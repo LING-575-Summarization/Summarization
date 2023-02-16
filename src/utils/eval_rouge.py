@@ -29,9 +29,8 @@ ROUGE_ARGS = dict(
 def get_summaries(directory: Path):
     eval_files = OrderedDict()
     for filename in os.listdir(directory):
-        if re.search(r'D10\d\d(\w)?-A\.M\.100\.\w\.\w', filename):
+        if re.search(r'D10\d\d-A\.M\.100\.\w\.\w', filename):
             with open(os.path.join(directory, filename), 'r', encoding='cp1252') as summary:
-                filename = re.sub(r'(D10\d\d)(-A\.M\.100\.)([A-H])\.([A-H])', r'\1\3\2\4', filename)
                 eval_files[filename] = summary.read()
     return eval_files
 
@@ -59,7 +58,7 @@ def get_scores(
         summfiles: List[str]
     ):
     # set up the basefile list and assert that they are the same number
-    base_eval_ids = set(map(lambda x: x[:-4], summfiles.keys()))
+    base_eval_ids = set(map(lambda x: x[:-2], summfiles.keys()))
     base_summ_ids = set(map(lambda x: x[:-2], evalfiles.keys()))
     assert len(base_eval_ids) == len(base_summ_ids)
     assert base_eval_ids == base_summ_ids
