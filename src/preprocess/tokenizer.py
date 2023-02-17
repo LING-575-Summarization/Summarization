@@ -30,7 +30,7 @@ COPYRIGHT_STRINGS = [
 ]
 
 
-def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int, output_path: str):
+def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int):
     root = get_root(data_path)
     date = get_date(doc_id)
     headline = ""
