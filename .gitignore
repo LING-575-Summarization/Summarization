@@ -167,7 +167,5 @@ results/**
 **/.DS_Store
 data/**
 data
-src/test.py
-.gitignore
 bin/**
 .vscode/**

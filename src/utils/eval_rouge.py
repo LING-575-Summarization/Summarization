@@ -1,4 +1,4 @@
-from rouge_score import rouge_scorer
+import rouge
 from typing import List, Optional
 from pathlib import Path
 from collections import OrderedDict
@@ -11,10 +11,19 @@ from typing import *
 
 
 user_root = os.path.expanduser("~")
-# EVALFILES = os.path.join(user_root, "/dropbox/22-23/575x/Data/models/devtest/")
-# SUMFILES = os.path.join(user_root, "575-Summarization", "outputs", "D4")
-EVALFILES = os.path.join(os.getcwd(), "devtest")
-SUMFILES = os.path.join("outputs", "D3")
+EVALFILES = os.path.join(user_root, "/dropbox/22-23/575x/Data/models/devtest/")
+SUMFILES = os.path.join(user_root, "575-Summarization", "outputs", "D4")
+ROUGE_ARGS = dict(
+    metrics=['rouge-n'],
+    max_n=2,
+    limit_length=True,
+    length_limit=100,
+    length_limit_type='words',
+    apply_best=False,
+    alpha=0.5, # Default F1_score
+    weight_factor=1.2,
+    stemming=True
+)
 
 
 def get_summaries(directory: Path):
@@ -49,14 +58,14 @@ def get_scores(
         summfiles: List[str]
     ):
     # set up the basefile list and assert that they are the same number
-    base_eval_ids = set(map(lambda x: x[:-4], summfiles.keys()))
-    base_summ_ids = set(map(lambda x: x[:-4], evalfiles.keys()))
+    base_eval_ids = set(map(lambda x: x[:-2], summfiles.keys()))
+    base_summ_ids = set(map(lambda x: x[:-2], evalfiles.keys()))
     assert len(base_eval_ids) == len(base_summ_ids)
     assert base_eval_ids == base_summ_ids
     basefileids = sorted(list(base_summ_ids))
 
     # set up rouge evaluator
-    evaluator_all = rouge.Rouge(apply_avg=False,  **ROUGE_ARGS)
+    evaluator_all = rouge.Rouge(apply_avg=False, **ROUGE_ARGS)
 
     # infer the number of methods used in summfiles
     number_of_methods = sorted(list((

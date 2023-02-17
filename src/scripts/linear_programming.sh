@@ -9,3 +9,5 @@ python3 src/content_selection/linear_programming.py $1 $2 > output/ILP_solver_ou
 # output/ILP_solver_output catches pulp's output for solving the ILP problem
 
 # to run: ./src/scripts/linear_programming.sh output/[training/devtest/test].json 100
+
+# to run: ./src/scripts/linear_programming.sh output/[training/devtest/test].json 100
