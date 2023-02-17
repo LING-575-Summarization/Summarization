@@ -11,4 +11,5 @@ dependencies:
   - transformers
   - pulp
   - py-rouge
-prefix: /home2/hsteinm/anaconda3/envs/summarization
+  - numpy
+  - librosa
