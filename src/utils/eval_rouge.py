@@ -1,4 +1,4 @@
-import rouge
+from rouge_score import rouge_scorer
 from typing import List, Optional
 from pathlib import Path
 from collections import OrderedDict
@@ -15,17 +15,6 @@ user_root = os.path.expanduser("~")
 # SUMFILES = os.path.join(user_root, "575-Summarization", "outputs", "D4")
 EVALFILES = os.path.join(os.getcwd(), "devtest")
 SUMFILES = os.path.join("outputs", "D3")
-ROUGE_ARGS = dict(
-    metrics=['rouge-n'],
-    max_n=2,
-    limit_length=True,
-    length_limit=100,
-    length_limit_type='words',
-    apply_best=False,
-    alpha=0.5, # Default F1_score
-    weight_factor=1.0,
-    stemming=True
-)
 
 
 def get_summaries(directory: Path):

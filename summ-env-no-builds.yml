@@ -6,7 +6,6 @@ dependencies:
   - python=3.10
   - gensim
   - pandas
-  - cudatoolkit=10.2
   - pytorch==1.12.1
   - nltk
   - transformers
