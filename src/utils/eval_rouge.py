@@ -11,8 +11,10 @@ from typing import *
 
 
 user_root = os.path.expanduser("~")
-EVALFILES = os.path.join(user_root, "/dropbox/22-23/575x/Data/models/devtest/")
-SUMFILES = os.path.join(user_root, "575-Summarization", "outputs", "D4")
+# EVALFILES = os.path.join(user_root, "/dropbox/22-23/575x/Data/models/devtest/")
+# SUMFILES = os.path.join(user_root, "575-Summarization", "outputs", "D4")
+EVALFILES = os.path.join(os.getcwd(), "devtest")
+SUMFILES = os.path.join("outputs", "D3")
 ROUGE_ARGS = dict(
     metrics=['rouge-n'],
     max_n=2,
@@ -21,7 +23,7 @@ ROUGE_ARGS = dict(
     length_limit_type='words',
     apply_best=False,
     alpha=0.5, # Default F1_score
-    weight_factor=1.2,
+    weight_factor=1.0,
     stemming=True
 )
 
@@ -29,9 +31,8 @@ ROUGE_ARGS = dict(
 def get_summaries(directory: Path):
     eval_files = OrderedDict()
     for filename in os.listdir(directory):
-        if re.search(r'D10\d\d(\w)?-A\.M\.100\.\w\.\w', filename):
+        if re.search(r'D10\d\d-A\.M\.100\.\w\.\w', filename):
             with open(os.path.join(directory, filename), 'r', encoding='cp1252') as summary:
-                filename = re.sub(r'(D10\d\d)(-A\.M\.100\.)([A-H])\.([A-H])', r'\1\3\2\4', filename)
                 eval_files[filename] = summary.read()
     return eval_files
 
@@ -60,13 +61,13 @@ def get_scores(
     ):
     # set up the basefile list and assert that they are the same number
     base_eval_ids = set(map(lambda x: x[:-4], summfiles.keys()))
-    base_summ_ids = set(map(lambda x: x[:-2], evalfiles.keys()))
+    base_summ_ids = set(map(lambda x: x[:-4], evalfiles.keys()))
     assert len(base_eval_ids) == len(base_summ_ids)
     assert base_eval_ids == base_summ_ids
     basefileids = sorted(list(base_summ_ids))
 
     # set up rouge evaluator
-    evaluator_all = rouge.Rouge(apply_avg=False, **ROUGE_ARGS)
+    evaluator_all = rouge.Rouge(apply_avg=False,  **ROUGE_ARGS)
 
     # infer the number of methods used in summfiles
     number_of_methods = sorted(list((
@@ -76,8 +77,13 @@ def get_scores(
     results = []
     for method in number_of_methods:
         for base_file_id in basefileids:
-            references = [v for k, v in evalfiles.items() if k.startswith(base_file_id)]
-            summaries = {k: v for k, v in summfiles.items() if k.startswith(base_file_id)}
+            is_a_refence_file = lambda k: k.startswith(base_file_id) and k.endswith(str(method))
+            references = [
+                v for k, v in evalfiles.items() if k.startswith(base_file_id)
+            ]
+            summaries = {
+                k: v for k, v in summfiles.items() if is_a_refence_file(k)
+            }
             for file, our_summary in summaries.items():
                 for ref in references:
                     scores = evaluator_all.get_scores([our_summary], [ref])
