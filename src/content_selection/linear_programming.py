@@ -2,14 +2,40 @@ import sys
 import pulp
 import json
 from collections import OrderedDict
-from tf_idf import create_tf_idf_dict
-
+# from tf_idf import create_tf_idf_dict
+from we_tried_newtfidf import TFIDF
 
 class LinearProgramSummarizer:
 
-    def __init__(self, docset_id, docset, max_sum_length):
+    def __init__(self,
+                docset_id,
+                docset,
+                whole_data,
+                max_sum_length,
+                ngram,
+                sent_length,
+                delta_idf,
+                delta_tf,
+                contains_punc,
+                lower_casing,
+                log_base
+            ):
         self.docset_id = docset_id
-        self.weights = create_tf_idf_dict(json_path, 1, 1)[docset_id]
+        self.sent_length = sent_length
+        # self.weights = create_tf_idf_dict(json_path, 1, 1)[docset_id]
+        self.weights = TFIDF.idf_from_docset(
+            docset,
+            whole_data,
+            contains_punc,
+            lower_casing,
+            "docset",
+            ngram,
+            docset_id,
+            log_tf=log,
+            log_idf=log,
+            delta_tf=delta_tf,
+            delta_idf=delta_idf
+        )
         self.L = max_sum_length
         self.data = docset
 
@@ -64,6 +90,10 @@ class LinearProgramSummarizer:
             text = doc_data[3]
             for paragraph in text:
                 for sentence in paragraph:
+
+                    # if len(sentence) > self.sent_length:
+                    #     continue
+
                     y_j = self._make_max_length_weights(doc_id, sentence, sent_weights) # y_j
                     self._make_concept_weights(doc_id, sentence, concept_weights, y_j, A_ij_is_1) # z_n, z_n+1, ..., z_n+m
 
@@ -140,8 +170,8 @@ class LinearProgramSummarizer:
                 # append (doc_id, term) to lookup table concepts
                 self.index_to_concept.append(doc_id_concept)
 
-                concept_weights[z_i] = self.weights[term, doc_id]
-            else: #  need to look up z_i in lookup table
+                concept_weights[z_i] = self.weights[(term,), self.docset_id]
+            else:  # need to look up z_i in lookup table
                 cur_index = self.concept_to_index[doc_id_concept]
                 z_i = self.concept_decision_vars[cur_index]
 
@@ -156,16 +186,39 @@ def read_json(json_path):
 
 
 if __name__ == '__main__':
+    # from shell script
     json_path = sys.argv[1]
     max_summary_length = sys.argv[2]
+    output_dir = sys.argv[3]
+    ngram = int(sys.argv[4])
+    sent_length = int(sys.argv[5])
+    delta_idf = float(sys.argv[6])
+    delta_tf = float(sys.argv[7])
+    contains_punc = bool(sys.argv[8])
+    lower_casing = bool(sys.argv[9])
+    log = bool(sys.argv[10])
+
     docset_rep = read_json(json_path)
 
     for docset_id, docset in docset_rep.items():
-        model = LinearProgramSummarizer(docset_id, docset, 100)
+        model = LinearProgramSummarizer(
+            docset_id,
+            docset,
+            docset_rep,
+            max_summary_length,
+            ngram,
+            sent_length,
+            delta_idf,
+            delta_tf,
+            contains_punc,
+            lower_casing
+        )
         summary = model.make_summary()
         docset_id = docset_id.split("-")[0]
         id_part1 = docset_id[:-1]
         id_part2 = docset_id[-1]
-        output_summary_file = "outputs/D3/" + id_part1 + "-A.M.100." + id_part2 + ".1"
+        output_summary_file = output_dir + "/" + id_part1 + "-A.M.100." + id_part2 + ".1"
         with open(output_summary_file, 'w') as output:
             output.write(summary)
+
+        break
