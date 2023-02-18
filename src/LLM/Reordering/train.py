@@ -188,13 +188,13 @@ def train(args, train_dataset, model, tokenizer, loss_fnc=get_loss, eval_dataset
 
     # Check if saved optimizer or scheduler states exist and load from there
     if os.path.isfile(
-            os.path.join(args.model_name_or_path, "optimizer.pt")
-    ) and os.path.isfile(os.path.join(args.model_name_or_path, "scheduler.pt")):
+            os.path.join(args.model_name, "optimizer.pt")
+    ) and os.path.isfile(os.path.join(args.model_name, "scheduler.pt")):
         optimizer.load_state_dict(
-            torch.load(os.path.join(args.model_name_or_path, "optimizer.pt"))
+            torch.load(os.path.join(args.model_name, "optimizer.pt"))
         )
         scheduler.load_state_dict(
-            torch.load(os.path.join(args.model_name_or_path, "scheduler.pt"))
+            torch.load(os.path.join(args.model_name, "scheduler.pt"))
         )
 
     # Train
@@ -214,10 +214,10 @@ def train(args, train_dataset, model, tokenizer, loss_fnc=get_loss, eval_dataset
     steps_trained_in_current_epoch = 0
 
     # Check if continuing training from a checkpoint
-    if os.path.exists(args.model_name_or_path):
+    if os.path.exists(args.model_name):
         try:
             # set global_step to global_step of last saved checkpoint from model path
-            checkpoint_suffix = args.model_name_or_path.split("-")[-1].split("/")[0]
+            checkpoint_suffix = args.model_name.split("-")[-1].split("/")[0]
             global_step = int(checkpoint_suffix)
             epochs_trained = global_step // (
                     len(train_dataloader) // args.gradient_accumulation_steps

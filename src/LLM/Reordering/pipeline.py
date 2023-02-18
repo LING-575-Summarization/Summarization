@@ -219,7 +219,7 @@ def main():
     )
     parser.add_argument(
         "--max_input_length",
-        default=140,
+        default=1024,
         type=int,
         help="Maximum input event length in words.",
     )
@@ -239,7 +239,7 @@ def main():
         help="If > 0: total number of training steps to perform.",
     )
     parser.add_argument(
-        "--model_name_or_path",
+        "--model_name",
         default="bart-large",
         type=str,
         help="LM checkpoint for initialization.",
@@ -336,7 +336,7 @@ def main():
 
     # Load the models
     if args.continue_training:
-        args.model_name_or_path = args.out_dir
+        args.model_name = args.out_dir
     # Delete the current results file
     else:
         eval_results_file = os.path.join(args.out_dir, "eval_results.txt")
@@ -345,7 +345,7 @@ def main():
 
     args.device = "cpu"
     tokenizer, model = init_model(
-        args.model_name_or_path, device=args.device, do_lower_case=args.do_lower_case, args = args
+        args.model_name, device=args.device, do_lower_case=args.do_lower_case, args = args
     )
 
     args.pad_token_id = tokenizer.pad_token_id

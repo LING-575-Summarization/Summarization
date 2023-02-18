@@ -28,6 +28,7 @@ import json
 import random
 
 from transformers import AutoModelWithLMHead, AutoTokenizer
+from nltk.tokenize import word_tokenize
 
 
 def init_model(model_name: str, device, do_lower_case: bool = False, args=None):
@@ -38,7 +39,7 @@ def init_model(model_name: str, device, do_lower_case: bool = False, args=None):
     :param do_lower_case: whether the model is lower cased or not
     :return: the model and tokenizer
     """
-    tokenizer = AutoTokenizer.from_pretrained(model_name, do_lower_case=do_lower_case)
+    tokenizer = AutoTokenizer.from_pretrained(model_name, do_lower_case=do_lower_case, use_fast=False)
     model = AutoModelWithLMHead.from_pretrained(model_name)
     model.to(device)
     model.eval()
@@ -50,15 +51,20 @@ def get_json(json_path: str):
         return json.load(json_file)
 
 
-def shuffle(json_path):
-    input_json = get_json(json_path)
+def shuffle(input_json):
     result = []
     for docset_id, docset in input_json.items():
         input_texts = docset["text"]
         for input_text in input_texts:
             input_text_result = []
+            total_token = 3
             for count, value in enumerate(input_text):
-                input_text_result.append((count, value))
+                token_length = len(word_tokenize(value))
+                if total_token + token_length + 1 < 800:
+                    input_text_result.append((count, value))
+                    total_token = total_token + token_length + 1
+                else:
+                    break
             random.shuffle(input_text_result)
             input_text_result = [list(t) for t in zip(*input_text_result)]
             result.append(input_text_result)
@@ -71,12 +77,20 @@ def load_data(json_path: str):
     json_path: json file
     Returns a list of tuples (input, output)
     """
-    all_lines = shuffle(json_path)
-    examples = [
-        (
-            f"[shuffled] {' '.join([' '.join((f'<S{i}>', sent)) for i, sent in zip(list(range(len(line[0]))), line[1])])} [orig]",
-            f"{' '.join(line[0])} <eos>",
-        )
-        for line in all_lines
-    ]
+    input_json = get_json(json_path)
+    all_lines = shuffle(input_json)
+    examples = []
+    for line in all_lines:
+        if len(line) == 2:
+            examples.append(
+                (
+                    f"[shuffled] {' '.join([' '.join((f'<S{i}>', sent)) for i, sent in zip(list(range(len(line[0]))), line[1])])} [orig]",
+                    f"{' '.join([str(j) for j in line[0]])} <eos>",
+                )
+            )
     return examples
+
+
+if __name__ == "__main__":
+    test = load_data("/Users/junyinchen/Developer/Summarization/data/devtest.json")
+    print(len(test))
