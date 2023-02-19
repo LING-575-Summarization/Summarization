@@ -60,7 +60,7 @@ def shuffle(input_json):
             total_token = 3
             for count, value in enumerate(input_text):
                 token_length = len(word_tokenize(value))
-                if total_token + token_length + 1 < 800:
+                if total_token + token_length + 1 < 850:
                     input_text_result.append((count, value))
                     total_token = total_token + token_length + 1
                 else:

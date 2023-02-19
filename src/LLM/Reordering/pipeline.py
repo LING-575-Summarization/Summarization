@@ -31,7 +31,7 @@ import logging
 import argparse
 
 from torch.utils.data import Dataset
-from torch.nn import CrossEntropyLoss
+from torch.nn import CrossEntropyLoss, DataParallel
 
 from common import init_model, load_data
 from train import evaluate, train, set_seed
@@ -326,7 +326,7 @@ def main():
 
     # Setup device
     device = torch.device(
-        f"cuda:{args.device}"
+        "cuda"
         if torch.cuda.is_available() and args.device != "cpu"
         else "cpu"
     )
@@ -372,6 +372,7 @@ def main():
 
     # resize_token_embeddings for Bart doesn't work if the model is already on the device
     args.device = device
+    model = DataParallel(model)
     model.to(args.device)
 
     # Training
