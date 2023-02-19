@@ -1,4 +1,5 @@
 import sys
+import os
 import pulp
 import json
 from collections import OrderedDict
@@ -6,6 +7,7 @@ from collections import OrderedDict
 from we_tried_newtfidf import TFIDF
 from nltk.util import ngrams
 from nltk.tokenize.treebank import TreebankWordDetokenizer
+from utils.clustering import SentenceIndex, create_clusters
 
 class LinearProgramSummarizer:
 
@@ -72,18 +74,19 @@ class LinearProgramSummarizer:
 
 
     def make_summary(self):
-        detokenizer = TreebankWordDetokenizer()
-
+        """
+            Returns a list of lists, A list of tokenized sentences
+        """
         self.lp.solve()
 
-        summary_str = ""
+        summary_repr = []
         for var in self.sent_decision_vars:
             if pulp.value(var) == 1:
                 index = int(str(var).split("_")[1])
-                sent_repr = self.index_to_sent[index]
-                summary_str += detokenizer.detokenize(sent_repr[1]) + "\n"
+                sent_repr = self.index_to_sent[index][1]
+                summary_repr.append(sent_repr)
 
-        return summary_str
+        return summary_repr
 
 
     def _read_data(self):
@@ -198,9 +201,16 @@ class LinearProgramSummarizer:
 
 def read_json(json_path):
     with open(json_path, "r") as final:
-        # read = final.read()
         docset_rep = json.load(final)
     return docset_rep
+
+
+def detokenize_summary(summary):
+    detokenizer = TreebankWordDetokenizer()
+    summary_str = ""
+    for sent in summary:
+        summary_str += detokenizer.detokenize(sent) + "\n"
+    return summary_str
 
 
 if __name__ == '__main__':
@@ -216,8 +226,13 @@ if __name__ == '__main__':
     lower_casing = bool(sys.argv[9])
     log = bool(sys.argv[10])
 
-    docset_rep = read_json(json_path)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
 
+    docset_rep = read_json(json_path)
+    fractional_order = SentenceIndex(json_path)
+
+    # create idf_docsset for tf-idf object
     idf_docset = {}
     for docset_id, docset in docset_rep.items():
         for document, data in docset.items():
@@ -238,7 +253,14 @@ if __name__ == '__main__':
             lower_casing,
             log
         )
+        # gets unordered summary
         summary = model.make_summary()
+
+        # order the summary
+        summary = create_clusters(docset_id, summary, fractional_order)
+        summary = detokenize_summary(summary)
+
+        # output summaries to correct file
         docset_id = docset_id.split("-")[0]
         id_part1 = docset_id[:-1]
         id_part2 = docset_id[-1]

@@ -1,9 +1,32 @@
+"""
+    This is an information ordering algorithm, based on clustering (Topic Modelling).
+
+    To run:
+        1) Create a SentenceIndex object BEFORE writing out any summaries (this goes through the whole json file,
+            to map sentence to their corresponding fractional ordering)
+        2) Call create_clusters(docset_id, summary, fractional_order) to cluster and return
+            the ordered summary as a list of tokenized sentences
+
+            Example (from LinearProgramming):
+
+            1)
+                json_path = "outputs/devtest.json"
+                fractional_order = SentenceIndex(json_path)
+
+                for docset_id, docset in json_file:
+                    summary = LinearProgramming(docset_id, docset)
+
+                    # note: will return a list of lists (list of tokenized sentences)
+            2)      ordered_summary = create_clusters(docset_id, summary, fractional_order)
+
+"""
+
 import sys
 import json
+import re
 from utils import flatten_list
-import random
 from sklearn.cluster import KMeans
-from vectorizer import Word2VecModel
+from utils.vectorizer import Word2VecModel
 
 
 class SentenceIndex:
@@ -120,27 +143,28 @@ class Clustering:
         model = Word2VecModel()
 
         for sentence in sentences:
-            # embedding = Hilly's embedding
-            print(sentence)
-            # embedding = model(sentence)
-
             # create random embeddings for testing purposes
             # embedding = tuple(random.choices(range(10), k=10))
-            # self.embedding_to_sentence[embedding] = sentence
 
+            # embedding = Hilly's embedding
+            sent_str = " ".join(sentence)
+            if not re.search(r'\w', sent_str):
+                continue
+            # print("sent_str", sent_str)
+            embedding = model.vectorize_sentence(sent_str)
+            embedding = tuple(embedding)
+            self.embedding_to_sentence[embedding] = sentence
 
 
     def cluster_docset(self):
         embeddings = list(self.embedding_to_sentence.keys())
 
         # default values for testing purposes
-        # note: algorithm='auto' is the same thing as algorithm='lloyd'
+        # note: algorithm='auto' is the same thing as algorithm='lloyd' (use "auto" if doesn't work)
         kmeans = KMeans(n_clusters=8, init='k-means++', n_init=10, max_iter=300,
-                        tol=0.0001, verbose=0, random_state=None, copy_x=True, algorithm='auto')
+                        tol=0.0001, verbose=0, random_state=None, copy_x=True, algorithm='lloyd')
 
         clusters = kmeans.fit_predict(embeddings)
-        # print(clusters)
-
 
 
         for index, cluster_index in enumerate(clusters):
@@ -176,28 +200,23 @@ class Clustering:
                 - A list of lists
                     A list of sentences, where each sentence is a list of tokens
         """
-        # print(unordered_summary)
         ordered_summary = []
         for cluster_index, fractional_ordering in self.ordered_clusters:
             block = []
             for sentence in unordered_summary:
 
                 # for testing purposes
-                sentence = sentence[0].strip().split()
+                # sentence = sentence[0].strip().split()
 
                 sentence = tuple(sentence)
                 if sentence in self.cluster_to_sentences[cluster_index]:
                     block.append(sentence)
             ordered_block = self._order_block(block)
             ordered_summary.extend(ordered_block)
-
-        print("###############")
-        print(ordered_summary)
+        return ordered_summary
 
 
     def _order_block(self, block):
-        print(block)
-        print()
         block_ordering = {}
         for sentence in block:
             fractional_ordering = self.sentence_indices[self.docset_id, sentence]
@@ -224,28 +243,32 @@ def create_clusters(docset_id, summary, sent_indices):
     """
     clusters = Clustering(docset_id, sent_indices)
     summary = clusters.order_summary(summary)
-
     return summary
 
 
 if __name__ == '__main__':
-    docset_id = sys.argv[1]
-    data_file_path = sys.argv[2]
+    pass
 
-    sent_indices = SentenceIndex(data_file_path)
 
-    summary = [["At one point , two bomb squad trucks sped to the school after a backpack scare ."],
-            ["Phone : ( 888 ) 603-1036"],
-            ["Please comfort this town . ''"],
-            ["Many looked for it Saturday morning on top of Mt ."],
-            ["But what community was it from ?"],
-            ["There are the communities that existed already , like Columbine students and Columbine Valley residents ."],
-            ["Brothers Jonathan and Stephen Cohen sang a tribute they wrote ."],
-            ["`` Columbine ! ''"],
-            ["`` Love is stronger than death . ''"],
-            ["Some players said the donations and support will encourage them to play better ."]]
-
-    create_clusters(docset_id, summary, sent_indices)
+# if __name__ == '__main__':
+#     docset_id = sys.argv[1]
+#     data_file_path = sys.argv[2]
+#
+#     sent_indices = SentenceIndex(data_file_path)
+#
+#     Note: should be a list of lists, where the inner list is a list of tokens, not a list of a whole sentence string
+#     summary = [["At one point , two bomb squad trucks sped to the school after a backpack scare ."],
+#             ["Phone : ( 888 ) 603-1036"],
+#             ["Please comfort this town . ''"],
+#             ["Many looked for it Saturday morning on top of Mt ."],
+#             ["But what community was it from ?"],
+#             ["There are the communities that existed already , like Columbine students and Columbine Valley residents ."],
+#             ["Brothers Jonathan and Stephen Cohen sang a tribute they wrote ."],
+#             ["`` Columbine ! ''"],
+#             ["`` Love is stronger than death . ''"],
+#             ["Some players said the donations and support will encourage them to play better ."]]
+#
+#     create_clusters(docset_id, summary, sent_indices)
 
 
 
