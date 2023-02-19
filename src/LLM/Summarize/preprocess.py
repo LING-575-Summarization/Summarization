@@ -25,13 +25,18 @@ def build_dataset(input_dict, dataset_type, args):
         input_texts = docset["text"] if not args.reordered else docset["reordered"]
         total_length = 0
         over_limit = False
-        whole_text = "" if not args.do_reorder else []
+        whole_text = ""
+        if args.do_reorder:
+            whole_text = []
         for input_text in input_texts:
             if over_limit:
                 break
             new_doc, total_length, over_limit = mask_sentences(input_text, dataset_type, total_length,
                                                                over_limit, docset["summary"], args)
-            whole_text = whole_text + " " + new_doc if not args.do_reorder else whole_text.append(new_doc)
+            if not args.do_reorder:
+                whole_text = whole_text + " " + new_doc
+            else:
+                whole_text.append(new_doc)
 
         if dataset_type == "training" and not args.do_reorder:
             for count, summary in enumerate(docset["summary"]):

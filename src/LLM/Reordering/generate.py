@@ -32,6 +32,7 @@ import re
 
 import torch
 import tqdm
+from os.path import abspath, dirname
 
 
 from common import init_model, combine_data
@@ -46,6 +47,15 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def get_root_dir():
+    result = dirname(abspath(__file__))
+    src = "/src/LLM/Reordering"
+    print(result)
+    if result.endswith(src):
+        result = result[:-len(src) + 1]
+    return result
+
+
 def main() -> None:
     """
     Generate outputs
@@ -55,21 +65,21 @@ def main() -> None:
     # Required
     parser.add_argument(
         "--in_file",
-        default=None,
+        default=get_root_dir() + "data/dataset.json",
         type=str,
         required=True,
         help="The input json file",
     )
     parser.add_argument(
         "--out_file",
-        default=None,
+        default=get_root_dir() + "data/test.json",
         type=str,
         required=True,
         help="out jsonl file",
     )
     parser.add_argument(
         "--model_name_or_path",
-        default="gpt2",
+        default="junyinc/LING575-WIN21-Reorder",
         type=str,
         help="LM checkpoint for initialization.",
     )
