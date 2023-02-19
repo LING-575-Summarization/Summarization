@@ -53,7 +53,7 @@ def get_json(json_path: str):
 
 def shuffle(input_json):
     result = []
-    for docset_id, docset in input_json.items():
+    for docset in input_json:
         input_texts = docset["text"]
         for input_text in input_texts:
             input_text_result = []
@@ -69,6 +69,19 @@ def shuffle(input_json):
             input_text_result = [list(t) for t in zip(*input_text_result)]
             result.append(input_text_result)
     return result
+
+
+def combine_data(json_path: str, dataset_type: str):
+    input_json = get_json(json_path)
+    examples = []
+    for docset in input_json[dataset_type].items():
+        input_texts = docset["text"]
+        examples.append(
+            (
+                f"[shuffled] {' '.join([' '.join((f'<S{i}>', sent)) for i, sent in zip(list(range(len(input_texts))), input_texts)])} [orig]"
+            )
+        )
+    return examples
 
 
 def load_data(json_path: str):

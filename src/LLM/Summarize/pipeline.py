@@ -7,6 +7,7 @@ from transformers import AutoTokenizer, Seq2SeqTrainingArguments, AutoModelForSe
 import evaluate
 from datasets import load_dataset, DatasetDict
 from nltk.tokenize import sent_tokenize
+from torch.nn import DataParallel
 
 import util
 
@@ -49,6 +50,7 @@ def pipeline(**kwargs):
     if not kwargs["do_train"]:
         model.load_state_dict(torch.load(kwargs["model_file"], map_location=torch.device(device)))
 
+    model = DataParallel(model)
     model.to(device)
 
     data_collator = DataCollatorForSeq2Seq(tokenizer, model=model, padding="max_length", max_length=1024,
