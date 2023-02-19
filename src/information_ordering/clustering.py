@@ -3,6 +3,7 @@ import json
 from utils import flatten_list
 import random
 from sklearn.cluster import KMeans
+from vectorizer import Word2VecModel
 
 
 class SentenceIndex:
@@ -115,14 +116,18 @@ class Clustering:
 
 
     def _get_sentence_embeddings(self, sentences):
-        random.seed(11)
+        # random.seed(11)
+        model = Word2VecModel()
 
         for sentence in sentences:
             # embedding = Hilly's embedding
+            print(sentence)
+            # embedding = model(sentence)
 
             # create random embeddings for testing purposes
-            embedding = tuple(random.choices(range(10), k=10))
-            self.embedding_to_sentence[embedding] = sentence
+            # embedding = tuple(random.choices(range(10), k=10))
+            # self.embedding_to_sentence[embedding] = sentence
+
 
 
     def cluster_docset(self):
