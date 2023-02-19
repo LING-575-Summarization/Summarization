@@ -125,7 +125,7 @@ def built_json(path_dict: Dict[str, List[Tuple[str, str, int, int]]], output_dir
             doc_id_rep["text"].append(to_list_of_str(body))
             doc_id_rep["title"] = headline
         doc_id_rep["summary"] = get_gold_test(docset[:-3], kwargs["gold_directory"])
-        doc_id_rep["id"] = doc_id_rep
+        doc_id_rep["id"] = docset[:-2]
         docset_rep.append(doc_id_rep)
     with open(output_dir + ".json", "w") as final:
         json.dump(docset_rep, final)
