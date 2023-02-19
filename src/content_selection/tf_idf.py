@@ -23,7 +23,7 @@ class TF_IDF:
         self.avg_tf_idf_sent_weights = {}
         self.max_tf_idf_sent_weights = {}
 
-        self._tf = {} # (term_t, doc_d) --> tf(t,d) as float()
+        self._tf = {}   # (term_t, doc_d) --> tf(t,d) as float()
         self._idf = {}  # "term_t" --> idf(t, D) as float()
         self._delta1 = delta1
         self._delta2 = delta2

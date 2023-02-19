@@ -75,8 +75,13 @@ def get_scores(
     results = []
     for method in number_of_methods:
         for base_file_id in basefileids:
-            references = [v for k, v in evalfiles.items() if k.startswith(base_file_id)]
-            summaries = {k: v for k, v in summfiles.items() if k.startswith(base_file_id)}
+            is_a_refence_file = lambda k: k.startswith(base_file_id) and k.endswith(str(method))
+            references = [
+                v for k, v in evalfiles.items() if k.startswith(base_file_id)
+            ]
+            summaries = {
+                k: v for k, v in summfiles.items() if is_a_refence_file(k)
+            }
             for file, our_summary in summaries.items():
                 for ref in references:
                     scores = evaluator_all.get_scores([our_summary], [ref])
