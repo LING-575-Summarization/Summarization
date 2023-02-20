@@ -41,7 +41,7 @@ def build_dataset(input_dict, dataset_type, args):
         if dataset_type == "training" and not args.do_reorder:
             for count, summary in enumerate(docset["summary"]):
                 output_dict = dict()
-                output_dict["id"] = docset_id + "_" + count
+                output_dict["id"] = docset_id + "_" + str(count)
                 output_dict["text"] = whole_text
                 output_dict["summary"] = summary
                 output.append(output_dict)
