@@ -71,29 +71,6 @@ class LexRank(DocumentToVectors):
     '''Subclass with methods specific to LexRank
     Can only be initialized with DocumentToVectorsFactory
     '''
-=======
-        tf, df = [], CounterDict()
-
-        for sentence in self.body:
-            seen_words = set()
-            tf_sentence = CounterDict()
-            for word in sentence:
-                word = word.lower()
-                tf_sentence[word] += 1
-                if word not in seen_words:
-                    df[word] += 1
-                    seen_words.add(word)
-            tf.append(tf_sentence)
-
-        idf = df.map(
-            lambda x: log(self.N/x, log_base)
-        )
-
-        return tf, idf
-
-
-class LexRank(TFIDF):
-    '''Subclass with methods specific to LexRank'''
 
     def __init__(self, **kwargs) -> None:
         raise AttributeError("LexRank cannot be instantiated on its own.\n"+
@@ -189,7 +166,6 @@ class LexRank(TFIDF):
                 if self.min_jaccard_dist is not None and too_similar:
                     i += 1
                     current_sentence = ranked_list['sentence'][i]
-                    print(current_sentence)
                     continue
                 else:
                     summary_ids.append(i)
