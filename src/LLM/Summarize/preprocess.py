@@ -25,18 +25,14 @@ def build_dataset(input_dict, dataset_type, args):
         input_texts = docset["text"] if not args.reordered else docset["reordered"]
         total_length = 0
         over_limit = False
-        whole_text = ""
-        if args.do_reorder:
-            whole_text = []
+        input_text_list = [] 
         for input_text in input_texts:
-            if over_limit:
-                break
-            new_doc, total_length, over_limit = mask_sentences(input_text, dataset_type, total_length,
-                                                               over_limit, docset["summary"], args)
-            if not args.do_reorder:
-                whole_text = whole_text + " " + new_doc
-            else:
-                whole_text.extend(new_doc)
+            input_text_list.extend(input_text)
+        
+        if dataset_type == "training":
+            whole_text, total_length, over_limit = mask_sentences(input_text, dataset_type, total_length, over_limit, docset["summary"], args)
+        else:
+            whole_text, total_length, over_limit = mask_sentences(input_text, dataset_type, total_length, over_limit, input_text_list, args)
 
         if dataset_type == "training" and not args.do_reorder:
             for count, summary in enumerate(docset["summary"]):
@@ -57,21 +53,21 @@ def build_dataset(input_dict, dataset_type, args):
 def mask_sentences(input_text, dataset_type, total_length, over_limit, gold_list, args):
     scores = get_sentence_score(input_text, dataset_type, gold_list, args)
     indexes = generate_index_list(len(input_text))
-    top_30 = [x for _, x in sorted(zip(scores, indexes))][:len(input_text) * 2 // 10]
-    low_50 = [x for _, x in sorted(zip(scores, indexes))][:len(input_text) * 5 // 10]
+    top_per = [x for _, x in sorted(zip(scores, indexes))][:len(input_text) * 2 // 10]
+    low_per = [x for _, x in sorted(zip(scores, indexes))][:len(input_text) * 3 // 10]
     output = "" if not args.do_reorder else []
     previous_mask = False
     for i in range(0, len(input_text)):
         if over_limit:
             break
-        if i in top_30 and dataset_type == "training" and args.do_mask:
-            if previous_mask:
+        if i in top_per and dataset_type == "training" and args.do_mask:
+            if previous_mask and args.do_previous_mask:
                 continue
             else:
                 output = output + " " + "[MASK]"
                 total_length += 1
                 previous_mask = True
-        elif i in low_50:
+        elif i in low_per and args.do_throw:
             continue
         else:
             token_length = len(word_tokenize(input_text[i]))
@@ -139,6 +135,16 @@ def main():
         "--do_reorder",
         action="store_true",
         help="Set this flag if you want to produce jsons for reordering.",
+    )
+    parser.add_argument(
+        "--do_throw",
+        action="store_true",
+        help="Set this flag if you want to throw sentences.",
+    )
+    parser.add_argument(
+        "--do_previous_mask",
+        action="store_false",
+        help="Set this flag if you do not want to have multiple mask to combine to a single one.",
     )
     parser.add_argument(
         "--reordered",
