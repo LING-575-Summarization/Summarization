@@ -7,6 +7,7 @@ from transformers import AutoTokenizer, Seq2SeqTrainingArguments, AutoModelForSe
 import evaluate
 from datasets import load_dataset, DatasetDict
 from nltk.tokenize import sent_tokenize
+from torch.nn import DataParallel
 
 import util
 
@@ -46,9 +47,7 @@ def pipeline(**kwargs):
     model = AutoModelForSeq2SeqLM.from_pretrained(kwargs["checkpoint"], config=config)
     model.resize_token_embeddings(len(tokenizer.vocab))
 
-    if not kwargs["do_train"]:
-        model.load_state_dict(torch.load(kwargs["model_file"], map_location=torch.device(device)))
-
+    model = DataParallel(model)
     model.to(device)
 
     data_collator = DataCollatorForSeq2Seq(tokenizer, model=model, padding="max_length", max_length=1024,
@@ -61,8 +60,8 @@ def pipeline(**kwargs):
         label_names=["labels"],
         learning_rate=kwargs["learning_rate"],
         num_train_epochs=kwargs["epoch"],
-        per_device_train_batch_size=1,
-        per_device_eval_batch_size=1,
+        per_device_train_batch_size=kwargs["batch_size"],
+        per_device_eval_batch_size=kwargs["batch_size"],
         evaluation_strategy="epoch",
         save_strategy="epoch",
         load_best_model_at_end=True,
@@ -112,7 +111,7 @@ def pipeline(**kwargs):
         trainer.save_model()
 
     # Start Evaluation
-    output_dir_path = util.get_root_dir() + "outputs/D3"
+    output_dir_path = util.get_root_dir() + "outputs/D4"
     Path(output_dir_path).mkdir(parents=True, exist_ok=True)
 
     final_validation_predictions = trainer.predict(ds_for_train["test"])

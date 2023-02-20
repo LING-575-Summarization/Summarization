@@ -4,7 +4,7 @@ from os.path import abspath, dirname
 
 def get_root_dir():
     result = dirname(abspath(__file__))
-    src = "/src/LLM"
+    src = "/src/LLM/Summarize"
     print(result)
     if result.endswith(src):
         result = result[:-len(src) + 1]
@@ -39,13 +39,13 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--output_dir",
         type=str,
-        default=get_root_dir() + "outputs/D3/LLM",
+        default=get_root_dir() + "outputs/D4/LLM",
         help="Path to store predictions",
     )
     parser.add_argument(
         "--result_dir",
         type=str,
-        default=get_root_dir() + "outputs/D3/",
+        default=get_root_dir() + "outputs/D4/",
         help="Path to store results"
     )
     parser.add_argument(
@@ -57,7 +57,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--checkpoint",
         type=str,
-        default="google/pegasus-cnn_dailymail",
+        default="junyinc/LING-575-WI-SUM",
         help="Which checkpoint to use."
     )
     parser.add_argument(
@@ -69,7 +69,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--batch_size",
         type=int,
-        default=8,
+        default=4,
         help="How many examples per batch"
     )
     parser.add_argument(
@@ -81,7 +81,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--raw_json_dir",
         type=str,
-        default="data/A_",
+        default="data/",
         help="Path to store predictions",
     )
     args, unknown = parser.parse_known_args()
