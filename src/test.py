@@ -7,15 +7,15 @@ def main():
     with open('data/devtest.json', 'r') as datafile:
         data = json.load(datafile).keys()
     for i, vector in enumerate(['tfidf', 'word2vec', 'bert']):
+        print(f"\n*** {vector}\n")
         LexRank = LexRankFactory(vector)
         for docset_id in tqdm(data):
             lx = LexRank.from_data(docset_id, 'data/devtest.json', 
                 sentences_are_documents=True,  min_length=5, min_jaccard_dist=0.6)
             result = lx.obtain_summary(detokenize=True)
-            spl = str(docset_id).split("-", maxsplit=1)
-            id0, id1 = spl[0], spl[1]
-            id0 = id0[:-1]
-            output_file = os.path.join('outputs', 'D4', f'{id0}-A.M.100.{id1}.{i+1}')
+            id0 = docset_id[0:5]
+            id1 = docset_id[-3]
+            output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i+1}')
             with open(output_file, 'w') as outfile:
                 outfile.write(result)
 
