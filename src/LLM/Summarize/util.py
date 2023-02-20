@@ -51,7 +51,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--epoch",
         type=int,
-        default=6,
+        default=12,
         help="Number of training epoch",
     )
     parser.add_argument(
@@ -69,13 +69,13 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--batch_size",
         type=int,
-        default=4,
+        default=6,
         help="How many examples per batch"
     )
     parser.add_argument(
         "--max_output_length",
         type=int,
-        default=100,
+        default=120,
         help="How many examples per batch"
     )
     parser.add_argument(
@@ -83,6 +83,12 @@ def get_args() -> argparse.Namespace:
         type=str,
         default="data/",
         help="Path to store predictions",
+    )
+    parser.add_argument(
+        "--revision",
+        type=str,
+        default="main",
+        help="Which Model tage should be used",
     )
     args, unknown = parser.parse_known_args()
     return args

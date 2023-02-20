@@ -19,7 +19,7 @@ def pipeline(**kwargs):
     ds = DatasetDict({"train": train_dataset, "test": test_dataset, "validation": eval_dataset})
 
     tokenizer = AutoTokenizer.from_pretrained(kwargs["checkpoint"], max_length=1024, padding="max_length",
-                                              truncation=True)
+                                              truncation=True, revision=kwargs["revision"])
 
     def tokenize__data(data):
         input_feature = tokenizer(data["text"], padding=True, truncation=True, max_length=1024)
@@ -42,9 +42,10 @@ def pipeline(**kwargs):
 
     config = AutoConfig.from_pretrained(
         kwargs["checkpoint"],
-        max_length=kwargs["max_output_length"]
+        max_length=kwargs["max_output_length"],
+        revision = kwargs["revision"]
     )
-    model = AutoModelForSeq2SeqLM.from_pretrained(kwargs["checkpoint"], config=config)
+    model = AutoModelForSeq2SeqLM.from_pretrained(kwargs["checkpoint"], config=config, revision = kwargs["revision"])
     model.resize_token_embeddings(len(tokenizer.vocab))
 
     model = DataParallel(model)
