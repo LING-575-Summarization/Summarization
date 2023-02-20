@@ -132,6 +132,7 @@ class LexRank(DocumentToVectors):
     def obtain_summary(
             self, 
             max_tokens: Optional[int] = 100,
+            topk_sentences: Optional[int] = 25,
             detokenize: Optional[Union[Callable, bool]] = False
         ) -> Union[str, List[List[str]]]:
         '''
@@ -139,6 +140,7 @@ class LexRank(DocumentToVectors):
         and then selecting sentences until it reaches the max number of words
         Arguments:
             - max_words: max tokens in the summary
+            - topk_sentences: consider only sentences in the topk for the summary
             - detokenize: whether to combine the tokens into a typical English sentence
                 or leave as a list of whitespace delimited tokens. The decorator 
                 wrap_detokenizer transforms the tokenize bool into a function behind the scenes
@@ -154,7 +156,7 @@ class LexRank(DocumentToVectors):
             i = 0
             summary_ids = []
             current_sentence = first_sentence
-            while words < max_tokens and i < ranked_list.shape[0]:
+            while words < max_tokens and i < min(topk_sentences, ranked_list.shape[0]):
                 if self.min_jaccard_dist is not None:
                     too_similar = False
                     for previous_sent_id in summary_ids:

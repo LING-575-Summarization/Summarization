@@ -123,6 +123,7 @@ class DocumentToVectors(VectorModel):
         cls, 
         datafile: Path, 
         documentset: Optional[str] = None,
+        eval_docset: Optional[str] = None,
         sentences_are_documents: Optional[bool] = False,
         **kwargs
     ):
@@ -138,8 +139,16 @@ class DocumentToVectors(VectorModel):
             - kwargs: arguments specific to the DocumentToVectors class (e.g., reduction for 
               word2vec)
         '''
-        if documentset:
+        if documentset and eval_docset is None:
             documents, indices = docset_loader(datafile, documentset, sentences_are_documents)
+        elif documentset is not None and eval_docset is not None:
+            if "TFIDF" in cls.__name__:
+                documents, _ = dataset_loader(datafile, sentences_are_documents)
+                eval_documents, indices = docset_loader(
+                    datafile, eval_docset, sentences_are_documents)
+                kwargs['eval_documents'] = eval_documents
+            else:
+                raise TypeError("eval_docset is only a valid argument for DocumentToTFIDF")
         else:
             documents, indices = dataset_loader(datafile, sentences_are_documents)
         return cls(documents=documents, indices=indices, **kwargs)

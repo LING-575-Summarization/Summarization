@@ -2,16 +2,46 @@ from vectorizer import *
 from tqdm import tqdm
 import json, os
 from content_selection.lexrank import LexRankFactory
+from dataclasses import dataclass
+
+@dataclass
+class Experiment:
+    idf_level: str
+    ngram: int
+    delta_idf: float
+    log_tf: bool
+
+    def as_dict(self):
+        x = self.__dict__
+        m = x.pop('idf_level')
+        l = False if m == "sentence" else True
+        return x, l
+
+EXPERIMENTS = [
+    Experiment("sentence", 1, 0., False),
+    Experiment("documset", 1, 0., False),
+    Experiment("sentence", 2, 0., False),
+    Experiment("documset", 2, 0., False),
+    Experiment("sentence", 1, 0.7, False), 
+    Experiment("documset", 1, 0.7, False), 
+    Experiment("sentence", 1, 0., True), 
+    Experiment("documset", 1, 0., True), 
+]
+
 
 def main():
     with open('data/devtest.json', 'r') as datafile:
         data = json.load(datafile).keys()
-    for i, vector in enumerate(['tfidf', 'word2vec', 'bert']):
-        print(f"\n*** {vector}\n")
-        LexRank = LexRankFactory(vector)
+    LexRank = LexRankFactory('tfidf')
+    for i, expt in enumerate(EXPERIMENTS):
+        args, idf_docset = expt.as_dict()
         for docset_id in tqdm(data):
-            lx = LexRank.from_data(docset_id, 'data/devtest.json', 
-                sentences_are_documents=True,  min_length=5, min_jaccard_dist=0.6)
+            if idf_docset:
+                lx = LexRank.from_data(datafile='data/devtest.json', eval_docset=docset_id,
+                    sentences_are_documents=True, min_length=5, min_jaccard_dist=0.6, **args)
+            else:
+                lx = LexRank.from_data(datafile='data/devtest.json', documentset=docset_id,
+                    sentences_are_documents=True, min_length=5, min_jaccard_dist=0.6, **args)
             result = lx.obtain_summary(detokenize=True)
             id0 = docset_id[0:5]
             id1 = docset_id[-3]
