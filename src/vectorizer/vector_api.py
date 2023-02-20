@@ -82,8 +82,14 @@ class DocumentToVectors(VectorModel):
             - i: document index i 
             - j: document index j
         '''
-        v_i, v_j = self[i], self[j]
-        return np.dot(v_i, v_j)/(np.linalg.norm(v_i) * np.linalg.norm(v_j))
+        if i == j:
+            return 0.
+        else:
+            v_i, v_j = self[i], self[j]
+        if np.sum(v_i) == 0. or np.sum(v_j) == 0.:
+            return 0.
+        else:
+            return np.dot(v_i, v_j)/(np.linalg.norm(v_i) * np.linalg.norm(v_j))
 
 
     def similarity_matrix(self, normalize: Optional[bool] = False) -> np.ndarray:
