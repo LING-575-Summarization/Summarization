@@ -55,7 +55,7 @@ def build_dataset(input_dict, dataset_type, args):
 
 
 def mask_sentences(input_text, dataset_type, total_length, over_limit, gold_list, args):
-    scores = get_sentence_score(input_text, dataset_type, gold_list)
+    scores = get_sentence_score(input_text, dataset_type, gold_list, args)
     indexes = generate_index_list(len(input_text))
     top_30 = [x for _, x in sorted(zip(scores, indexes))][:len(input_text) * 2 // 10]
     low_50 = [x for _, x in sorted(zip(scores, indexes))][:len(input_text) * 5 // 10]
@@ -98,14 +98,14 @@ def generate_index_list(size: int):
     return output
 
 
-def get_sentence_score(input_text, dataset_type, gold_list):
+def get_sentence_score(input_text, dataset_type, gold_list, args):
     score = []
     for i in range(0, len(input_text)):
         current_sentence = input_text[i]
         if dataset_type == "training":
             score_list = []
             for gold_summary in gold_list:
-                score_list.append(cal_metric(current_sentence, gold_summary.strip())["rouge1"].fmeasure)
+                score_list.append(cal_metric(current_sentence, gold_summary.strip())[args.rouge].fmeasure)
             score.append(sum(score_list) / len(score_list))
         else:
             gold = ""
@@ -113,7 +113,7 @@ def get_sentence_score(input_text, dataset_type, gold_list):
                 new_sentence = input_text[j].strip()
                 if j != i:
                     gold = gold + "\n" + new_sentence
-            score.append(cal_metric(current_sentence, gold.strip())["rouge1"].fmeasure)
+            score.append(cal_metric(current_sentence, gold.strip())[args.rouge].fmeasure)
     return score
 
 
@@ -133,7 +133,7 @@ def main():
     )
 
     parser.add_argument(
-        "--rouge", default="rouge1", type=str, help="Which rouge you want to use"
+        "--rouge", default="rouge2", type=str, help="Which rouge you want to use"
     )
     parser.add_argument(
         "--do_reorder",
@@ -157,6 +157,7 @@ def main():
         help="Set this flag if you want to do the masking.",
     )
     args, unknown = parser.parse_known_args()
+    print(args)
 
     dir_prefix = util.get_root_dir() + args.raw_json_dir
     dataset = dict()
