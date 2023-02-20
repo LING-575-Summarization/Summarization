@@ -240,7 +240,7 @@ def main():
     )
     parser.add_argument(
         "--model_name",
-        default="bart-large",
+        default="facebook/bart-base",
         type=str,
         help="LM checkpoint for initialization.",
     )

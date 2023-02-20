@@ -111,7 +111,7 @@ def main() -> None:
         help="Which part of the dataset to load.",
     )
 
-    args = parser.parse_args()
+    args, unknown = parser.parse_known_args()
     logger.debug(args)
 
     if (
@@ -129,7 +129,7 @@ def main() -> None:
         if torch.cuda.is_available()
         else "cpu"
     )
-    logger.debug(f"Initializing {args.device}")
+    logger.debug(f"Initializing {device}")
 
     tokenizer, model = init_model(args.model_name_or_path, device)
 

@@ -75,7 +75,7 @@ def mask_sentences(input_text, dataset_type, total_length, over_limit, gold_list
             continue
         else:
             token_length = len(word_tokenize(input_text[i]))
-            if total_length + token_length > 1024:
+            if total_length + token_length > args.max_length:
                 over_limit = True
                 break
             if not args.do_reorder:
@@ -148,6 +148,12 @@ def main():
     parser.add_argument(
         "--do_mask",
         action="store_true",
+        help="Set this flag if you want to do the masking.",
+    )
+    parser.add_argument(
+        "--max_length",
+        type=int,
+        default=1024,
         help="Set this flag if you want to do the masking.",
     )
     args, unknown = parser.parse_known_args()
