@@ -1,17 +1,18 @@
 from .vector_api import VectorModel, DocumentToVectors
 from utils import CounterDict
-import numpy as np
+from nltk.util import ngrams
 from math import log
 import re
+from tqdm import tqdm
 from copy import deepcopy
 from typing import *
 
 
 # FOR TF-IDF, what you need to do is generate one hot vectors and create a matrix that way
-# TODO: Add all the specification details from tfidf
+# TODO: Add more specification details from tfidf
 
 
-def create_idf_dictionary(documents: List[List[str]]) -> Dict[str, float]:
+def create_idf_dictionary(documents: List[List[str]], delta_idf: float) -> Dict[str, float]:
     '''
     Create an inverse document frequency dictionary from a list of documents
     '''
@@ -21,7 +22,7 @@ def create_idf_dictionary(documents: List[List[str]]) -> Dict[str, float]:
         for word in doc:
             if word not in seen_words:
                 dictionary[word] += 1
-    dictionary = dictionary.map(lambda x: log(len(documents)/x))
+    dictionary = dictionary.map(lambda x: log(len(documents)/(x + delta_idf)) + delta_idf)
     return dictionary
 
 
@@ -30,32 +31,40 @@ class TFIDFModel(VectorModel):
             self, 
             documents: List[List[str]],
             ignore_punctuation: bool = True,
-            lowercase: bool = True
+            lowercase: bool = True,
+            ngram: int = 1,
+            delta_idf: float = 0.7,
+            log_tf: bool = False
         ) -> None:
         '''
-        Instantiate a TFIDF dictionary from the Google News Corpus and select
-        a reduction method to turn a sentence into a single vector (default is centroid)
-        Also instantiates a Fasttext model to account for unseen vocabulary items
-        This implementation uses log IDF scores with smoothing
+        Instantiate a TFIDF dictionary from the provided data
         Args:
             - documents: The documents with which you build a TF-IDF matrix
-            - reduction: Takes a list of word vectors (numpy arrays) and obtains
-              a sentence-level representational vector
-                - centroid: average all the word vectors in the sentence
-                - normalized_mean: normalize the vectors with L2 norm then
-                  average all the word vectors in the sentence 
-                - normalized_sum: normalize the vectors with L2 norm then
-                  sum all the word vectors in the sentence 
+            - ignore_punctuation: whether to include or eliminate punctuation
+            - lowercase: whether to lowercase the words
+            - ngram: whether to use ngram of 1, 2, or 3, default is 1
+            - log_idf: whether to take the log of the IDF value or not
+            - smoothing: whether to perform smoothing or not
+            - delta_idf: IDF smoothing value
         '''
         docs = deepcopy(documents)
         self.ignore_punctuation, self.lowercase = ignore_punctuation, lowercase
+        self.delta_idf = delta_idf
+        self.log_tf = log_tf
+        self.ngram = ngram
+        process_docs = self._preprocess(docs)
+        self.idf = create_idf_dictionary(process_docs, self.delta_idf)
 
+
+    def _preprocess(self, docs):
         if self.ignore_punctuation:
             docs = [[w for w in doc if re.search(r'\w', w)] for doc in docs]
         if self.lowercase:
             docs = [[w.lower() for w in doc] for doc in docs]
-
-        self.idf = create_idf_dictionary(docs)
+        if self.ngram > 1:
+            docs = [ngrams(doc, self.ngram) for doc in docs]
+            docs = [[str(tup) for tup in doc] for doc in docs]
+        return docs
 
 
     def vectorize_sentence(self, sentence: List[str]) -> Dict[str, float]:
@@ -67,13 +76,16 @@ class TFIDFModel(VectorModel):
             - dictionary that maps words to tfidf values
         '''
         tf = CounterDict(keys=list(self.idf.keys()))
+        if self.ngram > 1:
+            sentence = [str(tup) for tup in ngrams(sentence, self.ngram)]
         for _word in sentence:
             if self.ignore_punctuation and re.search(r'\w', _word) is None:
                 continue
             word = _word.lower() if self.lowercase else _word
             if word in tf:
                 tf[word] += 1
-        tfidf = tf * self.idf
+        tf = tf if not self.log_tf else tf.map(lambda x: log(1 + x))
+        tfidf = tf * self.idf 
         tfidf_vector = tfidf.to_numpy()
         return tfidf_vector
     
@@ -90,7 +102,17 @@ class DocumentToTFIDF(DocumentToVectors, TFIDFModel):
         Override metaclass __init__ method since DocumentToTFIDF takes additional arguments
         '''
         TFIDFModel.__init__(self, documents, **kwargs)
-        eval_docs = eval_documents if eval_documents else documents
+        eval_docs = eval_documents if eval_documents is not None else documents
+        docs = []
+        for doc in tqdm(eval_docs, leave=False, desc="Calculating vectors"):
+            docs.append(self.vectorize_sentence(doc))
+        self.document_vectors = docs
+        self.N = len(eval_docs)
+        self.indices = indices
+
+
+    def replace_evaldocs(self, eval_documents, indices):
+        eval_docs = eval_documents
         self.document_vectors = [self.vectorize_sentence(doc) for doc in eval_docs]
         self.N = len(eval_docs)
         self.indices = indices

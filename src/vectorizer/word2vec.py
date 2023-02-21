@@ -66,7 +66,10 @@ class Word2VecModel(VectorModel):
             if word in self.model:
                 vec = self.model[word]
                 list_of_word_vectors.append(vec)
-        return self.reduction_fn(list_of_word_vectors)
+        if len(list_of_word_vectors) != 0:
+            return self.reduction_fn(list_of_word_vectors)
+        else:
+            return np.zeros(self.vector_size, dtype=np.float32)
     
 
 class DocumentToWord2Vec(DocumentToVectors, Word2VecModel):

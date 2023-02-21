@@ -1,15 +1,17 @@
 from .vector_api import VectorModel, DocumentToVectors
-from transformers import DistilBertForMaskedLM, DistilBertTokenizerFast
+from transformers import DistilBertModel, DistilBertTokenizerFast, logging
 import torch
 import numpy as np
 from typing import *
+
+logging.set_verbosity_warning() 
 
 '''
 Citations:
 - Huggingface (https://huggingface.co/docs/transformers/model_doc/distilbert)
 '''
 
-class DistilBertModel(VectorModel):
+class DistilBERTModel(VectorModel):
     def __init__(self) -> None:
         '''
         Instantiate a DistilBert model and tokenizer to obtain the [CLS] token from the sentence
@@ -19,7 +21,7 @@ class DistilBertModel(VectorModel):
         self.tokenizer = DistilBertTokenizerFast.from_pretrained(
             "distilbert-base-uncased"
         )
-        self.model = DistilBertForMaskedLM.from_pretrained(
+        self.model = DistilBertModel.from_pretrained(
             "distilbert-base-uncased",
             output_hidden_states=True
         )
@@ -44,12 +46,12 @@ class DistilBertModel(VectorModel):
             add_special_tokens=True
         )
         with torch.no_grad():
-            hidden_states = self.model(**tokenized_sentence).hidden_states
-        cls_token = hidden_states[0][:, 1].squeeze().numpy()
+            last_hidden_states = self.model(**tokenized_sentence).last_hidden_state
+        cls_token = np.mean(last_hidden_states[0][:, 1].squeeze().numpy(), axis=-1)
         return cls_token
     
 
-class DocumentToDistilBert(DocumentToVectors, DistilBertModel):
+class DocumentToDistilBert(DocumentToVectors, DistilBERTModel):
     pass
     
 
