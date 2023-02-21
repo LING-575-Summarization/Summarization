@@ -24,11 +24,10 @@ def main():
     evalfiles = get_summaries(MODEL_ROOT)
     summfiles = get_summaries(PEER_ROOT)
 
-    base_eval_ids = set(map(lambda x: x[:-2], summfiles.keys()))
-    base_summ_ids = set(map(lambda x: x[:-2], evalfiles.keys()))
+    l = len("D1046-A.M.100.H.5")
 
-    print(base_eval_ids)
-    print(base_summ_ids)
+    base_eval_ids = set(map(lambda x: x[:-2], summfiles.keys()))
+    base_summ_ids = set(map(lambda x: x[:-2-(len(x)-l)], evalfiles.keys()))
 
     assert len(base_eval_ids) == len(base_summ_ids)
     assert base_eval_ids == base_summ_ids
