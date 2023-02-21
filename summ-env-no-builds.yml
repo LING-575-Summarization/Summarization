@@ -1,0 +1,15 @@
+name: summarization
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - gensim
+  - pandas
+  - pytorch==1.12.1
+  - nltk
+  - transformers
+  - pulp
+  - py-rouge
+  - numpy
+  - librosa

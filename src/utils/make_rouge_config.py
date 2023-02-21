@@ -3,8 +3,8 @@ import re
 from pathlib import Path
 from collections import OrderedDict
 
-PEER_ROOT = '../repo/outputs/D4'
-MODEL_ROOT = '../repo/devtest/'
+PEER_ROOT = 'repo/outputs/D4'
+MODEL_ROOT = '/dropbox/22-23/575x/Data/models/devtest/'
 
 
 def get_summaries(directory: Path):
@@ -19,13 +19,17 @@ def get_summaries(directory: Path):
 def main():
     '''Makes a ROUGE XML file'''
 
-    outxml = open('../rouge/rouge_run.xml', 'w')
+    outxml = open('rouge/rouge_run.xml', 'w')
 
     evalfiles = get_summaries(MODEL_ROOT)
     summfiles = get_summaries(PEER_ROOT)
 
     base_eval_ids = set(map(lambda x: x[:-2], summfiles.keys()))
     base_summ_ids = set(map(lambda x: x[:-2], evalfiles.keys()))
+
+    print(base_eval_ids)
+    print(base_summ_ids)
+
     assert len(base_eval_ids) == len(base_summ_ids)
     assert base_eval_ids == base_summ_ids
     basefileids = sorted(list(base_summ_ids))
