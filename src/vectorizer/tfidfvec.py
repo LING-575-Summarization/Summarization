@@ -3,6 +3,7 @@ from utils import CounterDict
 from nltk.util import ngrams
 from math import log
 import re
+from tqdm import tqdm
 from copy import deepcopy
 from typing import *
 
@@ -61,7 +62,8 @@ class TFIDFModel(VectorModel):
         if self.lowercase:
             docs = [[w.lower() for w in doc] for doc in docs]
         if self.ngram > 1:
-            docs = [str(ngrams(doc, self.ngram)) for doc in docs]
+            docs = [ngrams(doc, self.ngram) for doc in docs]
+            docs = [[str(tup) for tup in doc] for doc in docs]
         return docs
 
 
@@ -74,13 +76,16 @@ class TFIDFModel(VectorModel):
             - dictionary that maps words to tfidf values
         '''
         tf = CounterDict(keys=list(self.idf.keys()))
+        if self.ngram > 1:
+            sentence = [str(tup) for tup in ngrams(sentence, self.ngram)]
         for _word in sentence:
             if self.ignore_punctuation and re.search(r'\w', _word) is None:
                 continue
             word = _word.lower() if self.lowercase else _word
             if word in tf:
                 tf[word] += 1
-        tfidf = tf * self.idf if not self.log_tf else log(1 + tf) * self.idf
+        tf = tf if not self.log_tf else tf.map(lambda x: log(1 + x))
+        tfidf = tf * self.idf 
         tfidf_vector = tfidf.to_numpy()
         return tfidf_vector
     
@@ -97,10 +102,17 @@ class DocumentToTFIDF(DocumentToVectors, TFIDFModel):
         Override metaclass __init__ method since DocumentToTFIDF takes additional arguments
         '''
         TFIDFModel.__init__(self, documents, **kwargs)
-        if eval_documents:
-            eval_docs = self._preprocess(eval_documents) 
-        else:
-            eval_docs = documents
+        eval_docs = eval_documents if eval_documents is not None else documents
+        docs = []
+        for doc in tqdm(eval_docs, leave=False, desc="Calculating vectors"):
+            docs.append(self.vectorize_sentence(doc))
+        self.document_vectors = docs
+        self.N = len(eval_docs)
+        self.indices = indices
+
+
+    def replace_evaldocs(self, eval_documents, indices):
+        eval_docs = eval_documents
         self.document_vectors = [self.vectorize_sentence(doc) for doc in eval_docs]
         self.N = len(eval_docs)
         self.indices = indices

@@ -1,6 +1,7 @@
 from vectorizer import *
 from tqdm import tqdm
 import json, os
+from utils import docset_loader
 from content_selection.lexrank import LexRankFactory
 from dataclasses import dataclass
 
@@ -18,16 +19,15 @@ class Experiment:
         return x, l
 
 EXPERIMENTS = [
-    Experiment("sentence", 1, 0., False),
-    Experiment("documset", 1, 0., False),
-    Experiment("sentence", 2, 0., False),
-    Experiment("documset", 2, 0., False),
-    Experiment("sentence", 1, 0.7, False), 
-    Experiment("documset", 1, 0.7, False), 
+    # Experiment("sentence", 1, 0., False),
+    # Experiment("documset", 1, 0., False),
+    # Experiment("sentence", 2, 0., False),
+    # Experiment("documset", 2, 0., False),
+    # Experiment("sentence", 1, 0.7, False), 
+    # Experiment("documset", 1, 0.7, False), 
     Experiment("sentence", 1, 0., True), 
     Experiment("documset", 1, 0., True), 
 ]
-
 
 def main():
     with open('data/devtest.json', 'r') as datafile:
@@ -35,19 +35,30 @@ def main():
     LexRank = LexRankFactory('tfidf')
     for i, expt in enumerate(EXPERIMENTS):
         args, idf_docset = expt.as_dict()
-        for docset_id in tqdm(data):
-            if idf_docset:
-                lx = LexRank.from_data(datafile='data/devtest.json', eval_docset=docset_id,
-                    sentences_are_documents=True, min_length=5, min_jaccard_dist=0.6, **args)
-            else:
+        if idf_docset:
+            lx = LexRank.from_data(datafile='data/devtest.json', sentences_are_documents=True,
+                                    min_length=7, min_jaccard_dist=0.6, **args)
+            for docset_id in tqdm(data, desc="Evaluating documents"):
+                docset, indices = docset_loader(
+                    'data/devtest.json', docset_id, sentences_are_documents=True)
+                lx.replace_evaldocs(docset, indices)
+                result = lx.obtain_summary(detokenize=True)
+                id0 = docset_id[0:5]
+                id1 = docset_id[-3]
+                output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i+1}')
+                with open(output_file, 'w') as outfile:
+                    outfile.write(result)
+        else:
+            for docset_id in tqdm(data, desc="Evaluating documents"):
                 lx = LexRank.from_data(datafile='data/devtest.json', documentset=docset_id,
                     sentences_are_documents=True, min_length=5, min_jaccard_dist=0.6, **args)
-            result = lx.obtain_summary(detokenize=True)
-            id0 = docset_id[0:5]
-            id1 = docset_id[-3]
-            output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i+1}')
-            with open(output_file, 'w') as outfile:
-                outfile.write(result)
+                result = lx.obtain_summary(detokenize=True)
+                id0 = docset_id[0:5]
+                id1 = docset_id[-3]
+                output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i+1}')
+                with open(output_file, 'w') as outfile:
+                    outfile.write(result)
+            
 
 if __name__ == '__main__':
     main()
