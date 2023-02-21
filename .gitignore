@@ -167,3 +167,6 @@ results/**
 **/.DS_Store
 data/**
 data
+bin/**
+.vscode/**
+log/**
