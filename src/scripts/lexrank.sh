@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python src/test.py
+python src/run_lexrank.py $1
