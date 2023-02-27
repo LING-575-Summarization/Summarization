@@ -3,8 +3,8 @@ import re
 from pathlib import Path
 from collections import OrderedDict
 
-PEER_ROOT = 'repo/outputs/D4'
-MODEL_ROOT = '/dropbox/22-23/575x/Data/models/devtest/'
+PEER_ROOT = 'repo/outputs/D4-lexrank'
+MODEL_ROOT = 'eval/devtest'
 
 
 def get_summaries(directory: Path):
@@ -29,12 +29,6 @@ def main():
     base_eval_ids = set(map(lambda x: x[:-2-(len(x)-l)], summfiles.keys()))
     base_summ_ids = set(map(lambda x: x[:-2], evalfiles.keys()))
 
-<<<<<<< HEAD
-    print(base_eval_ids)
-    print(base_summ_ids)
-
-=======
->>>>>>> lexrank-eval
     assert len(base_eval_ids) == len(base_summ_ids)
     assert base_eval_ids == base_summ_ids
     basefileids = sorted(list(base_summ_ids))
