@@ -3,6 +3,17 @@ from utils import flatten_list
 from collections import OrderedDict
 from typing import *
 from pathlib import Path
+import os
+import re
+
+def get_summaries(directory: Path, docset_id: Optional[str] = None):
+    eval_files = OrderedDict()
+    pattern = re.compile(f'{docset_id}\.\w') if docset_id else r'D10\d\d-A\.M\.100\.\w\.\w'
+    for filename in os.listdir(directory):
+        if re.search(pattern, filename):
+            with open(os.path.join(directory, filename), 'r', encoding='cp1252') as summary:
+                eval_files[filename] = summary.read()
+    return eval_files
 
 
 def docset_loader(

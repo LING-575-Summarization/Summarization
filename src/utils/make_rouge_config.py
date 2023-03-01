@@ -1,19 +1,8 @@
-import os
-import re
-from pathlib import Path
-from collections import OrderedDict
+from .document_set_loader import get_summaries
+
 
 PEER_ROOT = 'repo/outputs/D4-lexrank'
 MODEL_ROOT = 'eval/devtest'
-
-
-def get_summaries(directory: Path):
-    eval_files = OrderedDict()
-    for filename in os.listdir(directory):
-        if re.search(r'D10\d\d-A\.M\.100\.\w\.\w', filename):
-            with open(os.path.join(directory, filename), 'r', encoding='cp1252') as summary:
-                eval_files[filename] = summary.read()
-    return eval_files
 
 
 def main():
