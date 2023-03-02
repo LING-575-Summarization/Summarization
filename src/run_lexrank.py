@@ -1,9 +1,14 @@
 from vectorizer import *
 from tqdm import tqdm
 import json, os
+<<<<<<< HEAD
 from utils import docset_loader, flatten_list, detokenize_list_of_tokens
 from content_selection.lexrank import LexRankFactory
 from content_realization import replace_referents
+=======
+from utils import docset_loader
+from content_selection.lexrank import LexRankFactory
+>>>>>>> 4096c18 (more lexrank changes)
 from dataclasses import dataclass
 
 @dataclass

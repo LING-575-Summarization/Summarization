@@ -1,4 +1,4 @@
-from .document_set_loader import get_summaries
+from document_set_loader import get_summaries
 
 
 PEER_ROOT = 'repo/outputs/D4-lexrank'

@@ -11,7 +11,6 @@ from typing import *
 
 
 # FOR TF-IDF, what you need to do is generate one hot vectors and create a matrix that way
-# TODO: Add more specification details from tfidf
 
 STOPWORDS = stopwords.words('english')
 
@@ -35,7 +34,7 @@ class TFIDFModel(VectorModel):
             self, 
             documents: List[List[str]],
             ignore_punctuation: bool = True,
-            ignore_stopwods: bool = False,
+            ignore_stopwords: bool = False,
             lowercase: bool = True,
             ngram: int = 1,
             delta_idf: float = 0.7,
@@ -53,8 +52,9 @@ class TFIDFModel(VectorModel):
             - delta_idf: IDF smoothing value
         '''
         docs = deepcopy(documents)
-        self.ignore_punctuation, self.lowercase = ignore_punctuation, lowercase
-        self.ignore_stopwords = ignore_stopwods
+        self.ignore_punctuation = ignore_punctuation
+        self.lowercase = lowercase
+        self.ignore_stopwords = ignore_stopwords
         self.delta_idf = delta_idf
         self.log_tf = log_tf
         self.ngram = ngram
@@ -68,7 +68,7 @@ class TFIDFModel(VectorModel):
         if self.lowercase:
             docs = [[w.lower() for w in doc] for doc in docs]
         if self.ignore_stopwords:
-            docs = [[w for w in doc if w in STOPWORDS] for doc in docs]
+            docs = [[w for w in doc if w not in stopwords] for doc in docs]
         if self.ngram > 1:
             docs = [ngrams(doc, self.ngram) for doc in docs]
             docs = [[str(tup) for tup in doc] for doc in docs]

@@ -1,5 +1,6 @@
 from .vector_api import VectorModel, DocumentToVectors
 from transformers import DistilBertModel, DistilBertTokenizerFast, logging
+from nltk.tokenize.treebank import TreebankWordDetokenizer
 import torch
 import numpy as np
 from typing import *
@@ -10,6 +11,8 @@ logging.set_verbosity_warning()
 Citations:
 - Huggingface (https://huggingface.co/docs/transformers/model_doc/distilbert)
 '''
+
+DETOKENIZER = TreebankWordDetokenizer()
 
 class DistilBERTModel(VectorModel):
     def __init__(self) -> None:
@@ -37,7 +40,7 @@ class DistilBERTModel(VectorModel):
         Returns:
             - 1 dimensional np.ndarray of floats
         '''
-        sentence_as_string = " ".join(sentence)
+        sentence_as_string = DETOKENIZER.detokenize(sentence)
         tokenized_sentence = self.tokenizer(
             sentence_as_string, 
             return_tensors='pt', 

@@ -1,5 +1,5 @@
 import json
-from utils import flatten_list
+from processing_utils import flatten_list
 from collections import OrderedDict
 from typing import *
 from pathlib import Path
@@ -55,7 +55,8 @@ def docset_loader(
 
 def dataset_loader(
         datafile: Path, 
-        sentences_are_documents: Optional[bool] = False
+        sentences_are_documents: Optional[bool] = False,
+        return_dict: Optional[bool] = False
     ) -> Tuple[List[List[str]], Dict[str, int]]:
     '''
     Read the whole data file as a list of documents. Docsets are ignored. This function
@@ -65,23 +66,37 @@ def dataset_loader(
         - sentences_are_documents: Whether to consider sentences as documents. If True,
           the function returns a list of sentences for all docs in the docset. If False,
           the function returns a list of tokenized documents for all docs in the docset.
+        - Whether to return the documents as a dictionary of docsets to documents
     Returns:
         - Tuple: a list of all documents in the dataset and indices to reference those documents
     '''
     with open(datafile, 'r') as dfilestream:
         data = json.load(dfilestream)
-    alldocuments, indexes = [], OrderedDict()
-    for docset_id, docset in data.items():
-        for i, (doc_id, document) in enumerate(docset.items()):
-            if sentences_are_documents:
-                doc_as_sentences = [flatten_list(d) for d in document[-1]]
-                for j in range(len(doc_as_sentences)):
-                    index_key = docset_id + "." + str(j)
-                    indexes[index_key] = doc_as_sentences[j]
-                alldocuments.extend(doc_as_sentences)
-            else:
-                alldocuments.append(flatten_list([flatten_list(d) for d in document[-1]]))
-                index_key = docset_id + "." + doc_id
-                indexes[index_key] = i
+    if return_dict:
+        alldocuments = OrderedDict()
+        for docset_id, docset in data.items():
+            for doc_id, document in docset.items():
+                if sentences_are_documents:
+                    for j, d in enumerate(document[-1]):
+                        index_key = docset_id + "." + str(j)
+                        alldocuments[index_key] = d
+                else:
+                    index_key = docset_id + "." + doc_id
+                    alldocuments[index_key] = flatten_list([flatten_list(d) for d in document[-1]])
+        indexes = None
+    else:
+        alldocuments, indexes = [], OrderedDict()
+        for docset_id, docset in data.items():
+            for i, (doc_id, document) in enumerate(docset.items()):
+                if sentences_are_documents:
+                    doc_as_sentences = [flatten_list(d) for d in document[-1]]
+                    for j in range(len(doc_as_sentences)):
+                        index_key = docset_id + "." + str(j)
+                        indexes[index_key] = len(alldocuments) + j
+                    alldocuments.extend(doc_as_sentences)
+                else:
+                    alldocuments.append(flatten_list([flatten_list(d) for d in document[-1]]))
+                    index_key = docset_id + "." + doc_id
+                    indexes[index_key] = i
     return alldocuments, indexes
     
