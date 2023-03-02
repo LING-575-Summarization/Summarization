@@ -86,16 +86,7 @@ class TFIDFModel(VectorModel):
         tf = CounterDict(keys=list(self.idf.keys()))
         if self.ngram > 1:
             sentence = [str(tup) for tup in ngrams(sentence, self.ngram)]
-<<<<<<< HEAD
         for word in sentence:
-=======
-        for _word in sentence:
-            if self.ignore_punctuation and re.search(r'\w', _word) is None:
-                continue
-            if self.ignore_stopwords and _word in STOPWORDS:
-                continue
-            word = _word.lower() if self.lowercase else _word
->>>>>>> ec204e5 (added stopwords elimination)
             if word in tf:
                 tf[word] += 1
         tf = tf if not self.log_tf else tf.map(lambda x: log(1 + x))
