@@ -78,10 +78,7 @@ class TFIDFModel(VectorModel):
         tf = CounterDict(keys=list(self.idf.keys()))
         if self.ngram > 1:
             sentence = [str(tup) for tup in ngrams(sentence, self.ngram)]
-        for _word in sentence:
-            if self.ignore_punctuation and re.search(r'\w', _word) is None:
-                continue
-            word = _word.lower() if self.lowercase else _word
+        for word in sentence:
             if word in tf:
                 tf[word] += 1
         tf = tf if not self.log_tf else tf.map(lambda x: log(1 + x))
@@ -96,6 +93,7 @@ class DocumentToTFIDF(DocumentToVectors, TFIDFModel):
             documents: List[List[str]], 
             indices: Dict[str, int],
             eval_documents: Optional[List[List[str]]] = None, 
+            do_evaluate: bool = True,
             **kwargs
         ) -> None:
         '''
@@ -104,18 +102,25 @@ class DocumentToTFIDF(DocumentToVectors, TFIDFModel):
         TFIDFModel.__init__(self, documents, **kwargs)
         eval_docs = eval_documents if eval_documents is not None else documents
         docs = []
-        for doc in tqdm(eval_docs, leave=False, desc="Calculating vectors"):
-            docs.append(self.vectorize_sentence(doc))
+        if do_evaluate:
+            for doc in tqdm(eval_docs, leave=False, desc="Calculating vectors"):
+                docs.append(self.vectorize_sentence(doc))
         self.document_vectors = docs
         self.N = len(eval_docs)
         self.indices = indices
 
 
     def replace_evaldocs(self, eval_documents, indices):
-        eval_docs = eval_documents
-        self.document_vectors = [self.vectorize_sentence(doc) for doc in eval_docs]
+        if hasattr(self, 'raw_docs'):
+            self.raw_docs = eval_documents
+        eval_docs = self._preprocess(eval_documents)
+        docs = []
+        for doc in tqdm(eval_docs, leave=False, desc="Calculating vectors"):
+            docs.append(self.vectorize_sentence(doc))
+        self.document_vectors = docs
         self.N = len(eval_docs)
         self.indices = indices
+        return self
     
 
 if __name__ == '__main__':
