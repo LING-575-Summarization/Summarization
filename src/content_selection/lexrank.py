@@ -132,6 +132,7 @@ class LexRank(DocumentToVectors):
     def obtain_summary(
             self, 
             max_tokens: Optional[int] = 100,
+            topk_sentences: Optional[int] = 25,
             detokenize: Optional[Union[Callable, bool]] = False
         ) -> Union[str, List[List[str]]]:
         '''
@@ -139,11 +140,13 @@ class LexRank(DocumentToVectors):
         and then selecting sentences until it reaches the max number of words
         Arguments:
             - max_words: max tokens in the summary
+            - topk_sentences: consider only sentences in the topk for the summary
             - detokenize: whether to combine the tokens into a typical English sentence
                 or leave as a list of whitespace delimited tokens. The decorator 
                 wrap_detokenizer transforms the tokenize bool into a function behind the scenes
         '''
         ranked_list = self.solve_lexrank('pandas')
+<<<<<<< HEAD
         first_sentence = ranked_list['sentence'][0]
         words = len(first_sentence)
         if words >= max_tokens: 
@@ -178,6 +181,40 @@ class LexRank(DocumentToVectors):
             if isinstance(summary[-1], str):
                 summary = list(map(lambda x: x + "\n", summary))
             return detokenize(summary)
+=======
+        i = 0
+        words = 0
+        summary_ids = []
+        current_sentence = ranked_list['sentence'][0]
+        while words < max_tokens and i < min(topk_sentences, ranked_list.shape[0]):
+            if self.min_jaccard_dist is not None:
+                too_similar = False
+                for previous_sent_id in summary_ids:
+                    prev_sent = ranked_list['sentence'][previous_sent_id]
+                    jaccard_d = jaccard_distance(set(current_sentence), set(prev_sent))
+                    if jaccard_d <= self.min_jaccard_dist:
+                        too_similar = True
+                        break
+            if self.min_jaccard_dist is not None and too_similar:
+                i += 1
+                current_sentence = ranked_list['sentence'][i]
+                continue
+            if len(current_sentence) + words > max_tokens:
+                i += 1
+                current_sentence = ranked_list['sentence'][i]
+                continue
+            else:
+                summary_ids.append(i)
+                i += 1
+                current_sentence = ranked_list['sentence'][i]
+                words += len(current_sentence)
+        summary = [detokenize(ranked_list['sentence'][sum_id]) for sum_id in summary_ids]
+        assert words - len(current_sentence) < max_tokens, \
+            f"words: {words - len(current_sentence)} | sentence: {ranked_list['sentence']}"
+        if isinstance(summary[-1], str):
+            summary = list(map(lambda x: x + "\n", summary))
+        return detokenize(summary)
+>>>>>>> ca2fb0c24a37bc9da37d39fd2676c77bc1993779
 
 
 def power_method(

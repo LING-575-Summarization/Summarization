@@ -1,0 +1,17 @@
+name: summarization
+channels:
+  - conda-forge
+  - pytorch
+  - defaults
+dependencies:
+  - transformers
+  - pulp
+  - pytorch==1.12.1
+  - gensim
+  - nltk
+  - pandas
+  - py-rouge
+  - python=3.10
+  - lxml
+  - evaluate
+  - scikit-learn

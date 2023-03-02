@@ -6,8 +6,8 @@ from pathlib import Path
 
 
 def docset_loader(
-        docset: str, 
         datafile: Path, 
+        docset: str, 
         sentences_are_documents: Optional[bool] = False,
     ) -> Tuple[List[List[str]], Dict[str, int]]:
     '''

@@ -10,7 +10,7 @@ class VectorModel(ABC):
     @abstractmethod
     def vectorize_sentence(self) -> np.ndarray:
         '''
-        Method implemented by subclass to create a vector representation of the sentece
+        Method implemented by subclass to create a vector representation of the sentence
         '''
         pass
 
@@ -138,7 +138,7 @@ class DocumentToVectors(VectorModel):
             - kwargs: arguments specific to the DocumentToVectors class (e.g., reduction for 
               word2vec)
         '''
-        if documentset:
+        if documentset is not None:
             documents, indices = docset_loader(datafile, documentset, sentences_are_documents)
         else:
             documents, indices = dataset_loader(datafile, sentences_are_documents)

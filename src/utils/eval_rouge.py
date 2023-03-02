@@ -9,10 +9,16 @@ import pandas as pd
 import argparse
 from typing import *
 
+# for sam's local
+user_root = os.path.expanduser("/Users/sambriggs/Documents/CLMS/Winter_2023/Ling_575_summarization/Summarization_git/Summarization")
+EVALFILES = os.path.join(user_root, "gold_summaries/devtest/")
+# SUMFILES = os.path.join(user_root, "outputs", "D4")
+SUMFILES = os.path.join(user_root, "outputs", "D4", sys.argv[1])
 
-user_root = os.path.expanduser("~")
-EVALFILES = os.path.join(user_root, "/dropbox/22-23/575x/Data/models/devtest/")
-SUMFILES = os.path.join(user_root, "575-Summarization", "outputs", "D4")
+
+# user_root = os.path.expanduser("~")
+# EVALFILES = os.path.join(user_root, "/dropbox/22-23/575x/Data/models/devtest/")
+# SUMFILES = os.path.join(user_root, "575-Summarization", "outputs", "D4")
 ROUGE_ARGS = dict(
     metrics=['rouge-n'],
     max_n=2,
@@ -20,7 +26,7 @@ ROUGE_ARGS = dict(
     length_limit=100,
     length_limit_type='words',
     apply_best=False,
-    alpha=0.5, # Default F1_score
+    alpha=0.5,  # Default F1_score
     weight_factor=1.2,
     stemming=True
 )
@@ -54,9 +60,9 @@ def format_eval_outputs(method: int, rouge: str, scores: pd.DataFrame):
 
 
 def get_scores(
-        evalfiles: List[str], 
+        evalfiles: List[str],
         summfiles: List[str]
-    ):
+):
     # set up the basefile list and assert that they are the same number
     base_eval_ids = set(map(lambda x: x[:-2], summfiles.keys()))
     base_summ_ids = set(map(lambda x: x[:-2], evalfiles.keys()))
@@ -97,9 +103,9 @@ def get_scores(
 
     df = pd.DataFrame(results)
     df = df.sort_values(by=['rouge', 'file']).reset_index(drop=True)
-    
+
     return df
-                
+
 
 def write_scores(df: pd.DataFrame, outfile: Optional[Path] = None):
     num_methods = df['method'].unique()
@@ -110,7 +116,7 @@ def write_scores(df: pd.DataFrame, outfile: Optional[Path] = None):
 
     for m, r in cartesian_product(num_methods, rouge_scores):
         printf('---------------------------------------------')
-        tmp_df = df[(df['method']==m) & (df['rouge']==r)]
+        tmp_df = df[(df['method'] == m) & (df['rouge'] == r)]
         averages = tmp_df[['p', 'r', 'f']].mean()
         avg_string = format_avg_outputs(m, r, averages)
         printf(avg_string)
