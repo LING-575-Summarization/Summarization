@@ -1,11 +1,11 @@
 '''
-More robust DistilBERT model functions
+More robust DocumentToBert model functions
 e.g., can now pretrain on the training data
 '''
 
 from typing import *
 from pathlib import Path
-from transformers import DistilBertModel, DistilBertTokenizerFast, Trainer
+from transformers import DocumentToBertModel, DocumentToBertTokenizerFast, Trainer
 from datasets import Dataset
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from utils import dataset_loader, get_summaries
@@ -15,12 +15,12 @@ DETOKENIZER = TreebankWordDetokenizer()
 
 class TransformerModel:
 
-    tokenizer = DistilBertTokenizerFast.from_pretrained(
-        "distilbert-base-uncased"
+    tokenizer = DocumentToBertTokenizerFast.from_pretrained(
+        "DocumentToBert-base-uncased"
     )
     
-    model =  DistilBertModel.from_pretrained(
-        "distilbert-base-uncased",
+    model =  DocumentToBertModel.from_pretrained(
+        "DocumentToBert-base-uncased",
         output_hidden_states=True
     )
 

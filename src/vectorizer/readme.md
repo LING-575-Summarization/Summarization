@@ -16,7 +16,7 @@ Where, [Vector] is replaced by the method you'd like to use to generate the vect
 
 1. TFIDF
 2. Word2Vec
-3. DistilBERT
+3. BERT
 
 ### [Vector]Model
 
@@ -46,7 +46,7 @@ Note that the `__getitem__` method depends on whether the class is treating sent
 You can load DocumentTo[Model] classes directly from the data with `from_data`.
 
 ```python
-docset_vectors = DocumentToDistilBert.from_data('D1001A-A', 'data/devtest.json')
+docset_vectors = DocumentToBert.from_data('D1001A-A', 'data/devtest.json')
 ```
 
 ```python

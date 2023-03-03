@@ -1,5 +1,5 @@
 from .vector_api import VectorModel, DocumentToVectors
-from transformers import DistilBertModel, DistilBertTokenizerFast, logging
+from transformers import BertModel, BertTokenizerFast, logging
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 import torch
 import numpy as np
@@ -9,23 +9,23 @@ logging.set_verbosity_warning()
 
 '''
 Citations:
-- Huggingface (https://huggingface.co/docs/transformers/model_doc/distilbert)
+- Huggingface (https://huggingface.co/docs/transformers/model_doc/bert)
 '''
 
 DETOKENIZER = TreebankWordDetokenizer()
 
-class DistilBERTModel(VectorModel):
+class BERTModel(VectorModel):
     def __init__(self) -> None:
         '''
-        Instantiate a DistilBert model and tokenizer to obtain the [CLS] token from the sentence
+        Instantiate a BERT model and tokenizer to obtain the [CLS] token from the sentence
         a reduction method to turn a sentence into a single vector (default is centroid)
         Also instantiates a Fasttext model to account for unseen vocabulary items
         '''
-        self.tokenizer = DistilBertTokenizerFast.from_pretrained(
-            "distilbert-base-uncased"
+        self.tokenizer = BertTokenizerFast.from_pretrained(
+            "bert-base-uncased"
         )
-        self.model = DistilBertModel.from_pretrained(
-            "distilbert-base-uncased",
+        self.model = BERTModel.from_pretrained(
+            "base-base-uncased",
             output_hidden_states=True
         )
         self.max_length = self.model.config.max_length
@@ -49,15 +49,15 @@ class DistilBERTModel(VectorModel):
             add_special_tokens=True
         )
         with torch.no_grad():
-            last_hidden_states = self.model(**tokenized_sentence).last_hidden_state
-        cls_token = np.mean(last_hidden_states[0][:, 1].squeeze().numpy(), axis=-1)
+            pooled_sentence = self.model(**tokenized_sentence).pooler_output
+        cls_token = np.mean(pooled_sentence.numpy(), axis=-1)
         return cls_token
     
 
-class DocumentToDistilBert(DocumentToVectors, DistilBERTModel):
+class DocumentToBert(DocumentToVectors, BERTModel):
     pass
     
 
 if __name__ == '__main__':
-    x = DocumentToDistilBert.from_data('D1001A-A', 'data/devtest.json')
+    x = DocumentToBert.from_data('D1001A-A', 'data/devtest.json')
     print(x.similarity_matrix())

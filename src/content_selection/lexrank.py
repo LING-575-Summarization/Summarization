@@ -25,14 +25,14 @@ logger = logging.getLogger()
 
 
 def LexRankFactory(
-        vector_generator: Literal['word2vec, tfidf, distilbert'],
+        vector_generator: Literal['word2vec, tfidf, bert'],
         **kwargs
     ):
     '''
     Pass the __init__ function used to initiliaze a LexRank class to the
     data factory function
     Arguments:
-        - vector_generator: whether to use 'word2vec', 'tfidf', 'distilbert' vectors
+        - vector_generator: whether to use 'word2vec', 'tfidf', 'bert' vectors
         - kwargs: additional arguments for the vector_generator (e.g., eval_documents for tfidf)
                   and arguments for lexrank (e.g., min_jaccard_dist)
     '''
