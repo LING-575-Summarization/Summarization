@@ -9,6 +9,7 @@ from nltk.tokenize import word_tokenize, sent_tokenize
 
 
 def clean_up_realization(summary: str, max_tokens=100):
+    print(summary, type(summary))
     retokenized_summary = [word_tokenize(s) for s in sent_tokenize(summary)]
     while len(retokenized_summary) > max_tokens:
         retokenized_summary.pop()
