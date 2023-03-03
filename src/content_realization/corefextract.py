@@ -92,6 +92,13 @@ def replace_via_indices(string: str, sub: str, start: int, end: int) -> str:
     return "".join([string[:start], sub, string[end:]])
 
 
+def replace_nth(string: str, sub: str, replacement: str, n: int, quote: Optional[bool] = False):
+    pattern = re.compile(f'(?<=[\s\"\']){sub}(?=([\s\"\,\.\?\!]|\'\s))')
+    split = re.split(pattern, string)
+    replacement = replacement if not quote else f"[{replacement}]"
+    return f"{sub}".join(split[0:n]) + replacement + f"{sub}".join(split[n:])
+
+
 class CoferenceResolver:
     nlp = spacy.load("en_coreference_web_trf")
     parser = spacy.load("en_core_web_md")
@@ -141,28 +148,51 @@ class ContentRealizer:
         if isinstance(summary[0], list):
             summary = [DETOKENIZER.detokenize(s) for s in summary]
 
+        summary_clone = deepcopy(summary)
+
         corresponding_nps = {}
         _docset = [detokenize_list_of_tokens(doc) for doc in document_set]
         docset = list(map(self.resolver, _docset))
 
         for s_i, sentence in enumerate(summary):
-            parsed_s = self.resolver.parser(sentence)
-            noun_phrases = [span.text for span in parsed_s.noun_chunks]
-            reference_sentence = None
-
+            corresponding_nps[s_i] = {}
             # recover the document
-            for i, doc in enumerate(document_set):
+            reference_sentence = None
+            for i, doc in enumerate(docset):
                 for j, s in enumerate(doc.sents):
-                    if sentence == s.text:
-                        reference_sentence = sentence
+                    if s.text in sentence:
+                        reference_sentence = s
                         break
                 if reference_sentence:
                     break
             
-            for NP 
+            noun_phrases = [span for span in reference_sentence.noun_chunks]
+            seen_nps = []
+            for NP in noun_phrases:
+                seen_nps.append(NP.text)
+                for cluster_i in docset[i].spans:
+                    evaluate_tokens = lambda x, y: x.text == y.text and x.sent.text == y.sent.text
+                    entity_in_list_of_spans = any([evaluate_tokens(NP, sp) for sp in doc.spans[cluster_i]])
+                    if entity_in_list_of_spans:
+                        corresponding_nps[s_i][NP.text] = [w for w in doc.spans[cluster_i]]
+                        lengths = [len(s.text) for s in corresponding_nps[s_i][NP.text]]
+                        max_np_length = max(lengths)
+                        longest_np_i = lengths.index(max_np_length)
+                        longest_np = corresponding_nps[s_i][NP.text][longest_np_i]
+                        quote = True if all([t.is_quote for t in longest_np]) else False
+                        np_count = seen_nps.count(NP.text)
+                        summary_clone[s_i] = replace_nth(summary_clone[s_i], NP.text, longest_np.text, np_count, quote)
+                        print(f"({np_count})", NP.text, "=>", longest_np)
+                        print(summary[s_i], "=>", summary_clone[s_i])
+
+        # TODO: More filtering for greater premodified sequence. More debugging.
+
+        print(summary_clone)
+        return summary_clone
 
 
-class ContentRealizer:
+
+class _ContentRealizer:
     resolver = CoferenceResolver()
 
     def __call__(self, summary: List[List[str]], 
@@ -213,7 +243,7 @@ class ContentRealizer:
                     print("Tags", [w.tag_ for w in longest])
                     longest = longest.text
                     # add brackets when in quotes
-                    if re.search(rf'\".*{nounp.text}.*\"', new_summary[nounp.sentence_i]):
+                    if nounp.is_quote:
                         longest = f"[{longest}]"
                     new_sent = new_summary[nounp.sentence_i].replace(nounp.text, longest)
                     print(nounp.text, "=>", longest, f"({new_summary[nounp.sentence_i]})")

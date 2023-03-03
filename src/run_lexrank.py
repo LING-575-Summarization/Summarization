@@ -100,16 +100,13 @@ def main():
                                     do_evaluate=False, **args)
             for docset_id in tqdm(data, desc="Evaluating documents"):
                 docset, indices = docset_loader(
-                    'data/devtest.json', docset_id)
-                as_sentences = flatten_list([flatten_list(doc) for doc in docset])
-                for j in range(len(as_sentences)):
-                    index_key = docset_id + "." + str(j)
-                    indices[index_key] = as_sentences[j]
-                lx = lx.replace_evaldocs(as_sentences, indices)
+                    'data/devtest.json', docset_id, sentences_are_documents=True)
+                lx = lx.replace_evaldocs(docset, indices)
                 result = lx.obtain_summary(detokenize=False)
                 print("before nounreplace")
                 print(detokenize_list_of_tokens(result))
-                result = replace_referents(result, docset)
+                _docset, indices = docset_loader('data/devtest.json', docset_id)
+                result = replace_referents(result, _docset)
                 print("after nounreplace")
                 print(result)
                 id0 = docset_id[0:5]
@@ -119,19 +116,14 @@ def main():
                     outfile.write(result)
         else:
             for docset_id in tqdm(data, desc="Evaluating documents"):
-                docset, _ = docset_loader(
-                    'data/devtest.json', docset_id)
-                as_sentences = flatten_list([flatten_list(doc) for doc in docset])
-                indices = []
-                for j in range(len(as_sentences)):
-                    index_key = docset_id + "." + str(j)
-                    indices[index_key] = as_sentences[j]
-                lx = LexRank(as_sentences, indices, **args)
+                lx = LexRank.from_data(datafile='data/devtest.json', documentset=docset_id,
+                    sentences_are_documents=True, **args)
                 print("before nounreplace")
                 result = lx.obtain_summary(detokenize=False)
                 print(detokenize_list_of_tokens(result))
                 print("after nounreplace")
-                result = replace_referents(result, docset)
+                _docset, indices = docset_loader('data/devtest.json', docset_id)
+                result = replace_referents(result, _docset)
                 print(result)
                 id0 = docset_id[0:5]
                 id1 = docset_id[-3]
