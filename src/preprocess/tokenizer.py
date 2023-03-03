@@ -29,6 +29,18 @@ COPYRIGHT_STRINGS = [
     "NO PORTION OF THE MATERIALS CONTAINED HEREIN MAY BE USED IN ANY MEDIA WITHOUT ATTRIBUTION TO WORLDSOURCES, INC."
 ]
 
+# headers to be excluding
+REMOVE_PATTERN = [
+    r'^([A-Z]{2,}|D\.C\.).*\(.*?\)(\s?\-\-|_)',
+    r'\(Begin optional trim\)',
+    r'\(Begin optional trim\)',
+    r'^SOURCES: .*$',
+    r'\(STORY CAN END HERE . OPTIONAL MATERIAL FOLLOWS.\)',
+    r'\(END OPTIONAL TRIM\)',
+    r'\(End trim\)',
+    r'\(optional trim ends here\)'
+]
+
 
 def read_by_corpus_type(data_path: str, doc_id: str, category: int, corpus_type: int):
     root = get_root(data_path)
@@ -112,6 +124,11 @@ def extract_p(root: etree.Element) -> List[List[str]]:
     result = []
     for p_node in root.find("TEXT"):
         s = p_node.text.strip().replace('\n', ' ')
+        s = re.sub(r'\s{2,}', ' ', s)
+        # replace first sentence if it contains a header
+        for pattern in REMOVE_PATTERN:
+            if re.search(pattern, s):
+                s = re.sub(pattern, '', s)
         if s != '':
             result.append(sent_tokenize(s))
     return result
@@ -122,13 +139,14 @@ def extract_p_manual(body_node: etree.Element) -> List[List[str]]:
     for s in re.split(r'(?<=\.|_)\s+(?!.*INC.)(?=\w)', body_node.find("TEXT").text):
         s = re.sub('[\n\t\s]+', ' ', s)
         s = re.sub('(^\s+|\s+$)', '', s)
-        if s != '' and not any([cs in s for cs in COPYRIGHT_STRINGS]):
+        # replace first sentence if it contains a header
+        for pattern in REMOVE_PATTERN:
+            if re.search(pattern, s):
+                s = re.sub(pattern, '', s)
+        if re.search('\S', s) and not any([cs in s for cs in COPYRIGHT_STRINGS]):
             if re.search(r'^[A-Z]{3,}\s*\([A-Z]{2,}\):', s):
                 for _s in re.split(r':', s):
                     result.append(sent_tokenize(_s))
-            else:
-                result.append(sent_tokenize(s))
-
     return result
 
 

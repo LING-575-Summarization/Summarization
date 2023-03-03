@@ -24,19 +24,24 @@ def main():
     evalfiles = get_summaries(MODEL_ROOT)
     summfiles = get_summaries(PEER_ROOT)
 
-    base_eval_ids = set(map(lambda x: x[:-2], summfiles.keys()))
+    l = len("D1046-A.M.100.H.5")
+
+    base_eval_ids = set(map(lambda x: x[:-2-(len(x)-l)], summfiles.keys()))
     base_summ_ids = set(map(lambda x: x[:-2], evalfiles.keys()))
 
+<<<<<<< HEAD
     print(base_eval_ids)
     print(base_summ_ids)
 
+=======
+>>>>>>> lexrank-eval
     assert len(base_eval_ids) == len(base_summ_ids)
     assert base_eval_ids == base_summ_ids
     basefileids = sorted(list(base_summ_ids))
 
     # infer the number of methods used in summfiles
     number_of_methods = sorted(list((
-        set(map(lambda x: x[-1], summfiles.keys()))
+        set(map(lambda x: x.split('.')[-1], summfiles.keys()))
     )))
 
     print(f"<ROUGE_EVAL version=\"1.5.5\">", file=outxml)

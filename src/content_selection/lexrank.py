@@ -149,8 +149,8 @@ class LexRank(DocumentToVectors):
         i = 0
         words = 0
         summary_ids = []
-        current_sentence = ranked_list['sentence'][0]
         while words < max_tokens and i < min(topk_sentences, ranked_list.shape[0]):
+            current_sentence = ranked_list['sentence'][i]
             if self.min_jaccard_dist is not None:
                 too_similar = False
                 for previous_sent_id in summary_ids:
@@ -161,17 +161,14 @@ class LexRank(DocumentToVectors):
                         break
             if self.min_jaccard_dist is not None and too_similar:
                 i += 1
-                current_sentence = ranked_list['sentence'][i]
                 continue
             if len(current_sentence) + words > max_tokens:
                 i += 1
-                current_sentence = ranked_list['sentence'][i]
                 continue
             else:
                 summary_ids.append(i)
-                i += 1
-                current_sentence = ranked_list['sentence'][i]
                 words += len(current_sentence)
+                i += 1
         summary = [detokenize(ranked_list['sentence'][sum_id]) for sum_id in summary_ids]
         assert words - len(current_sentence) < max_tokens, \
             f"words: {words - len(current_sentence)} | sentence: {ranked_list['sentence']}"
