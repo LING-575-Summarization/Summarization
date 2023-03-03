@@ -1,0 +1,81 @@
+GLPSOL: GLPK LP/MIP Solver, v4.65
+Parameter(s) specified in the command line:
+ --cpxlp /tmp/be009b48771c4ecc8cb1a7ffbcbaaa6e-pulp.lp -o /tmp/be009b48771c4ecc8cb1a7ffbcbaaa6e-pulp.sol
+Reading problem data from '/tmp/be009b48771c4ecc8cb1a7ffbcbaaa6e-pulp.lp'...
+248338 rows, 2141 columns, 254981 non-zeros
+2141 integer variables, all of which are binary
+281450 lines were read
+GLPK Integer Optimizer, v4.65
+248338 rows, 2141 columns, 254981 non-zeros
+2141 integer variables, all of which are binary
+Preprocessing...
+1597 hidden packing inequaliti(es) were detected
+5281 rows, 2141 columns, 11924 non-zeros
+2141 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.000e+01  ratio =  6.000e+01
+GM: min|aij| =  7.689e-01  max|aij| =  1.300e+00  ratio =  1.691e+00
+EQ: min|aij| =  5.920e-01  max|aij| =  1.000e+00  ratio =  1.689e+00
+2N: min|aij| =  3.125e-01  max|aij| =  1.000e+00  ratio =  3.200e+00
+Constructing initial basis...
+Size of triangular part is 5281
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.65
+5281 rows, 2141 columns, 11924 non-zeros
+*     0: obj =  -0.000000000e+00 inf =   0.000e+00 (1947)
+Perturbing LP to avoid stalling [638]...
+Removing LP perturbation [2296]...
+*  2296: obj =   3.717397983e+02 inf =   0.000e+00 (0) 4
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
+Long-step dual simplex will be used
++  2296: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 360.754581819
++  2307: >>>>>   3.711597040e+02 <=   3.717279035e+02   0.2% (3; 0)
++  2329: mip =   3.711597040e+02 <=     tree is empty   0.0% (0; 9)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.3 secs
+Memory used: 89.0 Mb (93300592 bytes)
+Writing MIP solution to '/tmp/be009b48771c4ecc8cb1a7ffbcbaaa6e-pulp.sol'...
+GLPSOL: GLPK LP/MIP Solver, v4.65
+Parameter(s) specified in the command line:
+ --cpxlp /tmp/a06ab26df06b4f4587449a1bacc5b6be-pulp.lp -o /tmp/a06ab26df06b4f4587449a1bacc5b6be-pulp.sol
+Reading problem data from '/tmp/a06ab26df06b4f4587449a1bacc5b6be-pulp.lp'...
+453905 rows, 2754 columns, 463887 non-zeros
+2754 integer variables, all of which are binary
+516695 lines were read
+GLPK Integer Optimizer, v4.65
+453905 rows, 2754 columns, 463887 non-zeros
+2754 integer variables, all of which are binary
+Preprocessing...
+1818 hidden packing inequaliti(es) were detected
+7484 rows, 2754 columns, 17466 non-zeros
+2754 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.300e+01  ratio =  6.300e+01
+GM: min|aij| =  7.506e-01  max|aij| =  1.332e+00  ratio =  1.775e+00
+EQ: min|aij| =  5.634e-01  max|aij| =  1.000e+00  ratio =  1.775e+00
+2N: min|aij| =  3.125e-01  max|aij| =  1.000e+00  ratio =  3.200e+00
+Constructing initial basis...
+Size of triangular part is 7484
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.65
+7484 rows, 2754 columns, 17466 non-zeros
+*     0: obj =  -0.000000000e+00 inf =   0.000e+00 (2516)
+Perturbing LP to avoid stalling [310]...
+Removing LP perturbation [2790]...
+*  2790: obj =   4.305263183e+02 inf =   5.551e-16 (0) 3
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
+Long-step dual simplex will be used
++  2790: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 408.570233911
++  2842: >>>>>   4.129551837e+02 <=   4.292127060e+02   3.9% (8; 0)
++  6291: >>>>>   4.131152804e+02 <=   4.239649328e+02   2.6% (203; 76)
+Solution found by heuristic: 414.887182108
+Solution found by heuristic: 417.227919597
++ 10924: mip =   4.172279196e+02 <=     tree is empty   0.0% (0; 1027)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   7.5 secs
+Memory used: 163.0 Mb (170872084 bytes)
+Writing MIP solution to '/tmp/a06ab26df06b4f4587449a1bacc5b6be-pulp.sol'...
