@@ -170,3 +170,4 @@ data
 bin/**
 .vscode/**
 log/**
+neuralcoref/**
