@@ -22,6 +22,7 @@ def clean_up_realization(summary: str, max_tokens=100):
         retokenized_summary[0] = retokenized_summary[0][0:100]
     summary_string = " ".join([DETOKENIZER.detokenize(s) for s in retokenized_summary])
     summary_string = re.sub(r'\s([,\.\"\'?!%])(?=\s)', '\1', summary_string)
+    summary_string = re.sub(r'(?<=\w)([,\.\"\'?!%])(?=\w+)', '\1 ', summary_string)
     return summary_string
 
 
