@@ -103,11 +103,8 @@ def main():
                     'data/devtest.json', docset_id, sentences_are_documents=True)
                 lx = lx.replace_evaldocs(docset, indices)
                 result = lx.obtain_summary(detokenize=False)
-                print("before nounreplace")
-                print(detokenize_list_of_tokens(result))
                 _docset, indices = docset_loader('data/devtest.json', docset_id)
                 result = replace_referents(result, _docset)
-                print("after nounreplace")
                 print(result)
                 id0 = docset_id[0:5]
                 id1 = docset_id[-3]
@@ -118,10 +115,7 @@ def main():
             for docset_id in tqdm(data, desc="Evaluating documents"):
                 lx = LexRank.from_data(datafile='data/devtest.json', documentset=docset_id,
                     sentences_are_documents=True, **args)
-                print("before nounreplace")
                 result = lx.obtain_summary(detokenize=False)
-                print(detokenize_list_of_tokens(result))
-                print("after nounreplace")
                 _docset, indices = docset_loader('data/devtest.json', docset_id)
                 result = replace_referents(result, _docset)
                 print(result)

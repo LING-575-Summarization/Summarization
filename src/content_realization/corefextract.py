@@ -7,67 +7,111 @@ from typing import *
 import spacy
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from utils import detokenize_list_of_tokens
-from collections import namedtuple
 from copy import deepcopy
+from tqdm import tqdm
 import re
 
-
-# NP = namedtuple("NP", "text sentence_i sent start end")
+import warnings
+warnings.filterwarnings('ignore', 
+                        message='User provided device_type of \'cuda\', but CUDA is not available. Disabling', 
+                        category=Warning)
 
 DETOKENIZER = TreebankWordDetokenizer()
 
-class ModifiedNP:
 
-    def __init__(self, doc, cluster, pronoun_tags = {"PRP", "PRON", "PRP$", "DT"}) -> None:
-       self.doc = doc
-       self.cluster = cluster
-       self.pronoun_tags = pronoun_tags
+class Span:
+    '''Ad-hoc dataclass to store information on spans in a way that's compatible with spacy'''
+    def __init__(self, tokens: List["token"]) -> None:
+        self.tokens = tokens
+        self.start = tokens[0].i
+        self.end = tokens[-1].i
+        
+    @property
+    def text(self):
+        return DETOKENIZER.detokenize([tkn.text for tkn in self.tokens])
+
+    def __iter__(self):
+        return iter(self.tokens)
+    
+    def __str__(self):
+        return self.text
+    
+    def __len__(self):
+        return len(self.tokens)
+
+
+class ReferenceClusters:
+
+    def __init__(
+            self, 
+            doc: str, 
+            cluster: str,
+            pronoun_tags = {"PRP", "PRON", "PRP$"},
+            determiner_tags = {"DT", "WDT", "DET"}
+        ) -> None:
+        '''Class to hold coreference solutions and extract longest/shortest values'''
+        self.doc = doc
+        self.cluster = cluster
+        self.pronoun_tags = pronoun_tags
+        self.determiner_tags = determiner_tags
+        self.spans = self.post_init()
 
     def __iter__(self):
         return iter(self.doc.spans[self.cluster])
 
-    def __post_init__(self):
-        '''Remove any postpositions'''
-        for i, span in enumerate(self.doc.spans[self.cluster]):
-            tags = [tkn.tag_ for tkn in span]
-            if "," in tags or "$," in tags:
-                self.doc.spans[self.cluster].pop(i)
-
-    def proper_spans(self):
-        # remove unwanted NPs like pronouns
-        filtered = []
+    def post_init(self):
+        '''Remove any postpositions and filter pronouns'''
+        filtered, filtered_appositives = [], []
         for span in self.doc.spans[self.cluster]:
-            contains_a_pronoun = len(span) == 1 or len(set([tkn.tag_ for tkn in span]) & self.pronoun_tags) > 0
-            if not contains_a_pronoun:
+            tags = [tkn.tag_ for tkn in span]
+            if not("," in tags or "$," in tags):
+                filtered_appositives.append(span)
+            else:
+                tag_indices = [i for i, t in enumerate(tags) if t == "," or t == "$,"]
+                tokens = self.doc[span[0].i:span[tag_indices[0]].i]
+                new_span = Span(tokens)
+                filtered_appositives.append(new_span)
+        for span in filtered_appositives:
+            if not(len(span) == 1 or contains_a_pronoun(span, self.pronoun_tags)):
                 filtered.append(span)
         return filtered
 
     @property
+    def _spans(self):
+        return self.doc.spans[self.cluster]
+
+    @property
+    def _lengths(self):
+        return [len(sp.text) for sp in self.doc.spans[self.cluster]]
+    
+    @property
     def lengths(self):
-        return [sp.text for sp in self.doc.spans[self.cluster]]
+        return [len(sp.text) for sp in self.spans]
 
     @property
     def shortest(self):
-        lengths = [sp.text for sp in self.proper_spans()]
-        print("Min length:", self.lengths)
-        if len(lengths) > 1:
+        lengths = self.lengths
+        if len(lengths) > 0:
             min_length = min(lengths)
             argmin = lengths.index(min_length)
-            return self.doc.spans[self.cluster][argmin]
+            return self.spans[argmin]
         else:
             return None
 
     def shortest_nonproper(self):
-        min_length = min(self.lengths)
+        min_length = min(self._lengths)
         argmin = self.lengths.index(min_length)
         return self.doc.spans[self.cluster][argmin]
 
     @property
     def longest(self):
-        if len(self.lengths) > 1:
-            max_length = max(self.lengths)
-            argmax = self.lengths.index(max_length)
-            return self.doc.spans[self.cluster][argmax]
+        lengths = self.lengths
+        # if more than one value
+        if len(lengths) > 0:
+            max_length = max(lengths)
+            argmax = lengths.index(max_length)
+            longest = self.spans[argmax]
+            return longest
         else:
             return None
 
@@ -87,16 +131,30 @@ def recover_document(sentence: List[str], document_set: List[List[str]]) -> Tupl
     return None
 
 
+def contains_a_pronoun(span, pronoun_tags: Set[str] = {"PRP", "PRON", "PRP$"}):
+    return len(set([tkn.tag_ for tkn in span]) & pronoun_tags) > 0
+
+
 def replace_via_indices(string: str, sub: str, start: int, end: int) -> str:
     '''Helper function to replace a string with another one at specified indices'''
     return "".join([string[:start], sub, string[end:]])
 
 
-def replace_nth(string: str, sub: str, replacement: str, n: int, quote: Optional[bool] = False):
-    pattern = re.compile(f'(?<=[\s\"\']){sub}(?=([\s\"\,\.\?\!]|\'\s))')
+def replace_nth(string: str, sub: str, replacement: str, n: int):
+    '''Replaces the string with the longest/shortest entity
+       NOTE: It also corrects for replacements that use "I" in quotes. 
+             When it is followed by a "said." string
+    '''
+    pattern = re.compile(f'(?<=[\s\"\']){sub}(?=[\s\"\'\.,?!])')
     split = re.split(pattern, string)
-    replacement = replacement if not quote else f"[{replacement}]"
-    return f"{sub}".join(split[0:n]) + replacement + f"{sub}".join(split[n:])
+    start, end = f"{sub}".join(split[0:n]), f"{sub}".join(split[n:])
+    is_quote = start.count("\"") % 2 == 1 and end.count("\"") % 2 == 1
+    replacing_I = sub == "I" and re.search(f".*said", string) is not None
+    if is_quote and replacing_I:
+        return string, False
+    elif is_quote and not replacing_I:
+        replacement = f"[{replacement}]"
+    return start + replacement + end, True
 
 
 class CoferenceResolver:
@@ -120,24 +178,13 @@ class CoferenceResolver:
                     print("\t\t", tkn.text, tkn.tag_)
 
 
-# NEW APPROACH: NEED TO FIND A WAY TO CONTINUE POINTING TO THE RIGHT REFERENT BEFORE IT'S
-#               GROUPED INTO A SUMMARY. MIGHT NEED TO ASSIGN EACH WORD A POINTER of some sort.
-#               When it's processed by LexRank, you can just go back and find out where it was
-#               clustered into.
-
-# ANOTHER APPROACH IS TO FIRST PARSE THE FILES FOR NPs. 
-# 1. GO THROUGH EACH SENTENCE:
-# 2. PERFORM A ENTITY PARSE ON THE PARAGRAPH IT IS FOUND IN. FIND THE LONGEST PREMODIFIED NP.
-#       2A. AND REPLACE EVERY ENTITY WITH THE LONG ONE. 
-#       2B. SAVE A DICTIONARY OF VALID NPs FOR EACH NP INVESTIGATED.
-# 3. PERFORM A PARSE ON THE SUMMARY TO FIND INTERNAL COREFERENCES. IF A COREFERENCE IS PREVIOUSLY
-#    MENTIONED, REPLACE IT WITH THE SHORTEST ONE FROM THE COMPILED DICIONTARY.
-
 class ContentRealizer:
     resolver = CoferenceResolver()
 
     def __call__(self, summary: List[List[str]], 
                  document_set: List[List[str]]) -> None:
+        # Sorry if the function is long... SpaCy's garbage collection is pretty aggresive towards 
+        # out-of-scope variables, so I kept most stuff in this one call
         '''
         summary: the resulting summary as a list of sentences 
                  (NOTE: assumes that these sentences are most important)
@@ -150,15 +197,15 @@ class ContentRealizer:
 
         summary_clone = deepcopy(summary)
 
-        corresponding_nps = {}
+        seen_clusters = {}
         _docset = [detokenize_list_of_tokens(doc) for doc in document_set]
-        docset = list(map(self.resolver, _docset))
+        docset = list(map(self.resolver, tqdm(_docset, desc="Coreference resolution:")))
 
         for s_i, sentence in enumerate(summary):
-            corresponding_nps[s_i] = {}
+            
             # recover the document
             reference_sentence = None
-            for i, doc in enumerate(docset):
+            for doc_i, doc in enumerate(docset):
                 for j, s in enumerate(doc.sents):
                     if s.text in sentence:
                         reference_sentence = s
@@ -166,89 +213,41 @@ class ContentRealizer:
                 if reference_sentence:
                     break
             
+            # perform the algorithm
+            seen_clusters[doc_i] = {}
             noun_phrases = [span for span in reference_sentence.noun_chunks]
             seen_nps = []
             for NP in noun_phrases:
                 seen_nps.append(NP.text)
-                for cluster_i in docset[i].spans:
+                for cluster_i in docset[doc_i].spans:
                     evaluate_tokens = lambda x, y: x.text == y.text and x.sent.text == y.sent.text
                     entity_in_list_of_spans = any([evaluate_tokens(NP, sp) for sp in doc.spans[cluster_i]])
                     if entity_in_list_of_spans:
-                        corresponding_nps[s_i][NP.text] = [w for w in doc.spans[cluster_i]]
-                        lengths = [len(s.text) for s in corresponding_nps[s_i][NP.text]]
-                        max_np_length = max(lengths)
-                        longest_np_i = lengths.index(max_np_length)
-                        longest_np = corresponding_nps[s_i][NP.text][longest_np_i]
-                        quote = True if all([t.is_quote for t in longest_np]) else False
-                        np_count = seen_nps.count(NP.text)
-                        summary_clone[s_i] = replace_nth(summary_clone[s_i], NP.text, longest_np.text, np_count, quote)
-                        print(f"({np_count})", NP.text, "=>", longest_np)
-                        print(summary[s_i], "=>", summary_clone[s_i])
+                        
+                        new_cluster = cluster_i not in seen_clusters[doc_i]
 
-        # TODO: More filtering for greater premodified sequence. More debugging.
+                        if new_cluster:
+                            corefcluster = ReferenceClusters(doc, cluster_i)
+                            replace_np = corefcluster.longest
 
-        print(summary_clone)
+                        else:
+                            corefcluster = seen_clusters[doc_i][cluster_i]
+                            replace_np = corefcluster.shortest
+                            
+                        if replace_np:
+                            same_length = len(replace_np.text) == len(NP.text)
+                            replacement_contain_pronouns = contains_a_pronoun(replace_np)
+                            if same_length and replacement_contain_pronouns: # Don't replace NPs with the same length unless NP contains a pronoun and replacement doesn't
+                                continue
+                            # count previously seen NPs to replace the correct one in replace_nth function
+                            np_count = seen_nps.count(NP.text)
+                            summary_clone[s_i], replaced = replace_nth(summary_clone[s_i], NP.text, 
+                                                            replace_np.text, np_count)
+                            if replaced:
+                                # Add to seen clusters only if completed replacement
+                                seen_clusters[doc_i][cluster_i] = corefcluster
+                                # # Print changes to the summary
+                                # print(f"({np_count})", NP.text, "=>", replace_np.text)
+                                # print(summary[s_i], "=>", summary_clone[s_i])
+
         return summary_clone
-
-
-
-class _ContentRealizer:
-    resolver = CoferenceResolver()
-
-    def __call__(self, summary: List[List[str]], 
-                 document_set: List[List[str]]) -> None:
-        '''
-        summary: the resulting summary as a list of sentences 
-                 (NOTE: assumes that these sentences are most important)
-        documentset: The set of documents sentences are extracted from (list of tokenized sentences)
-                     Be sure to use DETOKENIZER.detokenize to make the docset a list of strings
-                     (One string for each document)
-        '''
-        if isinstance(summary[0], list):
-            summary = [DETOKENIZER.detokenize(s) for s in summary]
-
-        NPs, resolved_nps, seen_clusters = [], {}, {}
-        new_summary = deepcopy(summary)
-        for s_i, sentence in enumerate(summary):
-            parsed_s = self.resolver.parser(sentence)
-            noun_phrases = [NP(span.text, s_i, sentence, span.start, span.end) for span in parsed_s.noun_chunks]
-            NPs.extend(noun_phrases)
-
-        raw_document = detokenize_list_of_tokens(document_set)
-        doc = self.resolver(raw_document)
-
-        for nounp in NPs:
-            print("LOOKING AT NP", nounp.text)
-            desired_cluster = None
-
-            for cluster_i in doc.spans:
-                entity_in_list_of_spans = any([nounp.text == sp.text for sp in doc.spans[cluster_i]])
-                if entity_in_list_of_spans:
-                    desired_cluster = cluster_i
-                    print("FOUND NP IN CLUSTER", doc.spans[cluster_i])
-
-            if desired_cluster is None:
-                continue
-            elif desired_cluster in seen_clusters:
-                shortest = resolved_nps[desired_cluster].shortest
-                print("Tags", [w.tag_ for w in shortest])
-                if shortest:
-                    new_sent = new_summary[nounp.sentence_i].replace(nounp.text, shortest.text)
-                    new_summary[nounp.sentence_i] = new_sent
-                    print(nounp.text, "=>", shortest, f"({new_summary[nounp.sentence_i]})")
-            else:
-                coreferences = ModifiedNP(doc, desired_cluster)
-                longest = coreferences.longest
-                if longest:
-                    print("Tags", [w.tag_ for w in longest])
-                    longest = longest.text
-                    # add brackets when in quotes
-                    if nounp.is_quote:
-                        longest = f"[{longest}]"
-                    new_sent = new_summary[nounp.sentence_i].replace(nounp.text, longest)
-                    print(nounp.text, "=>", longest, f"({new_summary[nounp.sentence_i]})")
-                    new_summary[nounp.sentence_i] = new_sent
-                    resolved_nps[cluster_i] = coreferences
-        
-        return new_summary
-
