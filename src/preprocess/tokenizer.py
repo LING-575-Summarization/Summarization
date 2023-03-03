@@ -38,7 +38,9 @@ REMOVE_PATTERN = [
     r'\(STORY CAN END HERE . OPTIONAL MATERIAL FOLLOWS.\)',
     r'\(END OPTIONAL TRIM\)',
     r'\(End trim\)',
-    r'\(optional trim ends here\)'
+    r'\(optional trim ends here\)',
+    r'For Use By Clients of the New York Times News Service',
+    r'Story Filed By Cox Newspapers'
 ]
 
 

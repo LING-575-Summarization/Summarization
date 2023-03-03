@@ -49,26 +49,23 @@ ARGS=TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshol
 EXPERIMENTS = [
     (1, TFExpt(idf_level="sentence", ngram=1, delta_idf=0., log_tf=False)),
     (2, TFExpt(idf_level="sentence", ngram=1, delta_idf=0.7, log_tf=False)),
-    # (3, TFExpt(idf_level="sentence", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)),
-    # (4, TFExpt(idf_level="sentence", ngram=1, delta_idf=0., log_tf=False, threshold=0.15, min_jaccard_dist=0.7)),
-    # (5, TFExpt(idf_level="sentence", ngram=1, delta_idf=0., log_tf=True)),
-    # (6, TFExpt(idf_level="sentence", ngram=1, delta_idf=1., log_tf=True)),
-    # (7, TFExpt(idf_level="sentence", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)),
-    # (8, TFExpt(idf_level="sentence", ngram=1, delta_idf=0., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)),
-    # (9, TFExpt(idf_level="sentence", ngram=2, delta_idf=1., log_tf=True)),
-    # (10, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False)),
-    # (11, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)), #4
-    # (12, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True)),
-    # (13, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)), #3
-    # (14, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=True, threshold=0.15, min_jaccard_dist=0.7)), #1
-    # (15, W2VExpt(threshold=0.15, min_jaccard_dist=0.7)), #5
-    # (16, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), #2
-    # (17, W2VExpt(threshold=0.3, min_jaccard_dist=0.7)),
-    # (18, BERTExpt(threshold=0.3, min_jaccard_dist=0.7)),
-    # (19, W2VExpt(reduction='normalized_mean'))
-]
-
-EXPERIMENTS2 = [
+    (3, TFExpt(idf_level="sentence", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)),
+    (4, TFExpt(idf_level="sentence", ngram=1, delta_idf=0., log_tf=False, threshold=0.15, min_jaccard_dist=0.7)),
+    (5, TFExpt(idf_level="sentence", ngram=1, delta_idf=0., log_tf=True)),
+    (6, TFExpt(idf_level="sentence", ngram=1, delta_idf=1., log_tf=True)),
+    (7, TFExpt(idf_level="sentence", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)),
+    (8, TFExpt(idf_level="sentence", ngram=1, delta_idf=0., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)),
+    (9, TFExpt(idf_level="sentence", ngram=2, delta_idf=1., log_tf=True)),
+    (10, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False)),
+    (11, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)), #4
+    (12, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True)),
+    (13, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)), #3
+    (14, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)), #1
+    (15, W2VExpt(threshold=0.15, min_jaccard_dist=0.7)), #5
+    (16, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), #2
+    (17, W2VExpt(threshold=0.3, min_jaccard_dist=0.7)),
+    (18, BERTExpt(threshold=0.3, min_jaccard_dist=0.7)),
+    (19, W2VExpt(reduction='normalized_mean'))
     (20, W2VExpt(reduction='normalized_mean', threshold=0.15, min_jaccard_dist=0.7)),
     (21, BERTExpt(threshold=0.15, min_jaccard_dist=0.8)),
     (22, W2VExpt(threshold=0.15, min_jaccard_dist=0.7)),
@@ -77,13 +74,6 @@ EXPERIMENTS2 = [
     (25, TFExpt(idf_level="documset", ngram=2, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7))
 ]
 
-EXPERIMENTS3 = [
-    # (11, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)),
-    # (14, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=True, threshold=0.15, min_jaccard_dist=0.7)),
-    # (26, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, ignore_punctuation=True, threshold=0.15, min_jaccard_dist=0.7)),
-    # (27, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=True, ignore_punctuation=True, threshold=0.15, min_jaccard_dist=0.7)),
-    (28, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.8)),
-]
 
 def main():
     with open('data/devtest.json', 'r') as datafile:
