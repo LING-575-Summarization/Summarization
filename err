@@ -1,0 +1,72 @@
+Traceback (most recent call last):
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 149, in <module>
+    main()
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 142, in main
+    evalfiles = get_summaries(EVALFILES)
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 37, in get_summaries
+    for filename in os.listdir(directory):
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/sambriggs/Documents/CLMS/Winter_2023/Ling_575_summarization/Summarization_git/Summarization/gold_summaries/devtest/'
+Traceback (most recent call last):
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 149, in <module>
+    main()
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 142, in main
+    evalfiles = get_summaries(EVALFILES)
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 37, in get_summaries
+    for filename in os.listdir(directory):
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/sambriggs/Documents/CLMS/Winter_2023/Ling_575_summarization/Summarization_git/Summarization/gold_summaries/devtest/'
+Traceback (most recent call last):
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 149, in <module>
+    main()
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 142, in main
+    evalfiles = get_summaries(EVALFILES)
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 37, in get_summaries
+    for filename in os.listdir(directory):
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/sambriggs/Documents/CLMS/Winter_2023/Ling_575_summarization/Summarization_git/Summarization/gold_summaries/devtest/'
+Traceback (most recent call last):
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 149, in <module>
+    main()
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 142, in main
+    evalfiles = get_summaries(EVALFILES)
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 37, in get_summaries
+    for filename in os.listdir(directory):
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/sambriggs/Documents/CLMS/Winter_2023/Ling_575_summarization/Summarization_git/Summarization/gold_summaries/devtest/'
+Traceback (most recent call last):
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 149, in <module>
+    main()
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 142, in main
+    evalfiles = get_summaries(EVALFILES)
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 37, in get_summaries
+    for filename in os.listdir(directory):
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/sambriggs/Documents/CLMS/Winter_2023/Ling_575_summarization/Summarization_git/Summarization/gold_summaries/devtest/'
+Traceback (most recent call last):
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 149, in <module>
+    main()
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 142, in main
+    evalfiles = get_summaries(EVALFILES)
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 37, in get_summaries
+    for filename in os.listdir(directory):
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/sambriggs/Documents/CLMS/Winter_2023/Ling_575_summarization/Summarization_git/Summarization/gold_summaries/devtest/'
+Traceback (most recent call last):
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 149, in <module>
+    main()
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 142, in main
+    evalfiles = get_summaries(EVALFILES)
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 37, in get_summaries
+    for filename in os.listdir(directory):
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/sambriggs/Documents/CLMS/Winter_2023/Ling_575_summarization/Summarization_git/Summarization/gold_summaries/devtest/'
+Traceback (most recent call last):
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 149, in <module>
+    main()
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 142, in main
+    evalfiles = get_summaries(EVALFILES)
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 37, in get_summaries
+    for filename in os.listdir(directory):
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/sambriggs/Documents/CLMS/Winter_2023/Ling_575_summarization/Summarization_git/Summarization/gold_summaries/devtest/'
+Traceback (most recent call last):
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 149, in <module>
+    main()
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 142, in main
+    evalfiles = get_summaries(EVALFILES)
+  File "/home2/batraa/Summarization/src/utils/eval_rouge.py", line 37, in get_summaries
+    for filename in os.listdir(directory):
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/sambriggs/Documents/CLMS/Winter_2023/Ling_575_summarization/Summarization_git/Summarization/gold_summaries/devtest/'

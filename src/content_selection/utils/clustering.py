@@ -144,11 +144,12 @@ class Clustering:
         # random.seed(11)
 
         # TFIDF
-        # docset, indices = docset_loader(self.docset_id, self.json_path)
-        # model = TFIDFModel(docset)
+        print(self.docset_id)
+        docset, indices = docset_loader(self.docset_id, self.json_path)
+        model = TFIDFModel(docset)
 
         # Word2Vec
-        model = Word2VecModel()
+        # model = Word2VecModel()
 
         # DistilBert
         # model = DistilBertModel()
@@ -196,18 +197,18 @@ class Clustering:
             cur_sum = 0
 
             # MEAN
-            for sentence in sentences:
-                cur_sum += self.sentence_indices[self.docset_id, sentence]
-            avg_fractional_ordering = cur_sum / len(sentences)
-            cluster_to_frac_ordering[cluster] = avg_fractional_ordering
+            # for sentence in sentences:
+            #     cur_sum += self.sentence_indices[self.docset_id, sentence]
+            # avg_fractional_ordering = cur_sum / len(sentences)
+            # cluster_to_frac_ordering[cluster] = avg_fractional_ordering
 
             # MEDIAN
-            # indices = []
-            # for sentence in sentences:
-            #     idx = self.sentence_indices[self.docset_id, sentence]
-            #     indices.append(idx)
-            # med = median(indices)
-            # cluster_to_frac_ordering[cluster] = med
+            indices = []
+            for sentence in sentences:
+                idx = self.sentence_indices[self.docset_id, sentence]
+                indices.append(idx)
+            med = median(indices)
+            cluster_to_frac_ordering[cluster] = med
 
         # sort from least to greatest fractional ordering
         ordered_clusters = sorted(cluster_to_frac_ordering.items(), key=lambda item: item[1])
