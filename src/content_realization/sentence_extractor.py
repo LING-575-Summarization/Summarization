@@ -47,7 +47,7 @@ def extract_summary(
         cr = lambda x: (x, None)
     while words < max_tokens and i < min(topk_sentences, number_of_sentences):
         # filter unfinished quotes
-        if re.match(r'^\"[^\"]+$|^[^\"]+\"$', ranked_list[i]):
+        if re.match(r'^\"[^\"]+$|^[^\"]+\"$', " ".join(ranked_list[i])):
             i += 1
             continue
         current_sentence, _ = cr(ranked_list[i])
