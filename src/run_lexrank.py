@@ -50,12 +50,12 @@ ARGS=TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshol
 EXPERIMENTS = [
     (1, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)), #4
     (2, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)), #3
-    # (3, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), #2
-    # (4, BERTExpt(threshold=0.15, min_jaccard_dist=0.8)), # best BERT
+    (3, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), #2
+    (4, BERTExpt(threshold=0.15, min_jaccard_dist=0.8)), # best BERT
     (5, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
     (6, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
-    # (7, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
-    # (8, BERTExpt(threshold=0.15, min_jaccard_dist=0.8, content_realization=True)),
+    (7, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
+    (8, BERTExpt(threshold=0.15, min_jaccard_dist=0.8, content_realization=True)),
 ]
 
 
@@ -78,13 +78,10 @@ def main():
                     'data/devtest.json', docset_id, sentences_are_documents=True)
                 lx = lx.replace_evaldocs(docset, indices)
                 if realization:
-                    result = lx.obtain_summary(detokenize=False)
                     _docset, indices = docset_loader('data/devtest.json', docset_id)
-                    result, replaced = replace_referents(result, _docset)
-                    if not replaced:
-                        print("\t(docset {docset_id})")
+                    result = lx.obtain_summary(_docset, coreference_resolution = True, detokenize=True)
                 else:
-                    result = lx.obtain_summary(detokenize=True)
+                    result = lx.obtain_summary(coreference_resolution = False, detokenize=True)
                 id0 = docset_id[0:5]
                 id1 = docset_id[-3]
                 output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i}')
@@ -95,13 +92,10 @@ def main():
                 lx = LexRank.from_data(datafile='data/devtest.json', documentset=docset_id,
                     sentences_are_documents=True, **args)
                 if realization:
-                    result = lx.obtain_summary(detokenize=False)
                     _docset, indices = docset_loader('data/devtest.json', docset_id)
-                    result, replaced = replace_referents(result, _docset)
-                    if not replaced:
-                        print("\t(docset {docset_id})")
+                    result = lx.obtain_summary(_docset, coreference_resolution = True, detokenize=True)
                 else:
-                    result = lx.obtain_summary(detokenize=True)
+                    result = lx.obtain_summary(coreference_resolution = False, detokenize=True)
                 id0 = docset_id[0:5]
                 id1 = docset_id[-3]
                 output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i}')

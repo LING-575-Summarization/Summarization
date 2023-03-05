@@ -8,10 +8,13 @@ from utils import detokenizer_wrapper
 from nltk.metrics.distance import jaccard_distance
 from .corefextract import ContentRealizer
 from typing import *
+import re
+
 
 @detokenizer_wrapper
-def obtain_summary(
-        ranked_list: List[List[str]], 
+def extract_summary(
+        ranked_list: List[List[str]],
+        reference_documents: Optional[List[List[str]]] = None,
         max_tokens: Optional[int] = 100,
         topk_sentences: Optional[int] = 25,
         min_jaccard_dist: Optional[float] = 0.,
@@ -23,6 +26,7 @@ def obtain_summary(
     and then selecting sentences until it reaches the max number of words
     Arguments:
         - ranked_list: a ranked list of extracted sentences formatted as a list of tokens
+        - reference_documents: the document set being analyzed
         - max_words: max tokens in the summary
         - topk_sentences: consider only sentences in the topk for the summary
         - min_jaccard_dist: the minimum Jaccard distance (1 is most dissimilar) required in a new
@@ -37,10 +41,15 @@ def obtain_summary(
     summary_ids = []
     number_of_sentences = len(ranked_list)
     if coreference_resolution:
-        cr = ContentRealizer()
+        assert reference_documents is not None, "coreference_resolution requires reference documents"
+        cr = ContentRealizer(reference_documents)
     else:
-        cr = lambda x: x, None
+        cr = lambda x: (x, None)
     while words < max_tokens and i < min(topk_sentences, number_of_sentences):
+        # filter unfinished quotes
+        if re.match(r'^\"[^\"]+$|^[^\"]+\"$', ranked_list[i]):
+            i += 1
+            continue
         current_sentence, _ = cr(ranked_list[i])
         if min_jaccard_dist is not None:
             too_similar = False

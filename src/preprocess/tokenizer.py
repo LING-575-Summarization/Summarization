@@ -31,7 +31,7 @@ COPYRIGHT_STRINGS = [
 
 # headers to be excluding
 REMOVE_PATTERN = [
-    r'^([A-Z]{2,}|D\.C\.).*\(.*?\)(\s?\-\-|_|:)',
+    r'^([A-Z]{2,}|[A-Z]{2,}D\.C\.).*\(.*?\)(\s?\-\-|\s?_|:)',
     r'\(Begin optional trim\)',
     r'\(Begin optional trim\)',
     r'^SOURCES: .*$',
@@ -135,7 +135,7 @@ def extract_p(root: etree.Element) -> List[List[str]]:
         for pattern in REMOVE_PATTERN:
             if re.search(pattern, s):
                 s = re.sub(pattern, '', s)
-        if s != '':
+        if s != '' and not any([cs in s for cs in COPYRIGHT_STRINGS]):
             result.append(sent_tokenize(s))
     return result
 

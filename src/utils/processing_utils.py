@@ -11,13 +11,24 @@ from functools import reduce
 
 detokenizer = TreebankWordDetokenizer()
 
-def detokenize_list_of_tokens(summary: List[List[str]]):
-    return " ".join([detokenizer.detokenize(s) for s in summary])
+def detokenize_list_of_tokens(document: List[List[str]]):
+    return " ".join([detokenizer.detokenize(s) for s in document])
 
 
 def flatten_list(x: List[List[Any]]) -> List[Any]: 
     '''
     Utility function to flatten lists of lists to a single list
+    '''
+    x_n = deepcopy(x)
+    def flatten(a, b):
+        a.extend(b)
+        return a
+    return reduce(flatten, x_n)
+
+
+def flatten_paragraph(x: List[List[Any]]) -> List[Any]: 
+    '''
+    Utility function to flatten paragraphs into multiple sentences
     '''
     x_n = deepcopy(x)
     def flatten(a, b):
