@@ -14,10 +14,14 @@ import json
 import xml.etree.ElementTree as ET
 from typing import Dict, Tuple, List
 from pathlib import Path
-from .util import get_args
 
-from .get_data_path import resolve_path
-from .tokenizer import read_by_corpus_type, write_output
+if __name__ == '__main__':
+    module_path = os.path.dirname(os.path.realpath(__file__))
+    sys.path.append(module_path)
+
+from args import get_args
+from get_data_path import resolve_path
+from tokenizer import read_by_corpus_type, write_output
 
 logging.basicConfig(
     level=logging.INFO,

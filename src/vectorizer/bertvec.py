@@ -24,8 +24,8 @@ class BERTModel(VectorModel):
         self.tokenizer = BertTokenizerFast.from_pretrained(
             "bert-base-uncased"
         )
-        self.model = BERTModel.from_pretrained(
-            "base-base-uncased",
+        self.model = BertModel.from_pretrained(
+            "bert-base-uncased",
             output_hidden_states=True
         )
         self.max_length = self.model.config.max_length

@@ -6,6 +6,8 @@ The implementation here is inspired by Nenkova (2007)
 from typing import *
 import spacy
 from nltk.tokenize.treebank import TreebankWordDetokenizer
+from nltk.metrics.distance import jaccard_distance
+from nltk.tokenize import word_tokenize
 from utils import detokenize_list_of_tokens
 from copy import deepcopy
 from tqdm import tqdm
@@ -116,21 +118,6 @@ class ReferenceClusters:
             return None
 
 
-
-def recover_document(sentence: List[str], document_set: List[List[str]]) -> Tuple[int, int]:
-    '''
-    Iterate through a document set to recover the original indices of the sentences
-    The document set should be a list of a list of sentences. Can use docset_loader to reload
-        sentences if you'd like
-    If there are repeated sentences across documents, pick the first one.
-    '''
-    for i, doc in enumerate(document_set):
-        for j, s in enumerate(doc.sents):
-            if sentence == s.text:
-                return (doc, j)
-    return None
-
-
 def contains_a_pronoun(span, pronoun_tags: Set[str] = {"PRP", "PRON", "PRP$"}):
     return len(set([tkn.tag_ for tkn in span]) & pronoun_tags) > 0
 
@@ -181,17 +168,25 @@ class CoferenceResolver:
 class ContentRealizer:
     resolver = CoferenceResolver()
 
-    def __call__(self, summary: List[List[str]], 
-                 document_set: List[List[str]]) -> None:
+    def __call__(
+            self, 
+            summary: List[List[str]], 
+            document_set: List[List[str]],
+            doc_index: List[int],
+            sentence_index: List[int],
+        ) -> List[List[str]]:
+        '''
+        Args
+            summary: the resulting summary as a list of sentences 
+                    (NOTE: assumes that these sentences are most important)
+            documentset: The set of documents sentences are extracted from (list of tokenized sentences)
+                        Be sure to use DETOKENIZER.detokenize to make the docset a list of strings
+                        (One string for each document)
+            doc_indexes:  keys to the document in which the reference sentence is found. 
+            sentence_indexes: indexes in which the reference sentence is found in the document.
+        '''
         # Sorry if the function is long... SpaCy's garbage collection is pretty aggresive towards 
         # out-of-scope variables, so I kept most stuff in this one call
-        '''
-        summary: the resulting summary as a list of sentences 
-                 (NOTE: assumes that these sentences are most important)
-        documentset: The set of documents sentences are extracted from (list of tokenized sentences)
-                     Be sure to use DETOKENIZER.detokenize to make the docset a list of strings
-                     (One string for each document)
-        '''
         if isinstance(summary[0], list):
             summary = [DETOKENIZER.detokenize(s) for s in summary]
 
@@ -201,21 +196,50 @@ class ContentRealizer:
         _docset = [detokenize_list_of_tokens(doc) for doc in document_set]
         docset = list(map(self.resolver, tqdm(_docset, desc="Coreference resolution:")))
 
+        most_similar = (1., None)
+
         for s_i, sentence in enumerate(summary):
-            
-            # recover the document
-            reference_sentence = None
-            for doc_i, doc in enumerate(docset):
-                for j, s in enumerate(doc.sents):
-                    if s.text in sentence:
-                        reference_sentence = s
-                        break
-                if reference_sentence:
-                    break
+            redo_loop = True    
+            while redo_loop is True:
+                if doc_index and sentence_index:
+                    try:
+                        reference_sentence = docset[doc_index[s_i]][sentence_index[s_i]]
+                        redo_loop = False
+                    except KeyError:
+                        doc_index, sentence_index = None, None
+                        print(f"Can't sentence for indices for {doc_index, sentence_index}."
+                              "Searching for the sentence in documents.")
+                else:
+                    # Iterate through a document set to recover the original indices of the sentences
+                    # If there are repeated sentences across documents, pick the first one.
+                    reference_sentence = None
+                    redo_loop = False
+                    for doc_i, doc in enumerate(docset):
+                        for j, s in enumerate(doc.sents):
+                            if s.text == sentence:
+                                reference_sentence = s
+                                most_similar = (0., reference_sentence)
+                                break
+                            else:
+                                # if no sentence is found, print the most similar one as a visual check
+                                # for potential bugs
+                                d_j = jaccard_distance(set(word_tokenize(s.text)), 
+                                                    set(word_tokenize(sentence)))
+                                if d_j < most_similar:
+                                    most_similar = (d_j, s)
+                        if reference_sentence:
+                            break
             
             # perform the algorithm
-            seen_clusters[doc_i] = {}
+            if reference_sentence is None:
+                print(f"Couldn't compelete content realization. " 
+                      f"Sentence not found in the docset: {sentence}")
+                print(f"\tDoes it look like it's most similar sentence? {s.text}")
+                return summary, False
+            
             noun_phrases = [span for span in reference_sentence.noun_chunks]
+
+            seen_clusters[doc_i] = {}
             seen_nps = []
             for NP in noun_phrases:
                 seen_nps.append(NP.text)
@@ -250,4 +274,4 @@ class ContentRealizer:
                                 # print(f"({np_count})", NP.text, "=>", replace_np.text)
                                 # print(summary[s_i], "=>", summary_clone[s_i])
 
-        return summary_clone
+        return summary_clone, True

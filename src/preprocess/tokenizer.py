@@ -31,7 +31,7 @@ COPYRIGHT_STRINGS = [
 
 # headers to be excluding
 REMOVE_PATTERN = [
-    r'^([A-Z]{2,}|D\.C\.).*\(.*?\)(\s?\-\-|_)',
+    r'^([A-Z]{2,}|D\.C\.).*\(.*?\)(\s?\-\-|_|:)',
     r'\(Begin optional trim\)',
     r'\(Begin optional trim\)',
     r'^SOURCES: .*$',
@@ -72,6 +72,8 @@ def read_aquaint(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
                 body = extract_p(body_node)
             else:
                 body = extract_p_manual(body_node)
+            if body == []:
+                print("Missing", doc_id)
             # We now find what we need, break so we can move on
             break
     return headline, body
@@ -85,10 +87,12 @@ def read_aquaint2(root: etree.Element, doc_id: str) -> Tuple[str, List[str]]:
         if child.get("id").strip() == doc_id:
             if child.find("HEADLINE") is not None:
                 headline = child.find("HEADLINE").text.strip().replace('\n', ' ')
-            if child.find("TEXT").find("P") is not None:
+            if child.find("TEXT").find("P") is not None or child.find("TEXT").find("p") is not None:
                 body = extract_p(child)
             else:
                 body = extract_p_manual(child)
+            if body == []:
+                print("Missing", doc_id)
             # We now find what we need, break so we can move on
             break
     return headline, body
@@ -146,9 +150,7 @@ def extract_p_manual(body_node: etree.Element) -> List[List[str]]:
             if re.search(pattern, s):
                 s = re.sub(pattern, '', s)
         if re.search('\S', s) and not any([cs in s for cs in COPYRIGHT_STRINGS]):
-            if re.search(r'^[A-Z]{3,}\s*\([A-Z]{2,}\):', s):
-                for _s in re.split(r':', s):
-                    result.append(sent_tokenize(_s))
+            result.append(sent_tokenize(s))
     return result
 
 

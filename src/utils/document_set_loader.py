@@ -1,5 +1,5 @@
 import json
-from processing_utils import flatten_list
+from .processing_utils import flatten_list
 from collections import OrderedDict
 from typing import *
 from pathlib import Path

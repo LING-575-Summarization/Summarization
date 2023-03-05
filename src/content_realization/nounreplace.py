@@ -22,17 +22,17 @@ def clean_up_realization(summary: str, max_tokens=100):
         retokenized_summary[0] = retokenized_summary[0][0:100]
     summary_string = " ".join([DETOKENIZER.detokenize(s) for s in retokenized_summary])
     summary_string = re.sub(r'\s([,\.\"\'?!%])(?=\s)', '\1', summary_string)
-    summary_string = re.sub(r'(?<=\w)([,\.\"\'?!%])(?=\w+)', '\1 ', summary_string)
+    summary_string = re.sub(r'(?<=\w)([,\.?!%])(?=\w+)', '\1 ', summary_string)
     return summary_string
 
 
-def replace_referents(summary: str, original_documents: List[List[str]]) -> str:
+def replace_referents(summary: str, original_documents: List[List[str]]) -> Tuple[str, bool]:
     '''
     Replaces references in a summary with desired nouns
     '''
     cr = ContentRealizer()
-    new_summary = cr(summary, original_documents)
-    return clean_up_realization(new_summary)
+    new_summary, success_in_replace = cr(summary, original_documents)
+    return clean_up_realization(new_summary), success_in_replace
     
 
 if __name__ == '__main__':
