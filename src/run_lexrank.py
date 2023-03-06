@@ -45,6 +45,14 @@ class TFExpt(Experiment):
     ignore_punctuation: bool = False
 
 
+@dataclass
+class LSAExpt(Experiment):
+    idf_level: str = "doc"
+    vector: str = 'lsa'
+    ignore_punctuation: bool = False
+    lowercase: bool = True
+
+
 ARGS=TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7) # BEST
 
 EXPERIMENTS = [
@@ -58,10 +66,11 @@ EXPERIMENTS = [
     # (8, BERTExpt(threshold=0.15, min_jaccard_dist=0.8, content_realization=True)),
     # (9, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=10)), 
     # (10, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10))
-    (11, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)), 
-    (12, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)), 
-    (13, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
-    (14, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
+    # (11, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)), 
+    # (12, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)), 
+    # (13, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
+    # (14, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
+    (15, LSAExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=15)),
 ]
 
 
