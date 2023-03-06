@@ -1,53 +1,113 @@
 from vectorizer import *
 from tqdm import tqdm
 import json, os
-import sys
+from utils import docset_loader
 from extraction_methods.lexrank import LexRankFactory
+from content_realization import replace_referents
 from dataclasses import dataclass
 
 @dataclass
 class Experiment:
-    idf_level: str
-    ngram: int
-    delta_idf: float
-    log_tf: bool
+    threshold: float = 0.
+    error: float = 1e-16
+    min_length: int = 7
+    min_jaccard_dist: float = 0.6
+    content_realization: bool = False
 
     def as_dict(self):
         x = self.__dict__
-        m = x.pop('idf_level')
-        l = False if m == "sentence" else True
-        return x, l
+        return x
+
+    def pop(self, key: str):
+        value = self.__dict__[key]
+        delattr(self, key)
+        return value
 
 
-EXPT=Experiment("sentence", 1, 0.7, False)
+@dataclass
+class W2VExpt(Experiment):
+    vector: str = 'word2vec'
+    reduction: str = 'centroid'
 
-# EXPERIMENTS = [
-#     # Experiment("sentence", 1, 0., False),
-#     # Experiment("documset", 1, 0., False),
-#     # Experiment("sentence", 2, 0., False),
-#     # Experiment("documset", 2, 0., False),
-#     #  Experiment("sentence", 1, 0.7, False),
-#     # Experiment("documset", 1, 0.7, False),
-#     Experiment("sentence", 1, 0., True),
-#     Experiment("documset", 1, 0., True),
-# ]
+
+@dataclass
+class BERTExpt(Experiment):
+    vector: str = 'bert'
+
+
+@dataclass
+class TFExpt(Experiment):
+    idf_level: str = "doc"
+    ngram: int = 1
+    delta_idf: float = 0.
+    log_tf: bool = False
+    vector: str = 'tfidf'
+    ignore_punctuation: bool = False
+
+
+ARGS=TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7) # BEST
+
+EXPERIMENTS = [
+    # (1, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)), #2
+    # (2, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)), #1
+    # (3, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), 
+    # (4, BERTExpt(threshold=0.15, min_jaccard_dist=0.8)), 
+    # (5, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)), 
+    # (6, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)), 
+    # (7, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
+    # (8, BERTExpt(threshold=0.15, min_jaccard_dist=0.8, content_realization=True)),
+    # (9, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=10)), 
+    # (10, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10))
+    (11, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)), 
+    (12, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)), 
+    (13, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
+    (14, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
+]
+
 
 def main():
-    with open(DATASET, 'r') as datafile:
+    with open('data/devtest.json', 'r') as datafile:
         data = json.load(datafile).keys()
-    LexRank = LexRankFactory('tfidf')
-    args, _ = EXPT.as_dict()  
-    for docset_id in tqdm(data, desc="Evaluating documents"):
-        lx = LexRank.from_data(datafile=DATASET, documentset=docset_id,
-            sentences_are_documents=True, min_length=5, min_jaccard_dist=0.6, **args)
-        result = lx.obtain_summary(detokenize=True)
-        id0 = docset_id[0:5]
-        id1 = docset_id[-3]
-        output_file = os.path.join('outputs', 'D4', f'{id0}-A.M.100.{id1}.2')
-        with open(output_file, 'w') as outfile:
-            outfile.write(result)
+    for i, expt in EXPERIMENTS:
+        vector_type = expt.pop('vector')
+        realization = expt.pop('content_realization')
+        LexRank = LexRankFactory(vector_type)
+        print(f"Experiment ({vector_type}) {i}...")
+        args = expt.as_dict()
+        m = args.pop('idf_level', "doc")
+        idf_docset = False if m == "doc" else True
+        if idf_docset:
+            lx = LexRank.from_data(datafile='data/devtest.json', sentences_are_documents=True,
+                                    do_evaluate=False, **args)
+            for docset_id in tqdm(data, desc="Evaluating documents"):
+                docset, indices = docset_loader(
+                    'data/devtest.json', docset_id, sentences_are_documents=True)
+                lx = lx.replace_evaldocs(docset, indices)
+                if realization:
+                    _docset, indices = docset_loader('data/devtest.json', docset_id)
+                    result = lx.obtain_summary(_docset, coreference_resolution = True, detokenize=True)
+                else:
+                    result = lx.obtain_summary(coreference_resolution = False, detokenize=True)
+                id0 = docset_id[0:5]
+                id1 = docset_id[-3]
+                output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i}')
+                with open(output_file, 'w', encoding='utf8') as outfile:
+                    outfile.write(result)
+        else:
+            for docset_id in tqdm(data, desc="Evaluating documents"):
+                lx = LexRank.from_data(datafile='data/devtest.json', documentset=docset_id,
+                    sentences_are_documents=True, **args)
+                if realization:
+                    _docset, indices = docset_loader('data/devtest.json', docset_id)
+                    result = lx.obtain_summary(_docset, coreference_resolution = True, detokenize=True)
+                else:
+                    result = lx.obtain_summary(coreference_resolution = False, detokenize=True)
+                id0 = docset_id[0:5]
+                id1 = docset_id[-3]
+                output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i}')
+                with open(output_file, 'w', encoding='utf8') as outfile:
+                    outfile.write(result)
 
 
 if __name__ == '__main__':
-    DATASET = sys.argv[1]
     main()

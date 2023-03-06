@@ -1,4 +1,4 @@
-from .tf_idf import TF_IDF
+from .tfidf import TFIDF
 from .lexrank import LexRankFactory
 
 if __name__ == '__main__':

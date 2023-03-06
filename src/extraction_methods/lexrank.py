@@ -10,9 +10,7 @@ References:
 import numpy as np
 import pandas as pd
 from vectorizer import DocumentToVectors, DocumentToVectorsFactory
-from math import sqrt
-from utils import detokenizer_wrapper
-from nltk.metrics.distance import jaccard_distance
+from content_realization import extract_summary
 from typing import *
 import logging
 import argparse
@@ -25,14 +23,14 @@ logger = logging.getLogger()
 
 
 def LexRankFactory(
-        vector_generator: Literal['word2vec, tfidf, distilbert'],
+        vector_generator: Literal['word2vec, tfidf, bert'],
         **kwargs
     ):
     '''
     Pass the __init__ function used to initiliaze a LexRank class to the
     data factory function
     Arguments:
-        - vector_generator: whether to use 'word2vec', 'tfidf', 'distilbert' vectors
+        - vector_generator: whether to use 'word2vec', 'tfidf', 'bert' vectors
         - kwargs: additional arguments for the vector_generator (e.g., eval_documents for tfidf)
                   and arguments for lexrank (e.g., min_jaccard_dist)
     '''
@@ -121,18 +119,19 @@ class LexRank(DocumentToVectors):
             key=lambda x: x[1],
             reverse=True
         )
-        if return_type == 'list':
-            ranked_list
         df = pd.DataFrame(ranked_list).reset_index()
         df.columns = ['rank', 'index', f'LR Score ({self.threshold})', 'sentence']
+        if return_type == 'list':
+            return df['sentence'].to_list()
         return df
 
 
-    @detokenizer_wrapper
     def obtain_summary(
             self, 
+            reference_documents: Optional[List[List[str]]] = None,
             max_tokens: Optional[int] = 100,
             topk_sentences: Optional[int] = 25,
+            coreference_resolution: Optional[bool] = False, 
             detokenize: Optional[Union[Callable, bool]] = False
         ) -> Union[str, List[List[str]]]:
         '''
@@ -145,40 +144,12 @@ class LexRank(DocumentToVectors):
                 or leave as a list of whitespace delimited tokens. The decorator 
                 wrap_detokenizer transforms the tokenize bool into a function behind the scenes
         '''
-        ranked_list = self.solve_lexrank('pandas')
-        i = 0
-        words = 0
-        summary_ids = []
-        current_sentence = ranked_list['sentence'][0]
-        while words < max_tokens and i < min(topk_sentences, ranked_list.shape[0]):
-            if self.min_jaccard_dist is not None:
-                too_similar = False
-                for previous_sent_id in summary_ids:
-                    prev_sent = ranked_list['sentence'][previous_sent_id]
-                    jaccard_d = jaccard_distance(set(current_sentence), set(prev_sent))
-                    if jaccard_d <= self.min_jaccard_dist:
-                        too_similar = True
-                        break
-            if self.min_jaccard_dist is not None and too_similar:
-                i += 1
-                current_sentence = ranked_list['sentence'][i]
-                continue
-            if len(current_sentence) + words > max_tokens:
-                i += 1
-                current_sentence = ranked_list['sentence'][i]
-                continue
-            else:
-                summary_ids.append(i)
-                i += 1
-                current_sentence = ranked_list['sentence'][i]
-                words += len(current_sentence)
-        summary = [detokenize(ranked_list['sentence'][sum_id]) for sum_id in summary_ids]
-        assert words - len(current_sentence) < max_tokens, \
-            f"words: {words - len(current_sentence)} | sentence: {ranked_list['sentence']}"
-        if isinstance(summary[-1], str):
-            summary = list(map(lambda x: x + "\n", summary))
-        return detokenize(summary)
-
+        ranked_list = self.solve_lexrank('list')
+        ranked_list = [s for s in ranked_list if len(s) > self.min_length]
+        return extract_summary(ranked_list, reference_documents, max_tokens=max_tokens,
+                                  topk_sentences=topk_sentences, min_jaccard_dist=self.min_jaccard_dist,
+                                  coreference_resolution=coreference_resolution, detokenize=detokenize)
+    
 
 def power_method(
         matrix: np.ndarray, 
@@ -233,25 +204,6 @@ def parse_args():
     )
     args, _ = argparser.parse_known_args()
     return args
-
-
-# def main():
-#     args = parse_args()
-#     assert args.data_set in set(['training', 'evaltest', 'devtest'])
-#     fname = os.path.join(args.data_path, args.data_set + ".json")
-#     with open(fname, 'r') as datafile:
-#         data = json.load(datafile)
-#     for docset_id in tqdm(data):
-#         docset = data[docset_id]
-#         lx = LexRank(docset, max_length=5, doc_level='sentence', 
-#             punctuation=True, lowercase=True, min_jaccard_dist=0.6)
-#         result = lx.obtain_summary(args.threshold, args.error, detokenize=True)
-#         print(result)
-#         # spl = str(docset_id).split("-", maxsplit=1)
-#         # id0, id1 = spl[0], spl[1]
-#         # output_file = os.path.join('outputs', 'D3', f'{id0}-A.M.100.{id1}.2')
-#         # with open(output_file, 'w') as outfile:
-#         #     outfile.write(result)
 
 
 if __name__ == '__main__':

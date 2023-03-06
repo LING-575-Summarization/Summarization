@@ -27,7 +27,7 @@ import re
 from statistics import median
 from utils import flatten_list, docset_loader
 from sklearn.cluster import KMeans
-from vectorizer import TFIDFModel, Word2VecModel, DistilBertModel
+from vectorizer import TFIDFModel, Word2VecModel, BERTModel
 
 
 class SentenceIndex:
@@ -150,8 +150,8 @@ class Clustering:
         # Word2Vec
         # model = Word2VecModel()
 
-        # DistilBert
-        # model = DistilBertModel()
+        # BERTModel
+        # model = BERTModel()
 
         for sentence in sentences:
             # create random embeddings for testing purposes
