@@ -7,7 +7,7 @@ else:
     from .vector_api import VectorModel, DocumentToVectors
 
 from transformers import AutoModel, AutoTokenizer, logging
-from nltk.tokenize.treebank import TreebankWordDetokenizer
+from sacremoses import MosesDetokenizer
 import torch
 import numpy as np
 from typing import *
@@ -19,7 +19,7 @@ Citations:
 - Huggingface (https://huggingface.co/docs/transformers/model_doc/bert)
 '''
 
-DETOKENIZER = TreebankWordDetokenizer()
+DETOKENIZER = MosesDetokenizer()
 
 class BERTModel(VectorModel):
     def __init__(self) -> None:

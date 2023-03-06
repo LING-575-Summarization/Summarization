@@ -3,7 +3,6 @@ import random
 
 import json
 from nltk.tokenize import word_tokenize
-from rouge_score import rouge_scorer
 
 import util
 

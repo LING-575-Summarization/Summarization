@@ -5,11 +5,10 @@ string depend on a function/method's arguments
 
 from inspect import signature, Parameter
 from copy import deepcopy
-from nltk.tokenize.treebank import TreebankWordDetokenizer
+from sacremoses import MosesDetokenizer
 from typing import *
 from functools import reduce
 
-detokenizer = TreebankWordDetokenizer()
 
 def detokenize_list_of_tokens(document: List[List[str]]):
     return " ".join([detokenizer.detokenize(s) for s in document])
@@ -47,8 +46,8 @@ def detokenizer_wrapper(f: Callable):
                     )
         if isinstance(kwargs['detokenize'], bool):
             if kwargs['detokenize']:
-                from nltk.tokenize.treebank import TreebankWordDetokenizer
-                detokenizer = TreebankWordDetokenizer()
+                from sacremoses import MosesDetokenizer
+                detokenizer = MosesDetokenizer()
                 detokenize = lambda x: detokenizer.detokenize(x, True)
             else:
                 detokenize = lambda x: x

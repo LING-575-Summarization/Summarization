@@ -7,7 +7,6 @@ from typing import *
 import spacy
 from sacremoses import MosesDetokenizer, MosesTokenizer
 from nltk.metrics.distance import jaccard_distance
-from nltk.tokenize import word_tokenize
 import time
 from utils import flatten_list
 import re

@@ -2,9 +2,12 @@ from typing import Tuple, List, TextIO, Union
 import re
 from lxml import etree
 import nltk.data
-from nltk.tokenize import word_tokenize
 import nltk
+from sacremoses import MosesTokenizer
 
+# word tokenizer
+TOKENIZER = MosesTokenizer(lang='en')
+word_tokenize = lambda x: TOKENIZER.tokenize(x)
 
 # Wrap the nltk.data.load() tokenizer in a class to avoid downloading punkt
 class SentenceTokenizer:
