@@ -189,16 +189,9 @@
 
 # echo "finished with J10"
 
-./src/scripts/linear_programming.sh data/devtest.json 100 outputs/clustering/TRY 1 25 0.7 0.01 False True True
-# no logging
-#./src/scripts/linear_programming.sh outputs/devtest.json 100 outputs/ablation/J10 1 25 0.7 0.01 False True False
-# python3 src/utils/eval_rouge.py J10 > rouge_score/J10
-
-# echo "finished with J10"
-
 ./src/scripts/linear_programming.sh outputs/devtest.json 100 outputs/clustering/F8_before_content_realization 1 25 0.7 0.01 False True True
 
-echo "finished with F8 clustering but no content realization"
+# echo "finished with F8 clustering but no content realization"
 
 
 
