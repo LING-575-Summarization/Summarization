@@ -7,6 +7,7 @@ from tfidf import TFIDF
 from nltk.util import ngrams
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from clustering import SentenceIndex, create_clusters
+from content_realization import replace_referents
 
 class LinearProgramSummarizer:
 
@@ -258,6 +259,12 @@ if __name__ == '__main__':
 
         # order the summary
         summary = create_clusters(docset_id, summary, fractional_order, json_path)
+
+        # content realization
+        docset_2, indices = docset_loader(json_path, docset_id)
+        summary = replace_referents(summary, docset_2)
+
+        # detokenizer
         summary = detokenize_summary(summary)
 
         # output summaries to correct file
