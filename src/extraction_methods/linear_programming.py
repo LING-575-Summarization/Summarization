@@ -3,11 +3,10 @@ import os
 import pulp
 import json
 from collections import OrderedDict
-# from tf_idf import create_tf_idf_dict
 from we_tried_newtfidf import TFIDF
 from nltk.util import ngrams
 from nltk.tokenize.treebank import TreebankWordDetokenizer
-from utils.clustering import SentenceIndex, create_clusters
+from clustering import SentenceIndex, create_clusters
 
 class LinearProgramSummarizer:
 
