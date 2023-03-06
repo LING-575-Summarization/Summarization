@@ -170,3 +170,5 @@ data
 bin/**
 .vscode/**
 log/**
+saved_models/**
+

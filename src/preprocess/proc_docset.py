@@ -14,8 +14,12 @@ import json
 import xml.etree.ElementTree as ET
 from typing import Dict, Tuple, List
 from pathlib import Path
-import util
 
+if __name__ == '__main__':
+    module_path = os.path.dirname(os.path.realpath(__file__))
+    sys.path.append(module_path)
+
+from args import get_args
 from get_data_path import resolve_path
 from tokenizer import read_by_corpus_type, write_output
 
@@ -162,7 +166,7 @@ def get_gold_test(docset_id: str, gold_dir: str):
 if __name__ == '__main__':
     input_xml_file = sys.argv[1]
     output = sys.argv[2]
-    kwargs = vars(util.get_args())
+    kwargs = vars(get_args())
 
     # Initialize Logger
     no_fmt, default_fmt = '%(message)s', '(%(levelname)s|%(asctime)s) %(message)s'

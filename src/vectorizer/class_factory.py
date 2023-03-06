@@ -5,11 +5,11 @@ from typing import *
 from .vector_api import DocumentToVectors
 from .word2vec import DocumentToWord2Vec
 from .tfidfvec import DocumentToTFIDF
-from .bertvec import DocumentToDistilBert
+from .bertvec import DocumentToBert
 
 def DocumentToVectorsFactory(
         subclass: DocumentToVectors,
-        vector_generator: Literal['word2vec', 'tfidf', 'distilbert'],
+        vector_generator: Literal['word2vec', 'tfidf', 'bert'],
         init_function: Callable,
         **kwargs
     ):
@@ -18,8 +18,8 @@ def DocumentToVectorsFactory(
         subclass_generator = DocumentToWord2Vec
     elif vector_generator == 'tfidf':
         subclass_generator = DocumentToTFIDF
-    elif vector_generator == 'distilbert' or vector_generator == 'bert':
-        subclass_generator = DocumentToDistilBert
+    elif vector_generator == 'bert' or vector_generator == 'bert':
+        subclass_generator = DocumentToBert
     else:
         raise ValueError(f"Unrecognized vector_generator: {vector_generator}")
 
