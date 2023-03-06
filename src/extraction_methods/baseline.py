@@ -1,11 +1,10 @@
 import sys
 import os
 import json
-from nltk.tokenize.treebank import TreebankWordDetokenizer
-
+from sacremoses import MosesDetokenizer
 
 def detokenize_summary(summary):
-    detokenizer = TreebankWordDetokenizer()
+    detokenizer = MosesDetokenizer()
     summary_str = ""
     for sent in summary:
         summary_str += detokenizer.detokenize(sent) + "\n"
