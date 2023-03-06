@@ -239,6 +239,7 @@ if __name__ == '__main__':
             doc_key = docset_id + "." + document
             idf_docset[doc_key] = data
 
+
     for docset_id, docset in docset_rep.items():
         model = LinearProgramSummarizer(
             docset_id,
@@ -257,7 +258,7 @@ if __name__ == '__main__':
         summary = model.make_summary()
 
         # order the summary
-        summary = create_clusters(docset_id, summary, fractional_order)
+        summary = create_clusters(docset_id, summary, fractional_order, json_path)
         summary = detokenize_summary(summary)
 
         # output summaries to correct file
@@ -267,3 +268,4 @@ if __name__ == '__main__':
         output_summary_file = output_dir + "/" + id_part1 + "-A.M.100." + id_part2 + ".1"
         with open(output_summary_file, 'w') as output:
             output.write(summary)
+

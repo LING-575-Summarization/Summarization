@@ -24,9 +24,10 @@
 import sys
 import json
 import re
-from utils import flatten_list
+from statistics import median
+from utils import flatten_list, docset_loader
 from sklearn.cluster import KMeans
-from utils.vectorizer import Word2VecModel
+from vectorizer import TFIDFModel, Word2VecModel, DistilBertModel
 
 
 class SentenceIndex:
@@ -118,7 +119,7 @@ class SentenceIndex:
 
 class Clustering:
 
-    def __init__(self, docset_id, sentence_indices):
+    def __init__(self, docset_id, sentence_indices, json_path):
         """
             Params:
                 - summary: a list of sentences comprising a summary
@@ -127,6 +128,7 @@ class Clustering:
                     mapping sentences to indices and mapping docset_id to sentences
         """
         self.docset_id = docset_id
+        self.json_path = json_path
         self.sentence_indices = sentence_indices
         self.embedding_to_sentence = {}
 
@@ -140,20 +142,30 @@ class Clustering:
 
     def _get_sentence_embeddings(self, sentences):
         # random.seed(11)
-        model = Word2VecModel()
+
+        # TFIDF
+        docset, indices = docset_loader(self.docset_id, self.json_path)
+        model = TFIDFModel(docset)
+
+        # Word2Vec
+        # model = Word2VecModel()
+
+        # DistilBert
+        # model = DistilBertModel()
 
         for sentence in sentences:
             # create random embeddings for testing purposes
             # embedding = tuple(random.choices(range(10), k=10))
-
             # embedding = Hilly's embedding
             sent_str = " ".join(sentence)
             if not re.search(r'\w', sent_str):
                 continue
-            # print("sent_str", sent_str)
             embedding = model.vectorize_sentence(sent_str)
             embedding = tuple(embedding)
-            self.embedding_to_sentence[embedding] = sentence
+            if embedding not in self.embedding_to_sentence:
+                self.embedding_to_sentence[embedding] = set()
+            # embedding -> set of sentences since many have the same embedding
+            self.embedding_to_sentence[embedding].add(tuple(sentence))
 
 
     def cluster_docset(self):
@@ -166,15 +178,15 @@ class Clustering:
 
         clusters = kmeans.fit_predict(embeddings)
 
-
         for index, cluster_index in enumerate(clusters):
-            sentence = tuple(self.embedding_to_sentence[embeddings[index]])
+            sentences = self.embedding_to_sentence[embeddings[index]]
 
             if cluster_index not in self.cluster_to_sentences:
                 self.cluster_to_sentences[cluster_index] = set()
-            self.cluster_to_sentences[cluster_index].add(sentence)
-
-            self.sentence_to_cluster[sentence] = cluster_index
+            for sentence in sentences:
+                sentence = tuple(sentence)
+                self.cluster_to_sentences[cluster_index].add(sentence)
+                self.sentence_to_cluster[sentence] = cluster_index
             
     
     def order_cluster_themes(self):
@@ -183,10 +195,19 @@ class Clustering:
         for cluster, sentences in self.cluster_to_sentences.items():
             cur_sum = 0
 
+            # MEAN
+            # for sentence in sentences:
+            #     cur_sum += self.sentence_indices[self.docset_id, sentence]
+            # avg_fractional_ordering = cur_sum / len(sentences)
+            # cluster_to_frac_ordering[cluster] = avg_fractional_ordering
+
+            # MEDIAN
+            indices = []
             for sentence in sentences:
-                cur_sum += self.sentence_indices[self.docset_id, sentence]
-            avg_fractional_ordering = cur_sum / len(sentences)
-            cluster_to_frac_ordering[cluster] = avg_fractional_ordering
+                idx = self.sentence_indices[self.docset_id, sentence]
+                indices.append(idx)
+            med = median(indices)
+            cluster_to_frac_ordering[cluster] = med
 
         # sort from least to greatest fractional ordering
         ordered_clusters = sorted(cluster_to_frac_ordering.items(), key=lambda item: item[1])
@@ -204,7 +225,6 @@ class Clustering:
         for cluster_index, fractional_ordering in self.ordered_clusters:
             block = []
             for sentence in unordered_summary:
-
                 # for testing purposes
                 # sentence = sentence[0].strip().split()
 
@@ -228,7 +248,7 @@ class Clustering:
         return sorted_block
                 
 
-def create_clusters(docset_id, summary, sent_indices):
+def create_clusters(docset_id, summary, sent_indices, json_path):
     """
         Note: Requires a pre-loaded SentenceIndex object, please load this SenteneIndex
             just once to avoid loading the given json file more than once
@@ -241,7 +261,7 @@ def create_clusters(docset_id, summary, sent_indices):
             - An ordered summary
             - An ordered list of sentences, where each sentence is a list of tokens
     """
-    clusters = Clustering(docset_id, sent_indices)
+    clusters = Clustering(docset_id, sent_indices, json_path)
     summary = clusters.order_summary(summary)
     return summary
 
