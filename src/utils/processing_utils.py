@@ -26,17 +26,6 @@ def flatten_list(x: List[List[Any]]) -> List[Any]:
     return reduce(flatten, x_n)
 
 
-def flatten_paragraph(x: List[List[Any]]) -> List[Any]: 
-    '''
-    Utility function to flatten paragraphs into multiple sentences
-    '''
-    x_n = deepcopy(x)
-    def flatten(a, b):
-        a.extend(b)
-        return a
-    return reduce(flatten, x_n)
-
-
 def detokenizer_wrapper(f: Callable):
 
     def return_correct_format(*args, **kwargs):
