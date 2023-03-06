@@ -3,7 +3,7 @@ import os
 import pulp
 import json
 from collections import OrderedDict
-from we_tried_newtfidf import TFIDF
+from tfidf import TFIDF
 from nltk.util import ngrams
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from clustering import SentenceIndex, create_clusters

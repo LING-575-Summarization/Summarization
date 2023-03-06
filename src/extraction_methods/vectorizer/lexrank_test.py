@@ -1,4 +1,4 @@
-from content_selection import LexRankFactory
+from extraction_methods import LexRankFactory
 
 def main():
     LexRank = LexRankFactory('bert')
