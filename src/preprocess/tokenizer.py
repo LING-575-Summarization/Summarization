@@ -39,9 +39,9 @@ REMOVE_PATTERN = [
     r'\(END OPTIONAL TRIM\)',
     r'\(End trim\)',
     r'\(optional trim ends here\)',
-    r'\(NEW YORK _\)',
-    r'\(WASHINGTON _\)',
-    r'\(ROME _\)',
+    r'(\(NEW YORK _\)|NEW YORK _)',
+    r'(\(WASHINGTON _\)|WASHINGTON _)',
+    r'(\(ROME _\)|ROME _)',
     r'\(\d{3}\) \d{3}-\d{4}', # phone number
     r'NATIONAL GENERAL \(.*\)$'
     r'For Use By Clients of the New York Times News Service',

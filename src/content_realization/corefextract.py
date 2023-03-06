@@ -176,7 +176,7 @@ class ContentRealizer:
 
         start = time.time()
         self.docset = self.resolver(document_set)
-        print(f"Coreference time: {time.time() - start}", file=sys.stderr)
+        print(f"\tCoreference time: {time.time() - start}", file=sys.stderr)
         self.seen_clusters = {}
 
     def __call__(
@@ -207,8 +207,9 @@ class ContentRealizer:
         
         # perform the algorithm
         if reference_sentence is None:
-            print(f"Warning (not in docset) -- "
-                  f"Couldn't compelete coreference resolution for sentence: {_sentence}")
+            print(f"\tWarning (not in docset) -- "
+                  f"Couldn't compelete coreference resolution for sentence: {_sentence}", 
+                  file=sys.stderr)
             return sentence, False
         
         noun_phrases = [span for span in reference_sentence.noun_chunks]
