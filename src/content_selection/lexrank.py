@@ -206,24 +206,5 @@ def parse_args():
     return args
 
 
-# def main():
-#     args = parse_args()
-#     assert args.data_set in set(['training', 'evaltest', 'devtest'])
-#     fname = os.path.join(args.data_path, args.data_set + ".json")
-#     with open(fname, 'r') as datafile:
-#         data = json.load(datafile)
-#     for docset_id in tqdm(data):
-#         docset = data[docset_id]
-#         lx = LexRank(docset, max_length=5, doc_level='sentence', 
-#             punctuation=True, lowercase=True, min_jaccard_dist=0.6)
-#         result = lx.obtain_summary(args.threshold, args.error, detokenize=True)
-#         print(result)
-#         # spl = str(docset_id).split("-", maxsplit=1)
-#         # id0, id1 = spl[0], spl[1]
-#         # output_file = os.path.join('outputs', 'D3', f'{id0}-A.M.100.{id1}.2')
-#         # with open(output_file, 'w') as outfile:
-#         #     outfile.write(result)
-
-
 if __name__ == '__main__':
     pass

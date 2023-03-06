@@ -37,7 +37,7 @@ class BERTExpt(Experiment):
 
 @dataclass
 class TFExpt(Experiment):
-    idf_level: str = "sentence"
+    idf_level: str = "doc"
     ngram: int = 1
     delta_idf: float = 0.
     log_tf: bool = False
@@ -48,16 +48,16 @@ class TFExpt(Experiment):
 ARGS=TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7) # BEST
 
 EXPERIMENTS = [
-    # (1, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)), #4
-    # (2, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)), #3
-    # (3, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), #2
-    # (4, BERTExpt(threshold=0.15, min_jaccard_dist=0.8)), # best BERT
-    # (5, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
-    # (6, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
-    # (7, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
-    # (8, BERTExpt(threshold=0.15, min_jaccard_dist=0.8, content_realization=True)),
-    (9, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), # NOTE: NEW SENTENCE ENCODER
-    (10, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, content_realization=True)), # NOTE: NEW SENTENCE ENCODER
+    (1, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)), #2
+    (2, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)), #1
+    (3, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), 
+    (4, BERTExpt(threshold=0.15, min_jaccard_dist=0.8)), 
+    (5, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)), 
+    (6, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)), 
+    (7, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
+    (8, BERTExpt(threshold=0.15, min_jaccard_dist=0.8, content_realization=True)),
+    (9, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=10)), 
+    (10, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10))
 ]
 
 
@@ -70,8 +70,8 @@ def main():
         LexRank = LexRankFactory(vector_type)
         print(f"Experiment ({vector_type}) {i}...")
         args = expt.as_dict()
-        m = args.pop('idf_level', "sentence")
-        idf_docset = False if m == "sentence" else True
+        m = args.pop('idf_level', "doc")
+        idf_docset = False if m == "doc" else True
         if idf_docset:
             lx = LexRank.from_data(datafile='data/devtest.json', sentences_are_documents=True,
                                     do_evaluate=False, **args)

@@ -40,6 +40,7 @@ REMOVE_PATTERN = [
     r'\(End trim\)',
     r'\(optional trim ends here\)',
     r'\(NEW YORK _\)',
+    r'\(WASHINGTON _\)',
     r'\(ROME _\)',
     r'\(\d{3}\) \d{3}-\d{4}', # phone number
     r'NATIONAL GENERAL \(.*\)$'
@@ -139,6 +140,7 @@ def extract_p(root: etree.Element) -> List[List[str]]:
         for pattern in REMOVE_PATTERN:
             if re.search(pattern, s):
                 s = re.sub(pattern, '', s)
+        s = re.sub(r'\s_\s', ' ', s)
         if s != '' and not any([cs in s for cs in COPYRIGHT_STRINGS]):
             result.append(sent_tokenize(s))
     return result
@@ -153,6 +155,7 @@ def extract_p_manual(body_node: etree.Element) -> List[List[str]]:
         for pattern in REMOVE_PATTERN:
             if re.search(pattern, s):
                 s = re.sub(pattern, '', s)
+        s = re.sub(r'\s_\s', ' ', s)
         if re.search('\S', s) and not any([cs in s for cs in COPYRIGHT_STRINGS]):
             result.append(sent_tokenize(s))
     return result

@@ -5,19 +5,20 @@ The implementation here is inspired by Nenkova (2007)
 
 from typing import *
 import spacy
-from nltk.tokenize.treebank import TreebankWordDetokenizer
+from sacremoses import MosesDetokenizer
 from nltk.metrics.distance import jaccard_distance
-from nltk.tokenize import word_tokenize, sent_tokenize
-from utils import detokenize_list_of_tokens, flatten_list
+from nltk.tokenize import word_tokenize
+import time
+from utils import flatten_list
 import re
+import sys
 
 import warnings
 warnings.filterwarnings('ignore', 
                         message='User provided device_type of \'cuda\', but CUDA is not available. Disabling', 
                         category=Warning)
 
-DETOKENIZER = TreebankWordDetokenizer()
-
+DETOKENIZER = MosesDetokenizer(lang='en')
 
 class Span:
     '''Ad-hoc dataclass to store information on spans in a way that's compatible with spacy'''
@@ -166,14 +167,17 @@ class CoferenceResolver:
 class ContentRealizer:
     
     def __init__(self, document_set: List[List[List[str]]]) -> None:
-        self.seen_clusters = {}
         self.resolver = CoferenceResolver()
         
         if isinstance(document_set[0][0][0], list): # if the document_set contains paragraphs, remove them
             document_set = [flatten_list(doc) for doc in document_set]
         
-        _docset = detokenize_list_of_tokens(document_set)
-        self.docset = self.resolver(_docset)
+        document_set = " ".join([DETOKENIZER.detokenize(d) for d in document_set])
+
+        start = time.time()
+        self.docset = self.resolver(document_set)
+        print(f"Coreference time: {time.time() - start}", file=sys.stderr)
+        self.seen_clusters = {}
 
     def __call__(
             self, 
@@ -192,8 +196,6 @@ class ContentRealizer:
         if isinstance(sentence, list):
             _sentence = DETOKENIZER.detokenize(sentence)
         
-        most_similar = (1., None)
-
         # Iterate through a document set to recover the original indices of the sentences
         # If there are repeated sentences across documents, pick the first one.
         reference_sentence = None
