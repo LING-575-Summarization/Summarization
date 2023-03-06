@@ -2,7 +2,7 @@ from vectorizer import *
 from tqdm import tqdm
 import json, os
 import sys
-from content_selection.lexrank import LexRankFactory
+from extraction_methods.lexrank import LexRankFactory
 from dataclasses import dataclass
 
 @dataclass
