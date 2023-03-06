@@ -48,14 +48,16 @@ class TFExpt(Experiment):
 ARGS=TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7) # BEST
 
 EXPERIMENTS = [
-    (1, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)), #4
-    (2, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)), #3
-    (3, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), #2
-    (4, BERTExpt(threshold=0.15, min_jaccard_dist=0.8)), # best BERT
-    (5, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
-    (6, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
-    (7, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
-    (8, BERTExpt(threshold=0.15, min_jaccard_dist=0.8, content_realization=True)),
+    # (1, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)), #4
+    # (2, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)), #3
+    # (3, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), #2
+    # (4, BERTExpt(threshold=0.15, min_jaccard_dist=0.8)), # best BERT
+    # (5, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
+    # (6, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
+    # (7, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
+    # (8, BERTExpt(threshold=0.15, min_jaccard_dist=0.8, content_realization=True)),
+    (9, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), # NOTE: NEW SENTENCE ENCODER
+    (10, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, content_realization=True)), # NOTE: NEW SENTENCE ENCODER
 ]
 
 

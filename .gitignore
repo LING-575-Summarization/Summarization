@@ -169,9 +169,6 @@ data/**
 data
 bin/**
 .vscode/**
-<<<<<<< HEAD
 log/**
-neuralcoref/**
-=======
-log/**
->>>>>>> lexrank-eval
+saved_models/**
+
