@@ -144,7 +144,6 @@ class Clustering:
         # random.seed(11)
 
         # TFIDF
-        print(self.docset_id)
         docset, indices = docset_loader(self.docset_id, self.json_path)
         model = TFIDFModel(docset)
 

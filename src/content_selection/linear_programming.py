@@ -239,7 +239,7 @@ if __name__ == '__main__':
             doc_key = docset_id + "." + document
             idf_docset[doc_key] = data
 
-    # iter = 0
+
     for docset_id, docset in docset_rep.items():
         model = LinearProgramSummarizer(
             docset_id,
@@ -269,6 +269,3 @@ if __name__ == '__main__':
         with open(output_summary_file, 'w') as output:
             output.write(summary)
 
-        # iter += 1
-        # if iter == 2:
-        #     break
