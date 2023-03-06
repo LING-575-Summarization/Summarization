@@ -7,7 +7,7 @@ from content_realization import replace_referents
 
 
 def detokenize_summary(summary):
-    detokenizer = TreebankWordDetokenizer()
+    detokenizer = MosesDetokenizer()
     summary_str = ""
     for sent in summary:
         summary_str += detokenizer.detokenize(sent) + "\n"

@@ -5,7 +5,7 @@ import json
 from collections import OrderedDict
 from tfidf import TFIDF
 from nltk.util import ngrams
-from nltk.tokenize.treebank import TreebankWordDetokenizer
+from sacremoses import MosesDetokenizer
 from clustering import SentenceIndex, create_clusters
 from content_realization import replace_referents
 
@@ -206,7 +206,7 @@ def read_json(json_path):
 
 
 def detokenize_summary(summary):
-    detokenizer = TreebankWordDetokenizer()
+    detokenizer = MosesDetokenizer()
     summary_str = ""
     for sent in summary:
         summary_str += detokenizer.detokenize(sent) + "\n"
