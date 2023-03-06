@@ -5,6 +5,7 @@ from utils import docset_loader
 from extraction_methods.lexrank import LexRankFactory
 from content_realization import replace_referents
 from dataclasses import dataclass
+from extraction_methods import SentenceIndex, create_clusters
 
 @dataclass
 class Experiment:
@@ -42,14 +43,14 @@ class TFExpt(Experiment):
     delta_idf: float = 0.
     log_tf: bool = False
     vector: str = 'tfidf'
-    ignore_punctuation: bool = False
+    ignore_punctuation: bool = True
 
 
 @dataclass
 class LSAExpt(Experiment):
     idf_level: str = "doc"
     vector: str = 'lsa'
-    ignore_punctuation: bool = False
+    ignore_punctuation: bool = True
     lowercase: bool = True
 
 
@@ -71,10 +72,13 @@ EXPERIMENTS = [
     # (13, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
     # (14, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
     (15, LSAExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=15)),
+    (16, LSAExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10)),
+    (17, LSAExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)),
 ]
 
 
 def main():
+    fractional_order = SentenceIndex('data/devtest.json')
     with open('data/devtest.json', 'r') as datafile:
         data = json.load(datafile).keys()
     for i, expt in EXPERIMENTS:
@@ -94,14 +98,18 @@ def main():
                 lx = lx.replace_evaldocs(docset, indices)
                 if realization:
                     _docset, indices = docset_loader('data/devtest.json', docset_id)
-                    result = lx.obtain_summary(_docset, coreference_resolution = True, detokenize=True)
+                    result = lx.obtain_summary(_docset, coreference_resolution = True, detokenize=False)
                 else:
-                    result = lx.obtain_summary(coreference_resolution = False, detokenize=True)
+                    result = lx.obtain_summary(coreference_resolution = False, detokenize=False)
+                result = create_clusters(docset_id, result, fractional_order, 'data/devtest.json')
+                print(result)
                 id0 = docset_id[0:5]
                 id1 = docset_id[-3]
                 output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i}')
                 with open(output_file, 'w', encoding='utf8') as outfile:
-                    outfile.write(result)
+                    for sentence in result:
+                        print(sentence)
+                        outfile.write(" ".join(sentence))
         else:
             for docset_id in tqdm(data, desc="Evaluating documents"):
                 lx = LexRank.from_data(datafile='data/devtest.json', documentset=docset_id,
@@ -111,11 +119,14 @@ def main():
                     result = lx.obtain_summary(_docset, coreference_resolution = True, detokenize=True)
                 else:
                     result = lx.obtain_summary(coreference_resolution = False, detokenize=True)
+                result = create_clusters(docset_id, result, fractional_order, 'data/devtest.json')
                 id0 = docset_id[0:5]
                 id1 = docset_id[-3]
                 output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i}')
                 with open(output_file, 'w', encoding='utf8') as outfile:
-                    outfile.write(result)
+                    for sentence in result:
+                        print(sentence)
+                        outfile.write(" ".join(sentence))
 
 
 if __name__ == '__main__':

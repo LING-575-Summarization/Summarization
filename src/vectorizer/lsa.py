@@ -8,13 +8,7 @@ from typing import *
 class DocumentToLSA(DocumentToTFIDF):
     def __init__(
             self, 
-            documents: List[List[str]], 
-            indices: Dict[str, int],
-            eval_documents: Optional[List[List[str]]] = None, 
-            do_evaluate: bool = True,
-            ignore_punctuation: bool = True,
-            ignore_stopwords: bool = False,
-            lowercase: bool = True,
+            *args,
             **kwargs
         ) -> None:
         '''
@@ -25,18 +19,23 @@ class DocumentToLSA(DocumentToTFIDF):
         if any([param in ['ngram', 'delta_idf', 'log_tf'] for param in kwargs]):
             print("Warning: LSA does not accept 'ngram', 'delta_idf', 'log_tf' as arguments."
                   "Removing these keyword arguments.")
-        super().__init__(documents, indices, eval_documents, do_evaluate, 
-                         ignore_punctuation=ignore_punctuation, ignore_stopwords=ignore_stopwords,
-                         lowercase=lowercase, ngram=1, log_tf=False, delta_idf=0.)
+        kwargs['ngram'] = 1
+        kwargs['log_tf'] = 1
+        kwargs['delta_idf'] = 1
+        DocumentToTFIDF.__init__(self, *args, **kwargs)
+        self.fit_lsa()
 
 
     def fit_lsa(self):
         '''
         Fit the sentence vectors to the LSA
         '''
-        document_array = np.stack(self.document_vectors)
-        document_matrix = np. self.svd.fit(document_array)
-        self.document_vectors = np.vsplit(self.svd.transform(document_matrix))
+        document_matrix = np.stack(self.document_vectors)
+        self.svd = self.svd.fit(document_matrix)
+        document_vectors = np.vsplit(self.svd.transform(document_matrix), 
+                                          document_matrix.shape[0])
+        self.document_vectors = [v.squeeze() for v in document_vectors]
+        assert np.all([v.shape == self.document_vectors[0].shape for v in self.document_vectors])
     
 
 if __name__ == '__main__':
