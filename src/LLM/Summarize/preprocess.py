@@ -3,6 +3,7 @@ import random
 
 import json
 from nltk.tokenize import word_tokenize
+from rouge_score import rouge_scorer
 
 import util
 
@@ -142,7 +143,7 @@ def main():
     )
     parser.add_argument(
         "--do_previous_mask",
-        action="store_false",
+        action="store_true",
         help="Set this flag if you do not want to have multiple mask to combine to a single one.",
     )
     parser.add_argument(
