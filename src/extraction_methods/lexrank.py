@@ -144,85 +144,12 @@ class LexRank(DocumentToVectors):
                 or leave as a list of whitespace delimited tokens. The decorator 
                 wrap_detokenizer transforms the tokenize bool into a function behind the scenes
         '''
-<<<<<<< HEAD:src/content_selection/lexrank.py
         ranked_list = self.solve_lexrank('list')
         ranked_list = [s for s in ranked_list if len(s) > self.min_length]
         return extract_summary(ranked_list, reference_documents, max_tokens=max_tokens,
                                   topk_sentences=topk_sentences, min_jaccard_dist=self.min_jaccard_dist,
                                   coreference_resolution=coreference_resolution, detokenize=detokenize)
-=======
-        ranked_list = self.solve_lexrank('pandas')
-<<<<<<< HEAD
-        first_sentence = ranked_list['sentence'][0]
-        words = len(first_sentence)
-        if words >= max_tokens: 
-            logger.warning(f"Highest ranked sentence has more than 100 tokens..." + \
-                    "returning a slice of the sentence")
-            return detokenize(first_sentence[0:max_tokens])
-        else:
-            i = 0
-            summary_ids = []
-            current_sentence = first_sentence
-            while words < max_tokens and i < ranked_list.shape[0]:
-                if self.min_jaccard_dist is not None:
-                    too_similar = False
-                    for previous_sent_id in summary_ids:
-                        prev_sent = ranked_list['sentence'][previous_sent_id]
-                        jaccard_d = jaccard_distance(set(current_sentence), set(prev_sent))
-                        if jaccard_d <= self.min_jaccard_dist:
-                            too_similar = True
-                            break
-                if self.min_jaccard_dist is not None and too_similar:
-                    i += 1
-                    current_sentence = ranked_list['sentence'][i]
-                    continue
-                else:
-                    summary_ids.append(i)
-                    i += 1
-                    current_sentence = ranked_list['sentence'][i]
-                    words += len(current_sentence)
-            summary = [detokenize(ranked_list['sentence'][sum_id]) for sum_id in summary_ids]
-            assert words - len(current_sentence) < max_tokens, \
-                f"words: {words - len(current_sentence)} | sentence: {ranked_list['sentence']}"
-            if isinstance(summary[-1], str):
-                summary = list(map(lambda x: x + "\n", summary))
-            return detokenize(summary)
-=======
-        i = 0
-        words = 0
-        summary_ids = []
-        current_sentence = ranked_list['sentence'][0]
-        while words < max_tokens and i < min(topk_sentences, ranked_list.shape[0]):
-            if self.min_jaccard_dist is not None:
-                too_similar = False
-                for previous_sent_id in summary_ids:
-                    prev_sent = ranked_list['sentence'][previous_sent_id]
-                    jaccard_d = jaccard_distance(set(current_sentence), set(prev_sent))
-                    if jaccard_d <= self.min_jaccard_dist:
-                        too_similar = True
-                        break
-            if self.min_jaccard_dist is not None and too_similar:
-                i += 1
-                current_sentence = ranked_list['sentence'][i]
-                continue
-            if len(current_sentence) + words > max_tokens:
-                i += 1
-                current_sentence = ranked_list['sentence'][i]
-                continue
-            else:
-                summary_ids.append(i)
-                i += 1
-                current_sentence = ranked_list['sentence'][i]
-                words += len(current_sentence)
-        summary = [detokenize(ranked_list['sentence'][sum_id]) for sum_id in summary_ids]
-        assert words - len(current_sentence) < max_tokens, \
-            f"words: {words - len(current_sentence)} | sentence: {ranked_list['sentence']}"
-        if isinstance(summary[-1], str):
-            summary = list(map(lambda x: x + "\n", summary))
-        return detokenize(summary)
->>>>>>> ca2fb0c24a37bc9da37d39fd2676c77bc1993779
->>>>>>> dev:src/extraction_methods/lexrank.py
-
+    
 
 def power_method(
         matrix: np.ndarray, 
