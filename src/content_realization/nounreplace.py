@@ -26,12 +26,15 @@ def clean_up_realization(summary: str, max_tokens=100):
     return summary_string
 
 
-def replace_referents(summary: str, original_documents: List[List[str]]) -> Tuple[str, bool]:
+def replace_referents(summary: List[List[str]], original_documents: List[List[List[str]]]) -> Tuple[str, bool]:
     '''
     Replaces references in a summary with desired nouns
+    - summary: list of tokenized sentences
     '''
-    cr = ContentRealizer()
-    new_summary, success_in_replace = cr(summary, original_documents)
+    cr = ContentRealizer(original_documents)
+    new_summary = []
+    for sentence in summary:
+        new_summary.append(cr(sentence))
     return new_summary
     
 

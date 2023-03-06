@@ -5,7 +5,7 @@ The implementation here is inspired by Nenkova (2007)
 
 from typing import *
 import spacy
-from sacremoses import MosesDetokenizer
+from sacremoses import MosesDetokenizer, MosesTokenizer
 from nltk.metrics.distance import jaccard_distance
 from nltk.tokenize import word_tokenize
 import time
@@ -19,6 +19,8 @@ warnings.filterwarnings('ignore',
                         category=Warning)
 
 DETOKENIZER = MosesDetokenizer(lang='en')
+TOKENIZER = MosesTokenizer(lang='en')
+word_tokenize = lambda x: TOKENIZER.tokenize(x)
 
 class Span:
     '''Ad-hoc dataclass to store information on spans in a way that's compatible with spacy'''
