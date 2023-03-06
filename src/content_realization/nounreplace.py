@@ -34,7 +34,8 @@ def replace_referents(summary: List[List[str]], original_documents: List[List[Li
     cr = ContentRealizer(original_documents)
     new_summary = []
     for sentence in summary:
-        new_summary.append(cr(sentence))
+        new_sentence, replaced = cr(sentence)
+        new_summary.append(new_sentence)
     return new_summary
     
 
