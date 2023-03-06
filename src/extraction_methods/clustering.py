@@ -144,7 +144,7 @@ class Clustering:
         # random.seed(11)
 
         # TFIDF
-        docset, indices = docset_loader(self.docset_id, self.json_path)
+        docset, indices = docset_loader(self.json_path, self.docset_id)
         model = TFIDFModel(docset)
 
         # Word2Vec

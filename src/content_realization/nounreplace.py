@@ -32,7 +32,7 @@ def replace_referents(summary: str, original_documents: List[List[str]]) -> Tupl
     '''
     cr = ContentRealizer()
     new_summary, success_in_replace = cr(summary, original_documents)
-    return clean_up_realization(new_summary), success_in_replace
+    return new_summary
     
 
 if __name__ == '__main__':

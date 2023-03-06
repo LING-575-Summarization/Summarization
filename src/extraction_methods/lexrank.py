@@ -14,13 +14,13 @@ from content_realization import extract_summary
 from typing import *
 import logging
 import argparse
-import json, os
-from tqdm import tqdm
+from .clustering import SentenceIndex, create_clusters
 
 Literal = List
 
 logger = logging.getLogger()
 
+# TODO: IMPLEMENT SENTENCE CLUSTERING
 
 def LexRankFactory(
         vector_generator: Literal['word2vec, tfidf, bert'],
@@ -137,6 +137,7 @@ class LexRank(DocumentToVectors):
         '''
         Obtain a "summary" of the document by running the method `solve_lexrank`
         and then selecting sentences until it reaches the max number of words
+        Also performs sentence ordering
         Arguments:
             - max_words: max tokens in the summary
             - topk_sentences: consider only sentences in the topk for the summary
