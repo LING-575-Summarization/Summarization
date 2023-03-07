@@ -212,7 +212,7 @@ def read_json(json_path):
 
 
 def detokenize_summary(summary):
-    detokenizer = TreebankWordDetokenizer()
+    detokenizer = MosesDetokenizer()
     summary_str = ""
     for sent in summary:
         summary_str += detokenizer.detokenize(sent) + "\n"
@@ -246,8 +246,6 @@ if __name__ == '__main__':
             idf_docset[doc_key] = data
 
 
-    # create idf_docsset for tf-idf object
-    idf_docset = {}
     for docset_id, docset in docset_rep.items():
         model = LinearProgramSummarizer(
             docset_id,
