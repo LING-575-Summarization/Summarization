@@ -269,7 +269,7 @@ if __name__ == '__main__':
         # content realization
         docset_2, indices = docset_loader(json_path, docset_id)
         summary = replace_referents(summary, docset_2)
-        print(summary)
+
         # detokenizer
         summary = detokenize_summary(summary)
 

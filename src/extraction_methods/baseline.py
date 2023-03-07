@@ -65,7 +65,6 @@ if __name__ == '__main__':
 
             # information ordering
             summary = create_clusters(docset_id, summary, fractional_order, json_path)
-            print("DONE")
 
             # content realization
             docset_2, indices = docset_loader(json_path, docset_id)
