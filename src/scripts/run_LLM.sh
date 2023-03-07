@@ -15,4 +15,5 @@ python src/preprocess/proc_docset.py "/dropbox/22-23/575x/Data/Documents/evaltes
 
 # Get Second JSON via LLM preprocess
 python src/LLM/Summarize/preprocess.py --raw_json_dir "data/" --do_mask --do_previous_mask --do_throw --rouge "rouge1"
-python src/LLM/Summarize/pipeline.py
+python src/LLM/Summarize/pipeline.py --batch_size 1 --dataset_type "train" --output_dir "outputs/D5_devtest"
+python src/LLM/Summarize/pipeline.py --batch_size 1 --dataset_type "validation" --output_dir "outputs/D5_evaltest"
