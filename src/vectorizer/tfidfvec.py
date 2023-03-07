@@ -68,7 +68,7 @@ class TFIDFModel(VectorModel):
         if self.lowercase:
             docs = [[w.lower() for w in doc] for doc in docs]
         if self.ignore_stopwords:
-            docs = [[w for w in doc if w not in stopwords] for doc in docs]
+            docs = [[w for w in doc if w not in STOPWORDS] for doc in docs]
         if self.ngram > 1:
             docs = [ngrams(doc, self.ngram) for doc in docs]
             docs = [[str(tup) for tup in doc] for doc in docs]

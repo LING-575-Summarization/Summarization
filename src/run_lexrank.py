@@ -11,35 +11,38 @@ from argparse import ArgumentParser
 def get_args():
     argparser = ArgumentParser()
     argparser.add_argument(
-        '--data_path', '-dpath', type=str, default='data',
+        '--data_path', '-dpath', type=str, default='../data',
         help='Path to document set directory'
     )
     argparser.add_argument(
-        '--data_set', '-ds', type=str, required=True,
+        '--data_set', '-ds', type=str,
         help='Whether to use the test, dev, or train data split'
     )
     argparser.add_argument(
-        '--threshold', '-t', type=float, required=True,
+        '--threshold', '-t', type=float, default=0.15,
         help='The threshold to use when creating weighted graph'
     )
     argparser.add_argument(
-        '--error', '-e', type=float, required=True,
+        '--error', '-e', type=float, default=1e-10,
         help='The error to use when solving for the eigenvalue'
     )
     argparser.add_argument(
         "--min_length", type=int, default=7,
     )
     argparser.add_argument(
+        "--vector", type=str, default='tfidf',
+    )
+    argparser.add_argument(
         "--min_jaccard_dist", type=float, default=0.6,
     )
     argparser.add_argument(
-        "--content_realization",  action='store_true'
+        "--content_realization", action='store_true'
     )
     argparser.add_argument(
-        "--docset_idf",  action='store_true'
+        "--idf_docset", action='store_true'
     )
     argparser.add_argument(
-        "--ngrams", type=int, default=1,
+        "--ngram", type=int, default=1,
     )
     argparser.add_argument(
         "--log_tf", action='store_true'
@@ -51,51 +54,35 @@ def get_args():
         "--lowercase", action='store_true'
     )
     argparser.add_argument(
-        "--remove_stopwords", action='store_true'
+        "--ignore_stopwords", action='store_true'
     )
     args, _ = argparser.parse_known_args()
     return args
-
-
-@dataclass
-class LexRankArgs:
-    threshold: float = 0.
-    error: float = 1e-16
-    min_length: int = 7
-    min_jaccard_dist: float = 0.6
-    content_realization: bool = True
-    idf_level: str = "documset"
-    ngram: int = 1
-    delta_idf: float = 0.
-    log_tf: bool = False
-    vector: str = 'tfidf'
-    ignore_punctuation: bool = True
-    ignore_stopwords: bool = True
-    lowercase: bool = True
     
 
 def main():
     args = get_args()
-    dataset = args.data_set
-    datafile = f'data/{dataset}.json'
+    assert args.data_set in set(['training', 'evaltest', 'devtest'])
+    datafile = os.path.join(str(args.data_path), str(args.data_set) + ".json")
     fractional_order = SentenceIndex(datafile)
-    with open(datafile, 'r') as datafile:
-        data = json.load(datafile).keys()
+    with open(datafile, 'r') as evalfile:
+        data = json.load(evalfile).keys()
 
     l_args = vars(args)
     l_args.pop('data_path')
-    l_args.pop('data_set')
+    dataset_split = l_args.pop('data_set')
 
-    vector_type = expt.pop('vector')
-    realization = expt.pop('content_realization')
+    vector_type = l_args.pop('vector')
+    realization = l_args.pop('content_realization')
+    
     LexRank = LexRankFactory(vector_type)
-    print(f"Experiment ({vector_type}) {i}...")
-    args = expt.as_dict()
-    m = args.pop('idf_level', "doc")
-    idf_docset = False if m == "doc" else True
+
+    idf_docset = l_args.pop('idf_docset')
+
     if idf_docset:
+
         lx = LexRank.from_data(datafile=[datafile, 'data/training.json'], sentences_are_documents=True,
-                                do_evaluate=False, **args)
+                                do_evaluate=False, **l_args)
         for docset_id in tqdm(data, desc="Evaluating documents"):
             docset, indices = docset_loader(
                 datafile, docset_id, sentences_are_documents=True)
@@ -108,15 +95,17 @@ def main():
             result = create_clusters(docset_id, result, fractional_order, datafile)
             id0 = docset_id[0:5]
             id1 = docset_id[-3]
-            output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i}')
+            output_file = os.path.join('outputs', f'D5_{dataset_split}', f'{id0}-A.M.100.{id1}.2')
             with open(output_file, 'w', encoding='utf8') as outfile:
                 for sentence in result:
                     print(sentence)
                     outfile.write(" ".join(sentence))
+
     else:
+
         for docset_id in tqdm(data, desc="Evaluating documents"):
             lx = LexRank.from_data(datafile=datafile, documentset=docset_id,
-                sentences_are_documents=True, **args)
+                sentences_are_documents=True, **l_args)
             if realization:
                 _docset, indices = docset_loader(datafile, docset_id)
                 result = lx.obtain_summary(_docset, coreference_resolution = True, detokenize=True)
@@ -125,7 +114,7 @@ def main():
             result = create_clusters(docset_id, result, fractional_order, datafile)
             id0 = docset_id[0:5]
             id1 = docset_id[-3]
-            output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i}')
+            output_file = os.path.join('outputs', f'D5_{dataset_split}', f'{id0}-A.M.100.{id1}.2')
             with open(output_file, 'w', encoding='utf8') as outfile:
                 for sentence in result:
                     print(sentence)

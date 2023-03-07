@@ -57,30 +57,30 @@ class LSAExpt(Experiment):
 ARGS=TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7) # BEST
 
 EXPERIMENTS = [
-    # (1, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)), #2
-    # (2, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)), #1
-    # (3, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), 
-    # (4, BERTExpt(threshold=0.15, min_jaccard_dist=0.8)), 
-    # (5, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)), 
-    # (6, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)), 
-    # (7, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
-    # (8, BERTExpt(threshold=0.15, min_jaccard_dist=0.8, content_realization=True)),
-    # (9, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=10)), 
-    # (10, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10))
-    # (11, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)), 
-    # (12, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)), 
-    # (13, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
-    # (14, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
-    # (15, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7)),
-    # (16, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7, min_length=10)),
-    # (17, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)),
-    # (19, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7)),
-    # (20, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7, min_length=10)),
-    # (21, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)),
-    # (23, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)),
-    # (24, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)),
-    # (23, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=20)),
-    # (25, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
+    (1, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)), #2
+    (2, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)), #1
+    (3, BERTExpt(threshold=0.15, min_jaccard_dist=0.7)), 
+    (4, BERTExpt(threshold=0.15, min_jaccard_dist=0.8)), 
+    (5, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)), 
+    (6, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)), 
+    (7, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
+    (8, BERTExpt(threshold=0.15, min_jaccard_dist=0.8, content_realization=True)),
+    (9, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=10)), 
+    (10, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10))
+    (11, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)), 
+    (12, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)), 
+    (13, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
+    (14, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
+    (15, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7)),
+    (16, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7, min_length=10)),
+    (17, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)),
+    (19, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7)),
+    (20, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7, min_length=10)),
+    (21, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)),
+    (23, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)),
+    (24, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)),
+    (23, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=20)),
+    (25, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
     (26, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
 ]
 
