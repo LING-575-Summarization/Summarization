@@ -1,6 +1,8 @@
 from .vector_api import VectorModel, DocumentToVectors
 from utils import CounterDict
+import nltk
 from nltk.util import ngrams
+from nltk.corpus import stopwords
 from math import log
 import re
 from tqdm import tqdm
@@ -9,7 +11,8 @@ from typing import *
 
 
 # FOR TF-IDF, what you need to do is generate one hot vectors and create a matrix that way
-# TODO: Add more specification details from tfidf
+
+STOPWORDS = stopwords.words('english')
 
 
 def create_idf_dictionary(documents: List[List[str]], delta_idf: float) -> Dict[str, float]:
@@ -31,6 +34,7 @@ class TFIDFModel(VectorModel):
             self, 
             documents: List[List[str]],
             ignore_punctuation: bool = True,
+            ignore_stopwords: bool = False,
             lowercase: bool = True,
             ngram: int = 1,
             delta_idf: float = 0.7,
@@ -48,7 +52,9 @@ class TFIDFModel(VectorModel):
             - delta_idf: IDF smoothing value
         '''
         docs = deepcopy(documents)
-        self.ignore_punctuation, self.lowercase = ignore_punctuation, lowercase
+        self.ignore_punctuation = ignore_punctuation
+        self.lowercase = lowercase
+        self.ignore_stopwords = ignore_stopwords
         self.delta_idf = delta_idf
         self.log_tf = log_tf
         self.ngram = ngram
@@ -58,9 +64,11 @@ class TFIDFModel(VectorModel):
 
     def _preprocess(self, docs):
         if self.ignore_punctuation:
-            docs = [[w for w in doc if re.search(r'\w', w)] for doc in docs]
+            docs = [[w for w in doc if re.search(r'\w', w) and not w.startswith("&")] for doc in docs]
         if self.lowercase:
             docs = [[w.lower() for w in doc] for doc in docs]
+        if self.ignore_stopwords:
+            docs = [[w for w in doc if w not in STOPWORDS] for doc in docs]
         if self.ngram > 1:
             docs = [ngrams(doc, self.ngram) for doc in docs]
             docs = [[str(tup) for tup in doc] for doc in docs]
@@ -78,10 +86,7 @@ class TFIDFModel(VectorModel):
         tf = CounterDict(keys=list(self.idf.keys()))
         if self.ngram > 1:
             sentence = [str(tup) for tup in ngrams(sentence, self.ngram)]
-        for _word in sentence:
-            if self.ignore_punctuation and re.search(r'\w', _word) is None:
-                continue
-            word = _word.lower() if self.lowercase else _word
+        for word in sentence:
             if word in tf:
                 tf[word] += 1
         tf = tf if not self.log_tf else tf.map(lambda x: log(1 + x))
@@ -96,6 +101,7 @@ class DocumentToTFIDF(DocumentToVectors, TFIDFModel):
             documents: List[List[str]], 
             indices: Dict[str, int],
             eval_documents: Optional[List[List[str]]] = None, 
+            do_evaluate: bool = True,
             **kwargs
         ) -> None:
         '''
@@ -104,18 +110,25 @@ class DocumentToTFIDF(DocumentToVectors, TFIDFModel):
         TFIDFModel.__init__(self, documents, **kwargs)
         eval_docs = eval_documents if eval_documents is not None else documents
         docs = []
-        for doc in tqdm(eval_docs, leave=False, desc="Calculating vectors"):
-            docs.append(self.vectorize_sentence(doc))
+        if do_evaluate:
+            for doc in tqdm(eval_docs, leave=False, desc="Calculating vectors"):
+                docs.append(self.vectorize_sentence(doc))
         self.document_vectors = docs
         self.N = len(eval_docs)
         self.indices = indices
 
 
     def replace_evaldocs(self, eval_documents, indices):
-        eval_docs = eval_documents
-        self.document_vectors = [self.vectorize_sentence(doc) for doc in eval_docs]
+        if hasattr(self, 'raw_docs'):
+            self.raw_docs = eval_documents
+        eval_docs = self._preprocess(eval_documents)
+        docs = []
+        for doc in tqdm(eval_docs, leave=False, desc="Calculating vectors"):
+            docs.append(self.vectorize_sentence(doc))
+        self.document_vectors = docs
         self.N = len(eval_docs)
         self.indices = indices
+        return self
     
 
 if __name__ == '__main__':

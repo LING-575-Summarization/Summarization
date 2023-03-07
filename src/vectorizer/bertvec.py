@@ -1,5 +1,13 @@
-from .vector_api import VectorModel, DocumentToVectors
-from transformers import DistilBertModel, DistilBertTokenizerFast, logging
+if __name__ == '__main__':
+    import sys, os
+    module_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    sys.path.append(module_path)
+    from vector_api import VectorModel, DocumentToVectors
+else:
+    from .vector_api import VectorModel, DocumentToVectors
+
+from transformers import AutoModel, AutoTokenizer, logging
+from nltk.tokenize import TreebankWordDetokenizer
 import torch
 import numpy as np
 from typing import *
@@ -8,23 +16,19 @@ logging.set_verbosity_warning()
 
 '''
 Citations:
-- Huggingface (https://huggingface.co/docs/transformers/model_doc/distilbert)
+- Huggingface (https://huggingface.co/docs/transformers/model_doc/bert)
 '''
 
-class DistilBERTModel(VectorModel):
+DETOKENIZER = TreebankWordDetokenizer()
+
+class BERTModel(VectorModel):
     def __init__(self) -> None:
         '''
-        Instantiate a DistilBert model and tokenizer to obtain the [CLS] token from the sentence
+        Instantiate a BERT model and tokenizer to obtain the [CLS] token from the sentence
         a reduction method to turn a sentence into a single vector (default is centroid)
-        Also instantiates a Fasttext model to account for unseen vocabulary items
         '''
-        self.tokenizer = DistilBertTokenizerFast.from_pretrained(
-            "distilbert-base-uncased"
-        )
-        self.model = DistilBertModel.from_pretrained(
-            "distilbert-base-uncased",
-            output_hidden_states=True
-        )
+        self.tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/all-MiniLM-L12-v2')
+        self.model = AutoModel.from_pretrained('sentence-transformers/all-MiniLM-L12-v2', output_hidden_states=True)
         self.max_length = self.model.config.max_length
         
 
@@ -36,25 +40,34 @@ class DistilBERTModel(VectorModel):
             - sentence: a tokenized list of words
         Returns:
             - 1 dimensional np.ndarray of floats
+        CITATION: https://www.sbert.net/index.html
+        ("Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks")
         '''
-        sentence_as_string = " ".join(sentence)
+        sentence_as_string = DETOKENIZER.detokenize(sentence)
         tokenized_sentence = self.tokenizer(
             sentence_as_string, 
             return_tensors='pt', 
-            max_length=self.max_length,
             truncation=True, 
-            add_special_tokens=True
+            padding=True,
+            add_special_tokens=True,
+            return_attention_mask=True
         )
         with torch.no_grad():
-            last_hidden_states = self.model(**tokenized_sentence).last_hidden_state
-        cls_token = np.mean(last_hidden_states[0][:, 1].squeeze().numpy(), axis=-1)
-        return cls_token
+            outputs = self.model(**tokenized_sentence)
+            pooled_sentence = outputs[0]
+            attention_masks = (tokenized_sentence['attention_mask']
+                                    .unsqueeze(-1)
+                                    .expand(pooled_sentence.size()))
+            pooled_sentence = torch.sum(pooled_sentence * attention_masks, axis=1)/torch.clamp(attention_masks.sum(1), min=1e-9)
+            pooled_sentence_N = torch.nn.functional.normalize(pooled_sentence, p=2, dim=1)
+        sentence_embedding = pooled_sentence_N.squeeze().numpy()
+        return sentence_embedding
     
 
-class DocumentToDistilBert(DocumentToVectors, DistilBERTModel):
+class DocumentToBert(DocumentToVectors, BERTModel):
     pass
     
 
 if __name__ == '__main__':
-    x = DocumentToDistilBert.from_data('D1001A-A', 'data/devtest.json')
-    print(x.similarity_matrix())
+    bert = DocumentToBert.from_data(datafile='data/devtest.json')
+    print(bert.similarity_matrix())
