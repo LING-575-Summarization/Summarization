@@ -24,7 +24,10 @@ def check_install():
     except (LookupError, IOError) as error:
         spacy.cli.download('en_core_web_sm')
     try:
-        t = nltk.treebank.parsed_sents('wsj_0001.mrg')
+        spacy.load('en_core_web_trf')
     except (LookupError, IOError) as error:
-        spacy.cli.download('en_core_web_sm')
+        spacy.cli.download('en_core_web_trf')
+
     return None
+
+check_install()

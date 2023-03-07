@@ -4,6 +4,7 @@ import json
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from clustering import SentenceIndex, create_clusters
 from content_realization import replace_referents
+from utils import flatten_list, docset_loader
 
 
 def detokenize_summary(summary):
