@@ -18,6 +18,7 @@ class Word2VecModel(VectorModel):
         '''
         Instantiate a word2vec dictionary from the Google News Corpus and select
         a reduction method to turn a sentence into a single vector (default is centroid)
+        Also instantiates a Fasttext model to account for unseen vocabulary items
         Args:
             - reduction: Takes a list of word vectors (numpy arrays) and obtains
               a sentence-level representational vector
