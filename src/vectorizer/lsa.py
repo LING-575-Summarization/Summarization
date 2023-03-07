@@ -14,7 +14,7 @@ class DocumentToLSA(DocumentToTFIDF):
         '''
         Override metaclass __init__ method since DocumentToTFIDF takes additional arguments
         '''
-        self.n_components = kwargs.pop('n_components', 300)
+        self.n_components = kwargs.pop('n_components', 100)
         self.svd = TruncatedSVD(self.n_components)
         if any([param in ['ngram', 'delta_idf', 'log_tf'] for param in kwargs]):
             print("Warning: LSA does not accept 'ngram', 'delta_idf', 'log_tf' as arguments."
@@ -22,8 +22,10 @@ class DocumentToLSA(DocumentToTFIDF):
         kwargs['ngram'] = 1
         kwargs['log_tf'] = 1
         kwargs['delta_idf'] = 1
+        do_evaluate = kwargs['do_evaluate']
         DocumentToTFIDF.__init__(self, *args, **kwargs)
-        self.fit_lsa()
+        if do_evaluate:
+            self.fit_lsa()
 
 
     def fit_lsa(self):
@@ -37,6 +39,12 @@ class DocumentToLSA(DocumentToTFIDF):
         self.document_vectors = [v.squeeze() for v in document_vectors]
         assert np.all([v.shape == self.document_vectors[0].shape for v in self.document_vectors])
     
+
+    def replace_evaldocs(self, eval_documents, indices):
+        DocumentToTFIDF.replace_evaldocs(self, eval_documents, indices)
+        self.fit_lsa()
+        return self
+
 
 if __name__ == '__main__':
     from utils import docset_loader

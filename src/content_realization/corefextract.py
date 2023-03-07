@@ -5,7 +5,8 @@ The implementation here is inspired by Nenkova (2007)
 
 from typing import *
 import spacy
-from sacremoses import MosesDetokenizer, MosesTokenizer
+from nltk.tokenize import word_tokenize
+from nltk.tokenize.treebank import TreebankWordDetokenizer
 from nltk.metrics.distance import jaccard_distance
 import time
 from utils import flatten_list
@@ -17,9 +18,7 @@ warnings.filterwarnings('ignore',
                         message='User provided device_type of \'cuda\', but CUDA is not available. Disabling', 
                         category=Warning)
 
-DETOKENIZER = MosesDetokenizer(lang='en')
-TOKENIZER = MosesTokenizer(lang='en')
-word_tokenize = lambda x: TOKENIZER.tokenize(x)
+DETOKENIZER = TreebankWordDetokenizer()
 
 class Span:
     '''Ad-hoc dataclass to store information on spans in a way that's compatible with spacy'''
@@ -145,8 +144,13 @@ def replace_nth(string: str, sub: str, replacement: str, n: int):
 
 
 class CoferenceResolver:
-    nlp = spacy.load("en_core_web_trf")
-    parser = spacy.load("en_core_web_md")
+    try:
+        nlp = spacy.load("en_coreference_web_trf")
+    except OSError:
+        print("Cannot load \"en_coreference_web_trf\". Download it with: "
+              "pip install https://github.com/explosion/spacy-experimental/releases/download/v0.6.1/en_coreference_web_trf-3.4.0a2-py3-none-any.whl")
+
+    parser = spacy.load("en_coreference_web_trf")
 
     def __call__(self, in_doc: str) -> Any:
         '''
@@ -171,7 +175,13 @@ class ContentRealizer:
         self.resolver = CoferenceResolver()
         
         if isinstance(document_set[0][0][0], list): # if the document_set contains paragraphs, remove them
-            document_set = [flatten_list(doc) for doc in document_set]
+            docset = []
+            for doc in document_set:
+                if isinstance(doc[0][0], list):
+                    docset.append(flatten_list(doc))
+                else:
+                    docset.append(doc)
+            document_set = docset
         
         document_set = " ".join([DETOKENIZER.detokenize(d) for d in document_set])
 

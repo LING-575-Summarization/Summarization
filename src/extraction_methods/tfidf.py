@@ -34,7 +34,7 @@ def process_docset(
         - lowercase: whether to lowercase words in the tokenized sentences
     '''
     if punctuation:
-        punctuation_filter = lambda w: True if re.search(r'\w', w) else False
+        punctuation_filter = lambda w: True if re.search(r'\w', w) or w.startswith('&') else False
     else:
         punctuation_filter = lambda w: True
     if lowercase:

@@ -33,19 +33,19 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--model_file",
         type=str,
-        default=get_root_dir() + "outputs/D3/LLM/pytorch_model.bin",
+        default=get_root_dir() + "outputs/D5/LLM/pytorch_model.bin",
         help="Path to stored model",
     )
     parser.add_argument(
         "--output_dir",
         type=str,
-        default=get_root_dir() + "outputs/D4/LLM",
+        default=get_root_dir() + "outputs/D5/LLM",
         help="Path to store predictions",
     )
     parser.add_argument(
         "--result_dir",
         type=str,
-        default=get_root_dir() + "outputs/D4/",
+        default=get_root_dir() + "outputs/D5/",
         help="Path to store results"
     )
     parser.add_argument(
@@ -75,7 +75,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument(
         "--max_output_length",
         type=int,
-        default=120,
+        default=300,
         help="How many examples per batch"
     )
     parser.add_argument(
@@ -89,6 +89,12 @@ def get_args() -> argparse.Namespace:
         type=str,
         default="main",
         help="Which Model tage should be used",
+    )
+    parser.add_argument(
+        "--dataset_type",
+        type=str,
+        default="train",
+        help="Which dataset should be used",
     )
     args, unknown = parser.parse_known_args()
     return args

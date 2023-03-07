@@ -28,8 +28,8 @@ def detokenizer_wrapper(f: Callable):
                     )
         if isinstance(kwargs['detokenize'], bool):
             if kwargs['detokenize']:
-                from sacremoses import MosesDetokenizer
-                detokenizer = MosesDetokenizer()
+                from nltk.tokenize import TreebankWordDetokenizer
+                detokenizer = TreebankWordDetokenizer()
                 detokenize = lambda x: detokenizer.detokenize(x)
             else:
                 detokenize = lambda x: x

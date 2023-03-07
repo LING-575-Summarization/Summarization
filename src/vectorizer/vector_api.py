@@ -121,7 +121,7 @@ class DocumentToVectors(VectorModel):
     @classmethod
     def from_data(
         cls, 
-        datafile: Path, 
+        datafile: Union[Path, List[Path]], 
         documentset: Optional[str] = None,
         sentences_are_documents: Optional[bool] = False,
         **kwargs
@@ -141,6 +141,13 @@ class DocumentToVectors(VectorModel):
         if documentset is not None:
             documents, indices = docset_loader(datafile, documentset, sentences_are_documents)
         else:
-            documents, indices = dataset_loader(datafile, sentences_are_documents)
+            if isinstance(datafile, str):
+                documents, indices = dataset_loader(datafile, sentences_are_documents)
+            else:
+                documents, indices = [], []
+                for df in datafile:
+                    _documents, _indices = dataset_loader(df, sentences_are_documents)
+                    documents.extend(_documents)
+                    indices.extend(_indices)
         return cls(documents=documents, indices=indices, **kwargs)
     

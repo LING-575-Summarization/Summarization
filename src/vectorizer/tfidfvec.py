@@ -64,7 +64,7 @@ class TFIDFModel(VectorModel):
 
     def _preprocess(self, docs):
         if self.ignore_punctuation:
-            docs = [[w for w in doc if re.search(r'\w', w)] for doc in docs]
+            docs = [[w for w in doc if re.search(r'\w', w) and not w.startswith("&")] for doc in docs]
         if self.lowercase:
             docs = [[w.lower() for w in doc] for doc in docs]
         if self.ignore_stopwords:

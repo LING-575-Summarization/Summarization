@@ -2,12 +2,9 @@ from typing import Tuple, List, TextIO, Union
 import re
 from lxml import etree
 import nltk.data
+from nltk.tokenize import word_tokenize
 import nltk
-from sacremoses import MosesTokenizer
 
-# word tokenizer
-TOKENIZER = MosesTokenizer(lang='en')
-word_tokenize = lambda x: TOKENIZER.tokenize(x)
 
 # Wrap the nltk.data.load() tokenizer in a class to avoid downloading punkt
 class SentenceTokenizer:
@@ -34,21 +31,23 @@ COPYRIGHT_STRINGS = [
 
 # headers to be excluding
 REMOVE_PATTERN = [
-    r'^([A-Z]{2,}|[A-Z]{2,}D\.C\.).*\(.*?\)(\s?\-\-|\s?_|:)',
-    r'\(Begin optional trim\)',
-    r'\(Begin optional trim\)',
-    r'^SOURCES: .*$',
-    r'\(STORY CAN END HERE . OPTIONAL MATERIAL FOLLOWS.\)',
-    r'\(END OPTIONAL TRIM\)',
-    r'\(End trim\)',
-    r'\(optional trim ends here\)',
-    r'(\(NEW YORK _\)|NEW YORK _)',
-    r'(\(WASHINGTON _\)|WASHINGTON _)',
-    r'(\(ROME _\)|ROME _)',
-    r'\(\d{3}\) \d{3}-\d{4}', # phone number
+    (r'^([A-Z]{2,}|[A-Z]{2,}D\.C\.).*\(.*?\)(\s?\-\-|\s?_|:)', ''),
+    (r'\(Begin optional trim\)', ''),
+    (r'\(Begin optional trim\)', ''),
+    (r'^SOURCES: .*$', ''),
+    (r'\(STORY CAN END HERE . OPTIONAL MATERIAL FOLLOWS.\)', ''),
+    (r'\(END OPTIONAL TRIM\)', ''),
+    (r'\(End trim\)', ''),
+    (r'\(optional trim ends here\)', ''),
+    (r'(\(NEW YORK _\)|NEW YORK _)', ''),
+    (r'(\(WASHINGTON _\)|WASHINGTON _)', ''),
+    (r'(\(ROME _\)|ROME _)', ''),
+    (r'\(\d{3}\) \d{3}-\d{4}', ''), # phone number
     r'NATIONAL GENERAL \(.*\)$'
-    r'For Use By Clients of the New York Times News Service',
-    r'Story Filed By Cox Newspapers'
+    (r'For Use By Clients of the New York Times News Service', ''),
+    (r'Story Filed By Cox Newspapers', ''),
+    (r'\s_\s', ' '),
+    (r'Gov\.', 'Governor')
 ]
 
 
@@ -140,10 +139,9 @@ def extract_p(root: etree.Element) -> List[List[str]]:
         s = p_node.text.strip().replace('\n', ' ')
         s = re.sub(r'\s{2,}', ' ', s)
         # replace first sentence if it contains a header
-        for pattern in REMOVE_PATTERN:
+        for pattern, repl in REMOVE_PATTERN:
             if re.search(pattern, s):
-                s = re.sub(pattern, '', s)
-        s = re.sub(r'\s_\s', ' ', s)
+                s = re.sub(pattern, repl, s)
         if s != '' and not any([cs in s for cs in COPYRIGHT_STRINGS]):
             result.append(sent_tokenize(s))
     return result
@@ -155,10 +153,9 @@ def extract_p_manual(body_node: etree.Element) -> List[List[str]]:
         s = re.sub('[\n\t\s]+', ' ', s)
         s = re.sub('(^\s+|\s+$)', '', s)
         # replace first sentence if it contains a header
-        for pattern in REMOVE_PATTERN:
+        for pattern, repl in REMOVE_PATTERN:
             if re.search(pattern, s):
-                s = re.sub(pattern, '', s)
-        s = re.sub(r'\s_\s', ' ', s)
+                s = re.sub(pattern, repl, s)
         if re.search('\S', s) and not any([cs in s for cs in COPYRIGHT_STRINGS]):
             result.append(sent_tokenize(s))
     return result

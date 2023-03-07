@@ -71,9 +71,17 @@ EXPERIMENTS = [
     # (12, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)), 
     # (13, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
     # (14, BERTExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=15, content_realization=True)), 
-    (15, LSAExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=15)),
-    (16, LSAExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10)),
-    (17, LSAExpt(threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)),
+    # (15, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7)),
+    # (16, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7, min_length=10)),
+    # (17, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)),
+    (19, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7)),
+    (20, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7, min_length=10)),
+    (21, LSAExpt(idf_level="documset", threshold=0.15, min_jaccard_dist=0.7, min_length=10, content_realization=True)),
+    (23, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7)),
+    (24, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7)),
+    (23, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=False, threshold=0.15, min_jaccard_dist=0.7, min_length=20)),
+    (25, TFExpt(idf_level="documset", ngram=1, delta_idf=1., log_tf=True, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
+    (26, TFExpt(idf_level="documset", ngram=1, delta_idf=0.7, log_tf=False, threshold=0.15, min_jaccard_dist=0.7, content_realization=True)),
 ]
 
 
@@ -90,7 +98,7 @@ def main():
         m = args.pop('idf_level', "doc")
         idf_docset = False if m == "doc" else True
         if idf_docset:
-            lx = LexRank.from_data(datafile='data/devtest.json', sentences_are_documents=True,
+            lx = LexRank.from_data(datafile=['data/devtest.json', 'data/training.json'], sentences_are_documents=True,
                                     do_evaluate=False, **args)
             for docset_id in tqdm(data, desc="Evaluating documents"):
                 docset, indices = docset_loader(
@@ -102,7 +110,6 @@ def main():
                 else:
                     result = lx.obtain_summary(coreference_resolution = False, detokenize=False)
                 result = create_clusters(docset_id, result, fractional_order, 'data/devtest.json')
-                print(result)
                 id0 = docset_id[0:5]
                 id1 = docset_id[-3]
                 output_file = os.path.join('outputs', 'D4-lexrank', f'{id0}-A.M.100.{id1}.{i}')

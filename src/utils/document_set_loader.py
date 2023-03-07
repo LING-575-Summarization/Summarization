@@ -39,7 +39,12 @@ def docset_loader(
     data = data[docset]
     documents, indexes = [], OrderedDict()
     for i, (doc_id, document) in enumerate(data.items()):
-        sentences = flatten_list(document[-1])
+        sentences = []
+        for sent in document[-1]:
+            if isinstance(sent[0], list):
+                sentences.extend(sent)
+            else:
+                sentences.append(sent)
         if sentences_are_documents:
             for j in range(len(sentences)):
                 indexes[doc_id + "." + str(j)] = sentences[j]
@@ -73,7 +78,12 @@ def dataset_loader(
         alldocuments = OrderedDict()
         for docset_id, docset in data.items():
             for doc_id, document in docset.items():
-                sentences = flatten_list(document[-1])
+                sentences = []
+                for sent in document[-1]:
+                    if isinstance(sent[0], list):
+                        sentences.extend(sent)
+                    else:
+                        sentences.append(sent)
                 if sentences_are_documents:
                     for j, d in enumerate(sentences):
                         index_key = docset_id + "." + str(j)
@@ -86,7 +96,12 @@ def dataset_loader(
         alldocuments, indexes = [], OrderedDict()
         for docset_id, docset in data.items():
             for i, (doc_id, document) in enumerate(docset.items()):
-                sentences = flatten_list(document[-1])
+                sentences = []
+                for sent in document[-1]:
+                    if isinstance(sent[0], list):
+                        sentences.extend(sent)
+                    else:
+                        sentences.append(sent)
                 if sentences_are_documents:
                     for j in range(len(sentences)):
                         index_key = docset_id + "." + str(j)
