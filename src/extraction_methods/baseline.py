@@ -3,12 +3,17 @@ import os
 import json
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from clustering import SentenceIndex, create_clusters
+
+if __name__ == '__main__':
+    module_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    sys.path.append(module_path)
+
 from content_realization import replace_referents
 from utils import flatten_list, docset_loader
 
 
 def detokenize_summary(summary):
-    detokenizer = MosesDetokenizer()
+    detokenizer = TreebankWordDetokenizer()
     summary_str = ""
     for sent in summary:
         summary_str += detokenizer.detokenize(sent) + "\n"
@@ -60,6 +65,7 @@ if __name__ == '__main__':
 
             # information ordering
             summary = create_clusters(docset_id, summary, fractional_order, json_path)
+            print("DONE")
 
             # content realization
             docset_2, indices = docset_loader(json_path, docset_id)
