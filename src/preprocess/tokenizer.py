@@ -43,7 +43,7 @@ REMOVE_PATTERN = [
     (r'(\(WASHINGTON _\)|WASHINGTON _)', ''),
     (r'(\(ROME _\)|ROME _)', ''),
     (r'\(\d{3}\) \d{3}-\d{4}', ''), # phone number
-    r'NATIONAL GENERAL \(.*\)$'
+    (r'NATIONAL GENERAL \(.*\)$', ''),
     (r'For Use By Clients of the New York Times News Service', ''),
     (r'Story Filed By Cox Newspapers', ''),
     (r'\s_\s', ' '),
