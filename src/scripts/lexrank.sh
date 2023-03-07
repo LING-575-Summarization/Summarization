@@ -1,3 +1,3 @@
 #!/bin/sh
 
-python src/run_lexrank.py
+python src/run_lexrank.py $@

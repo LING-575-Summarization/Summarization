@@ -1,8 +1,9 @@
 from document_set_loader import get_summaries
+import sys
+test_split = sys.argv[1]
 
-
-PEER_ROOT = 'repo/outputs/D4-lexrank'
-MODEL_ROOT = 'eval/devtest'
+PEER_ROOT = 'repo/outputs/D5'
+MODEL_ROOT = f'eval/{test_split}'
 
 
 def main():

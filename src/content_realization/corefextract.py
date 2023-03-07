@@ -115,10 +115,26 @@ class ReferenceClusters:
             return longest
         else:
             return None
+        
+    @property
+    def _longest(self):
+        lengths = self._lengths
+        # if more than one value
+        if len(lengths) > 0:
+            max_length = max(lengths)
+            argmax = lengths.index(max_length)
+            longest = self._spans[argmax]
+            return longest
+        else:
+            return None
 
 
 def contains_a_pronoun(span, pronoun_tags: Set[str] = {"PRP", "PRON", "PRP$"}):
     return len(set([tkn.tag_ for tkn in span]) & pronoun_tags) > 0
+
+
+def all_pronouns(span, pronoun_tags: Set[str] = {"PRP", "PRON", "PRP$"}):
+    return set([tkn.tag_ for tkn in span]).union(pronoun_tags) == pronoun_tags
 
 
 def replace_via_indices(string: str, sub: str, start: int, end: int) -> str:
@@ -150,7 +166,7 @@ class CoferenceResolver:
         print("Cannot load \"en_coreference_web_trf\". Download it with: "
               "pip install https://github.com/explosion/spacy-experimental/releases/download/v0.6.1/en_coreference_web_trf-3.4.0a2-py3-none-any.whl")
 
-    parser = spacy.load("en_coreference_web_trf")
+    parser = spacy.load("en_core_web_md")
 
     def __call__(self, in_doc: str) -> Any:
         '''
@@ -240,6 +256,8 @@ class ContentRealizer:
                     if new_cluster:
                         corefcluster = ReferenceClusters(self.docset, cluster_i)
                         replace_np = corefcluster.longest
+                        if replace_np is not None and len(replace_np.text) == len(NP.text): # If no longer replacement found
+                            replace_np = corefcluster._longest
 
                     else:
                         corefcluster = self.seen_clusters[cluster_i]
@@ -247,8 +265,8 @@ class ContentRealizer:
                         
                     if replace_np:
                         same_length = len(replace_np.text) == len(NP.text)
-                        replacement_contain_pronouns = contains_a_pronoun(replace_np)
-                        if same_length and replacement_contain_pronouns: # Don't replace NPs with the same length unless NP contains a pronoun and replacement doesn't
+                        is_a_pronoun = all_pronouns(replace_np)
+                        if same_length or is_a_pronoun: # Don't replace NPs with pronouns
                             continue
                         # count previously seen NPs to replace the correct one in replace_nth function
                         np_count = seen_nps.count(NP.text)
