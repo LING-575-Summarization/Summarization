@@ -3,10 +3,12 @@ from tqdm import tqdm
 import json, os
 from utils import docset_loader
 from extraction_methods.lexrank import LexRankFactory
-from content_realization import replace_referents
-from dataclasses import dataclass
 from extraction_methods import SentenceIndex, create_clusters
 from argparse import ArgumentParser
+from nltk.tokenize.treebank import TreebankWordDetokenizer
+
+detokenizer = TreebankWordDetokenizer()
+detokenize = lambda x: detokenizer.detokenize(x)
 
 def get_args():
     argparser = ArgumentParser()
@@ -62,7 +64,6 @@ def get_args():
 
 def main():
     args = get_args()
-    assert args.data_set in set(['training', 'evaltest', 'devtest'])
     datafile = os.path.join(str(args.data_path), str(args.data_set) + ".json")
     fractional_order = SentenceIndex(datafile)
     with open(datafile, 'r') as evalfile:
@@ -98,8 +99,8 @@ def main():
             output_file = os.path.join('outputs', f'D5_{dataset_split}', f'{id0}-A.M.100.{id1}.2')
             with open(output_file, 'w', encoding='utf8') as outfile:
                 for sentence in result:
-                    print(sentence)
-                    outfile.write(" ".join(sentence))
+                    outfile.write(detokenize(sentence))
+                    outfile.write("\n")
 
     else:
 
@@ -117,8 +118,8 @@ def main():
             output_file = os.path.join('outputs', f'D5_{dataset_split}', f'{id0}-A.M.100.{id1}.2')
             with open(output_file, 'w', encoding='utf8') as outfile:
                 for sentence in result:
-                    print(sentence)
-                    outfile.write(" ".join(sentence))
+                    outfile.write(detokenize(sentence))
+                    outfile.write("\n")
 
 
 if __name__ == '__main__':
