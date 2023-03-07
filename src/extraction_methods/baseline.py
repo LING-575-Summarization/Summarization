@@ -3,6 +3,11 @@ import os
 import json
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from clustering import SentenceIndex, create_clusters
+
+if __name__ == '__main__':
+    module_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    sys.path.append(module_path)
+
 from content_realization import replace_referents
 from utils import flatten_list, docset_loader
 
