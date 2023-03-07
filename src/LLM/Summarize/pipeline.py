@@ -18,12 +18,11 @@ def pipeline(**kwargs):
     test_dataset = load_dataset('json', data_files=kwargs["data_json"], field="test", split="train")
     ds = DatasetDict({"train": train_dataset, "test": test_dataset, "validation": eval_dataset})
 
-    tokenizer = AutoTokenizer.from_pretrained(kwargs["checkpoint"], max_length=1024, padding="max_length",
-                                              truncation=True, revision=kwargs["revision"])
+    tokenizer = AutoTokenizer.from_pretrained(kwargs["checkpoint"], revision=kwargs["revision"], mask_token_sent="[MASK]")
 
     def tokenize__data(data):
-        input_feature = tokenizer(data["text"], padding=True, truncation=True, max_length=1024)
-        label = tokenizer(data["summary"], padding=True, truncation=True, max_length=kwargs["max_output_length"])
+        input_feature = tokenizer(data["text"], truncation=True, padding=True, max_length=1024)
+        label = tokenizer(data["summary"], truncation=True, padding=True, max_length=kwargs["max_output_length"])
         return {
             "input_ids": input_feature["input_ids"],
             "attention_mask": input_feature["attention_mask"],
@@ -43,23 +42,23 @@ def pipeline(**kwargs):
     config = AutoConfig.from_pretrained(
         kwargs["checkpoint"],
         max_length=kwargs["max_output_length"],
-        revision = kwargs["revision"]
+        revision=kwargs["revision"],
     )
-    model = AutoModelForSeq2SeqLM.from_pretrained(kwargs["checkpoint"], config=config, revision = kwargs["revision"])
+    model = AutoModelForSeq2SeqLM.from_pretrained(
+        kwargs["checkpoint"],
+        revision=kwargs["revision"],
+        config=config)
     model.resize_token_embeddings(len(tokenizer.vocab))
 
-    model = DataParallel(model)
     model.to(device)
 
-    data_collator = DataCollatorForSeq2Seq(tokenizer, model=model, padding="max_length", max_length=1024,
-                                           return_tensors="pt")
+    data_collator = DataCollatorForSeq2Seq(tokenizer, model=model, return_tensors="pt")
 
     training_args = Seq2SeqTrainingArguments(
         output_dir=kwargs["output_dir"],
         seed=kwargs["seed"],
         overwrite_output_dir=True,
         label_names=["labels"],
-        learning_rate=kwargs["learning_rate"],
         num_train_epochs=kwargs["epoch"],
         per_device_train_batch_size=kwargs["batch_size"],
         per_device_eval_batch_size=kwargs["batch_size"],
@@ -67,7 +66,9 @@ def pipeline(**kwargs):
         save_strategy="epoch",
         load_best_model_at_end=True,
         metric_for_best_model="rouge1",
-        generation_max_length=kwargs["max_output_length"],
+        generation_max_length = kwargs["max_output_length"],
+        predict_with_generate=True,
+        save_total_limit=1,
     )
 
     rouge_metric = evaluate.load("rouge")
@@ -112,27 +113,29 @@ def pipeline(**kwargs):
         trainer.save_model()
 
     # Start Evaluation
-    output_dir_path = util.get_root_dir() + "outputs/D4"
+    output_dir_path = kwargs["output_dir"]
     Path(output_dir_path).mkdir(parents=True, exist_ok=True)
 
-    final_validation_predictions = trainer.predict(ds_for_train["test"])
+    final_validation_predictions = trainer.predict(ds_for_train[kwargs["dataset_type"]])
     validation_predictions, validation_labels, validation_metrics = final_validation_predictions
 
     predictions, labels = get_pred_label(validation_predictions, validation_labels)
 
     ids = test_dataset["id"]
 
-    for i in range(0, len(test_dataset)):
+    if kwargs["dataset_type"] == "validation":
+      ids = eval_dataset["id"]
+
+    for i in range(0, len(ids)):
         print("***** Summary Text (Gold Text) *****")
         print(labels[i])
         print("***** Summary Text (Generated Text) *****")
         print(predictions[i])
 
-        with open(output_dir_path + "/{}-A.M.100.{}.3".format(ids[i][:-1], ids[i][-1]), "w") as output_file:
+        with open("{}/{}-A.M.100.{}.3".format(output_dir_path, ids[i][:-1], ids[i][-1]), "w") as output_file:
             output_file.write(predictions[i])
 
 
 if __name__ == "__main__":
     kwargs = vars(util.get_args())
-    kwargs["do_train"] = True
     pipeline(**kwargs)
