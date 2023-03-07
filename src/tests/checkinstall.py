@@ -26,8 +26,13 @@ def check_install():
     try:
         spacy.load('en_core_web_trf')
     except (LookupError, IOError) as error:
-        spacy.cli.download('en_core_web_trf')
+        import subprocess
+        subprocess.run(
+            ["pip", "install", 
+             "https://github.com/explosion/spacy-experimental/releases/download/v0.6.1/en_coreference_web_trf-3.4.0a2-py3-none-any.whl"
+            ])
 
     return None
 
-check_install()
+if __name__ == '__main__':
+    check_install()

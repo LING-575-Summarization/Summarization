@@ -144,8 +144,13 @@ def replace_nth(string: str, sub: str, replacement: str, n: int):
 
 
 class CoferenceResolver:
-    nlp = spacy.load("en_core_web_trf")
-    parser = spacy.load("en_core_web_md")
+    try:
+        nlp = spacy.load("en_coreference_web_trf")
+    except OSError:
+        print("Cannot load \"en_coreference_web_trf\". Download it with: "
+              "pip install https://github.com/explosion/spacy-experimental/releases/download/v0.6.1/en_coreference_web_trf-3.4.0a2-py3-none-any.whl")
+
+    parser = spacy.load("en_coreference_web_trf")
 
     def __call__(self, in_doc: str) -> Any:
         '''
