@@ -2,7 +2,7 @@
 
 
 #/nopt/python-3.6/bin/python3 src/content_selection/linear_programming.py $1 $2 > output/ILP_solver_output
-python3 src/content_selection/linear_programming.py $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}> outputs/ILP_solver_output
+python3 src/extraction_methods/linear_programming.py $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}> outputs/ILP_solver_output
 
 # 1: json_file path for data: "output/[training/dev/test].json"
 # 2: max summary length, default is 100

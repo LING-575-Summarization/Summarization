@@ -4,7 +4,6 @@ string depend on a function/method's arguments
 '''
 
 from inspect import signature, Parameter
-import re
 from typing import *
 
 
@@ -29,7 +28,7 @@ def detokenizer_wrapper(f: Callable):
                     )
         if isinstance(kwargs['detokenize'], bool):
             if kwargs['detokenize']:
-                from nltk.tokenize.treebank import TreebankWordDetokenizer
+                from nltk.tokenize import TreebankWordDetokenizer
                 detokenizer = TreebankWordDetokenizer()
                 detokenize = lambda x: detokenizer.detokenize(x)
             else:

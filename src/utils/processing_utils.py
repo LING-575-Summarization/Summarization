@@ -5,9 +5,14 @@ string depend on a function/method's arguments
 
 from inspect import signature, Parameter
 from copy import deepcopy
-import re
+from nltk.tokenize.treebank import TreebankWordDetokenizer
 from typing import *
 from functools import reduce
+
+detokenizer = TreebankWordDetokenizer()
+
+def detokenize_list_of_tokens(document: List[List[str]]):
+    return " ".join([detokenizer.detokenize(s) for s in document])
 
 
 def flatten_list(x: List[List[Any]]) -> List[Any]: 

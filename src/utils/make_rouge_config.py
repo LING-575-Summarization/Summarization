@@ -1,19 +1,9 @@
-import os
-import re
-from pathlib import Path
-from collections import OrderedDict
+from document_set_loader import get_summaries
+import sys
+test_split = sys.argv[1]
 
-PEER_ROOT = 'repo/outputs/D4'
-MODEL_ROOT = '/dropbox/22-23/575x/Data/models/devtest/'
-
-
-def get_summaries(directory: Path):
-    eval_files = OrderedDict()
-    for filename in os.listdir(directory):
-        if re.search(r'D10\d\d-A\.M\.100\.\w\.\w', filename):
-            with open(os.path.join(directory, filename), 'r', encoding='cp1252') as summary:
-                eval_files[filename] = summary.read()
-    return eval_files
+PEER_ROOT = 'repo/outputs/D5'
+MODEL_ROOT = f'eval/{test_split}'
 
 
 def main():
@@ -24,11 +14,10 @@ def main():
     evalfiles = get_summaries(MODEL_ROOT)
     summfiles = get_summaries(PEER_ROOT)
 
-    base_eval_ids = set(map(lambda x: x[:-2], summfiles.keys()))
-    base_summ_ids = set(map(lambda x: x[:-2], evalfiles.keys()))
+    l = len("D1046-A.M.100.H.5")
 
-    print(base_eval_ids)
-    print(base_summ_ids)
+    base_eval_ids = set(map(lambda x: x[:-2-(len(x)-l)], summfiles.keys()))
+    base_summ_ids = set(map(lambda x: x[:-2], evalfiles.keys()))
 
     assert len(base_eval_ids) == len(base_summ_ids)
     assert base_eval_ids == base_summ_ids
@@ -36,7 +25,7 @@ def main():
 
     # infer the number of methods used in summfiles
     number_of_methods = sorted(list((
-        set(map(lambda x: x[-1], summfiles.keys()))
+        set(map(lambda x: x.split('.')[-1], summfiles.keys()))
     )))
 
     print(f"<ROUGE_EVAL version=\"1.5.5\">", file=outxml)

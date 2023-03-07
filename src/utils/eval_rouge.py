@@ -13,7 +13,7 @@ from typing import *
 user_root = os.path.expanduser("/Users/sambriggs/Documents/CLMS/Winter_2023/Ling_575_summarization/Summarization_git/Summarization")
 EVALFILES = os.path.join(user_root, "gold_summaries/devtest/")
 # SUMFILES = os.path.join(user_root, "outputs", "D4")
-SUMFILES = os.path.join(user_root, "outputs", "D4", sys.argv[1])
+SUMFILES = os.path.join(user_root, "outputs", "ablation", sys.argv[1])
 
 
 # user_root = os.path.expanduser("~")
