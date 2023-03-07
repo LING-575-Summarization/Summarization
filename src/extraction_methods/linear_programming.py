@@ -246,6 +246,8 @@ if __name__ == '__main__':
             idf_docset[doc_key] = data
 
 
+    # create idf_docsset for tf-idf object
+    idf_docset = {}
     for docset_id, docset in docset_rep.items():
         model = LinearProgramSummarizer(
             docset_id,
