@@ -166,7 +166,7 @@ class CoferenceResolver:
         print("Cannot load \"en_coreference_web_trf\". Download it with: "
               "pip install https://github.com/explosion/spacy-experimental/releases/download/v0.6.1/en_coreference_web_trf-3.4.0a2-py3-none-any.whl")
 
-    parser = spacy.load("en_coreference_web_trf")
+    parser = spacy.load("en_core_web_md")
 
     def __call__(self, in_doc: str) -> Any:
         '''
@@ -256,7 +256,7 @@ class ContentRealizer:
                     if new_cluster:
                         corefcluster = ReferenceClusters(self.docset, cluster_i)
                         replace_np = corefcluster.longest
-                        if len(replace_np.text) == len(NP.text): # If no longer replacement found
+                        if replace_np is not None and len(replace_np.text) == len(NP.text): # If no longer replacement found
                             replace_np = corefcluster._longest
 
                     else:
@@ -265,7 +265,7 @@ class ContentRealizer:
                         
                     if replace_np:
                         same_length = len(replace_np.text) == len(NP.text)
-                        is_a_pronoun = all_pronouns(replace_np.tag)
+                        is_a_pronoun = all_pronouns(replace_np)
                         if same_length or is_a_pronoun: # Don't replace NPs with pronouns
                             continue
                         # count previously seen NPs to replace the correct one in replace_nth function
