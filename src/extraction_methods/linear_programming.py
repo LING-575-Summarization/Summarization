@@ -7,6 +7,12 @@ from tfidf import TFIDF
 from nltk.util import ngrams
 from sacremoses import MosesDetokenizer
 from clustering import SentenceIndex, create_clusters
+from utils import flatten_list, docset_loader
+
+if __name__ == '__main__':
+    module_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+    sys.path.append(module_path)
+
 from content_realization import replace_referents
 
 class LinearProgramSummarizer:
@@ -263,7 +269,7 @@ if __name__ == '__main__':
         # content realization
         docset_2, indices = docset_loader(json_path, docset_id)
         summary = replace_referents(summary, docset_2)
-
+        print(summary)
         # detokenizer
         summary = detokenize_summary(summary)
 
