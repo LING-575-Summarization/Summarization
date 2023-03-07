@@ -144,7 +144,7 @@ def replace_nth(string: str, sub: str, replacement: str, n: int):
 
 
 class CoferenceResolver:
-    nlp = spacy.load("en_coreference_web_trf")
+    nlp = spacy.load("en_core_web_trf")
     parser = spacy.load("en_core_web_md")
 
     def __call__(self, in_doc: str) -> Any:

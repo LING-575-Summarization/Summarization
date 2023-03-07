@@ -173,9 +173,6 @@ dependencies:
       - catalogue==2.0.8
       - confection==0.0.4
       - cymem==2.0.7
-      - en-core-web-md==3.4.1
-      - en-core-web-sm==3.4.1
-      - en-coreference-web-trf==3.4.0a2
       - langcodes==3.3.0
       - murmurhash==1.0.9
       - pathy==0.10.1
@@ -192,4 +189,3 @@ dependencies:
       - transformers==4.25.1
       - typer==0.7.0
       - wasabi==0.10.1
-prefix: /home2/hsteinm/anaconda3/envs/summarization
