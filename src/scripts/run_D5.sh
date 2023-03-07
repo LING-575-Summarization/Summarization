@@ -24,7 +24,7 @@ echo "Running Linear Programming on evaltest..."
 # echo "Running LexRank..."
 # src/scripts/lexrank.sh --data_path "data" --data_set "devtest" --threshold 0.1 --error 1e-8
 
-# echo "Running LLM..."
-# src/scripts/./run_LLM.sh
+echo "Running LLM..."
+src/scripts/./run_LLM.sh
 
 # run ROUGE on devtest and evaltest files
