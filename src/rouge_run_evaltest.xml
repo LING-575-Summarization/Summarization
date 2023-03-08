@@ -1,10 +1,10 @@
 <ROUGE_EVAL version="1.5.5">
 <EVAL ID="D1101-A.M.100.A">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -12,6 +12,7 @@
 <P ID="1">D1101-A.M.100.A.1</P>
     <P ID="2">D1101-A.M.100.A.2</P>
     <P ID="3">D1101-A.M.100.A.3</P>
+    <P ID="4">D1101-A.M.100.A.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1101-A.M.100.A.A</M>
@@ -22,10 +23,10 @@
 </EVAL>
 <EVAL ID="D1102-A.M.100.A">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -33,6 +34,7 @@
 <P ID="1">D1102-A.M.100.A.1</P>
     <P ID="2">D1102-A.M.100.A.2</P>
     <P ID="3">D1102-A.M.100.A.3</P>
+    <P ID="4">D1102-A.M.100.A.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1102-A.M.100.A.A</M>
@@ -43,10 +45,10 @@
 </EVAL>
 <EVAL ID="D1103-A.M.100.A">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -54,6 +56,7 @@
 <P ID="1">D1103-A.M.100.A.1</P>
     <P ID="2">D1103-A.M.100.A.2</P>
     <P ID="3">D1103-A.M.100.A.3</P>
+    <P ID="4">D1103-A.M.100.A.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1103-A.M.100.A.A</M>
@@ -64,10 +67,10 @@
 </EVAL>
 <EVAL ID="D1104-A.M.100.A">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -75,6 +78,7 @@
 <P ID="1">D1104-A.M.100.A.1</P>
     <P ID="2">D1104-A.M.100.A.2</P>
     <P ID="3">D1104-A.M.100.A.3</P>
+    <P ID="4">D1104-A.M.100.A.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1104-A.M.100.A.A</M>
@@ -85,10 +89,10 @@
 </EVAL>
 <EVAL ID="D1105-A.M.100.A">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -96,6 +100,7 @@
 <P ID="1">D1105-A.M.100.A.1</P>
     <P ID="2">D1105-A.M.100.A.2</P>
     <P ID="3">D1105-A.M.100.A.3</P>
+    <P ID="4">D1105-A.M.100.A.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1105-A.M.100.A.A</M>
@@ -106,10 +111,10 @@
 </EVAL>
 <EVAL ID="D1106-A.M.100.A">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -117,6 +122,7 @@
 <P ID="1">D1106-A.M.100.A.1</P>
     <P ID="2">D1106-A.M.100.A.2</P>
     <P ID="3">D1106-A.M.100.A.3</P>
+    <P ID="4">D1106-A.M.100.A.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1106-A.M.100.A.A</M>
@@ -127,10 +133,10 @@
 </EVAL>
 <EVAL ID="D1107-A.M.100.B">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -138,6 +144,7 @@
 <P ID="1">D1107-A.M.100.B.1</P>
     <P ID="2">D1107-A.M.100.B.2</P>
     <P ID="3">D1107-A.M.100.B.3</P>
+    <P ID="4">D1107-A.M.100.B.4</P>
 </PEERS>
 <MODELS>
 <M ID="B">D1107-A.M.100.B.B</M>
@@ -148,10 +155,10 @@
 </EVAL>
 <EVAL ID="D1108-A.M.100.B">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -159,6 +166,7 @@
 <P ID="1">D1108-A.M.100.B.1</P>
     <P ID="2">D1108-A.M.100.B.2</P>
     <P ID="3">D1108-A.M.100.B.3</P>
+    <P ID="4">D1108-A.M.100.B.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1108-A.M.100.B.A</M>
@@ -169,10 +177,10 @@
 </EVAL>
 <EVAL ID="D1109-A.M.100.B">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -180,6 +188,7 @@
 <P ID="1">D1109-A.M.100.B.1</P>
     <P ID="2">D1109-A.M.100.B.2</P>
     <P ID="3">D1109-A.M.100.B.3</P>
+    <P ID="4">D1109-A.M.100.B.4</P>
 </PEERS>
 <MODELS>
 <M ID="B">D1109-A.M.100.B.B</M>
@@ -190,10 +199,10 @@
 </EVAL>
 <EVAL ID="D1110-A.M.100.B">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -201,6 +210,7 @@
 <P ID="1">D1110-A.M.100.B.1</P>
     <P ID="2">D1110-A.M.100.B.2</P>
     <P ID="3">D1110-A.M.100.B.3</P>
+    <P ID="4">D1110-A.M.100.B.4</P>
 </PEERS>
 <MODELS>
 <M ID="B">D1110-A.M.100.B.B</M>
@@ -211,10 +221,10 @@
 </EVAL>
 <EVAL ID="D1111-A.M.100.B">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -222,6 +232,7 @@
 <P ID="1">D1111-A.M.100.B.1</P>
     <P ID="2">D1111-A.M.100.B.2</P>
     <P ID="3">D1111-A.M.100.B.3</P>
+    <P ID="4">D1111-A.M.100.B.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1111-A.M.100.B.A</M>
@@ -232,10 +243,10 @@
 </EVAL>
 <EVAL ID="D1112-A.M.100.C">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -243,6 +254,7 @@
 <P ID="1">D1112-A.M.100.C.1</P>
     <P ID="2">D1112-A.M.100.C.2</P>
     <P ID="3">D1112-A.M.100.C.3</P>
+    <P ID="4">D1112-A.M.100.C.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1112-A.M.100.C.A</M>
@@ -253,10 +265,10 @@
 </EVAL>
 <EVAL ID="D1113-A.M.100.C">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -264,6 +276,7 @@
 <P ID="1">D1113-A.M.100.C.1</P>
     <P ID="2">D1113-A.M.100.C.2</P>
     <P ID="3">D1113-A.M.100.C.3</P>
+    <P ID="4">D1113-A.M.100.C.4</P>
 </PEERS>
 <MODELS>
 <M ID="B">D1113-A.M.100.C.B</M>
@@ -274,10 +287,10 @@
 </EVAL>
 <EVAL ID="D1114-A.M.100.C">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -285,6 +298,7 @@
 <P ID="1">D1114-A.M.100.C.1</P>
     <P ID="2">D1114-A.M.100.C.2</P>
     <P ID="3">D1114-A.M.100.C.3</P>
+    <P ID="4">D1114-A.M.100.C.4</P>
 </PEERS>
 <MODELS>
 <M ID="C">D1114-A.M.100.C.C</M>
@@ -295,10 +309,10 @@
 </EVAL>
 <EVAL ID="D1115-A.M.100.C">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -306,6 +320,7 @@
 <P ID="1">D1115-A.M.100.C.1</P>
     <P ID="2">D1115-A.M.100.C.2</P>
     <P ID="3">D1115-A.M.100.C.3</P>
+    <P ID="4">D1115-A.M.100.C.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1115-A.M.100.C.A</M>
@@ -316,10 +331,10 @@
 </EVAL>
 <EVAL ID="D1116-A.M.100.C">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -327,6 +342,7 @@
 <P ID="1">D1116-A.M.100.C.1</P>
     <P ID="2">D1116-A.M.100.C.2</P>
     <P ID="3">D1116-A.M.100.C.3</P>
+    <P ID="4">D1116-A.M.100.C.4</P>
 </PEERS>
 <MODELS>
 <M ID="C">D1116-A.M.100.C.C</M>
@@ -337,10 +353,10 @@
 </EVAL>
 <EVAL ID="D1117-A.M.100.C">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -348,6 +364,7 @@
 <P ID="1">D1117-A.M.100.C.1</P>
     <P ID="2">D1117-A.M.100.C.2</P>
     <P ID="3">D1117-A.M.100.C.3</P>
+    <P ID="4">D1117-A.M.100.C.4</P>
 </PEERS>
 <MODELS>
 <M ID="B">D1117-A.M.100.C.B</M>
@@ -358,10 +375,10 @@
 </EVAL>
 <EVAL ID="D1118-A.M.100.D">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -369,6 +386,7 @@
 <P ID="1">D1118-A.M.100.D.1</P>
     <P ID="2">D1118-A.M.100.D.2</P>
     <P ID="3">D1118-A.M.100.D.3</P>
+    <P ID="4">D1118-A.M.100.D.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1118-A.M.100.D.A</M>
@@ -379,10 +397,10 @@
 </EVAL>
 <EVAL ID="D1119-A.M.100.D">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -390,6 +408,7 @@
 <P ID="1">D1119-A.M.100.D.1</P>
     <P ID="2">D1119-A.M.100.D.2</P>
     <P ID="3">D1119-A.M.100.D.3</P>
+    <P ID="4">D1119-A.M.100.D.4</P>
 </PEERS>
 <MODELS>
 <M ID="B">D1119-A.M.100.D.B</M>
@@ -400,10 +419,10 @@
 </EVAL>
 <EVAL ID="D1120-A.M.100.D">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -411,6 +430,7 @@
 <P ID="1">D1120-A.M.100.D.1</P>
     <P ID="2">D1120-A.M.100.D.2</P>
     <P ID="3">D1120-A.M.100.D.3</P>
+    <P ID="4">D1120-A.M.100.D.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1120-A.M.100.D.A</M>
@@ -421,10 +441,10 @@
 </EVAL>
 <EVAL ID="D1121-A.M.100.D">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -432,6 +452,7 @@
 <P ID="1">D1121-A.M.100.D.1</P>
     <P ID="2">D1121-A.M.100.D.2</P>
     <P ID="3">D1121-A.M.100.D.3</P>
+    <P ID="4">D1121-A.M.100.D.4</P>
 </PEERS>
 <MODELS>
 <M ID="B">D1121-A.M.100.D.B</M>
@@ -442,10 +463,10 @@
 </EVAL>
 <EVAL ID="D1122-A.M.100.D">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -453,6 +474,7 @@
 <P ID="1">D1122-A.M.100.D.1</P>
     <P ID="2">D1122-A.M.100.D.2</P>
     <P ID="3">D1122-A.M.100.D.3</P>
+    <P ID="4">D1122-A.M.100.D.4</P>
 </PEERS>
 <MODELS>
 <M ID="C">D1122-A.M.100.D.C</M>
@@ -463,10 +485,10 @@
 </EVAL>
 <EVAL ID="D1123-A.M.100.D">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -474,6 +496,7 @@
 <P ID="1">D1123-A.M.100.D.1</P>
     <P ID="2">D1123-A.M.100.D.2</P>
     <P ID="3">D1123-A.M.100.D.3</P>
+    <P ID="4">D1123-A.M.100.D.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1123-A.M.100.D.A</M>
@@ -484,10 +507,10 @@
 </EVAL>
 <EVAL ID="D1124-A.M.100.E">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -495,6 +518,7 @@
 <P ID="1">D1124-A.M.100.E.1</P>
     <P ID="2">D1124-A.M.100.E.2</P>
     <P ID="3">D1124-A.M.100.E.3</P>
+    <P ID="4">D1124-A.M.100.E.4</P>
 </PEERS>
 <MODELS>
 <M ID="C">D1124-A.M.100.E.C</M>
@@ -505,10 +529,10 @@
 </EVAL>
 <EVAL ID="D1125-A.M.100.E">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -516,6 +540,7 @@
 <P ID="1">D1125-A.M.100.E.1</P>
     <P ID="2">D1125-A.M.100.E.2</P>
     <P ID="3">D1125-A.M.100.E.3</P>
+    <P ID="4">D1125-A.M.100.E.4</P>
 </PEERS>
 <MODELS>
 <M ID="B">D1125-A.M.100.E.B</M>
@@ -526,10 +551,10 @@
 </EVAL>
 <EVAL ID="D1126-A.M.100.E">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -537,6 +562,7 @@
 <P ID="1">D1126-A.M.100.E.1</P>
     <P ID="2">D1126-A.M.100.E.2</P>
     <P ID="3">D1126-A.M.100.E.3</P>
+    <P ID="4">D1126-A.M.100.E.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1126-A.M.100.E.A</M>
@@ -547,10 +573,10 @@
 </EVAL>
 <EVAL ID="D1127-A.M.100.E">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -558,6 +584,7 @@
 <P ID="1">D1127-A.M.100.E.1</P>
     <P ID="2">D1127-A.M.100.E.2</P>
     <P ID="3">D1127-A.M.100.E.3</P>
+    <P ID="4">D1127-A.M.100.E.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1127-A.M.100.E.A</M>
@@ -568,10 +595,10 @@
 </EVAL>
 <EVAL ID="D1128-A.M.100.E">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -579,6 +606,7 @@
 <P ID="1">D1128-A.M.100.E.1</P>
     <P ID="2">D1128-A.M.100.E.2</P>
     <P ID="3">D1128-A.M.100.E.3</P>
+    <P ID="4">D1128-A.M.100.E.4</P>
 </PEERS>
 <MODELS>
 <M ID="B">D1128-A.M.100.E.B</M>
@@ -589,10 +617,10 @@
 </EVAL>
 <EVAL ID="D1129-A.M.100.E">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -600,6 +628,7 @@
 <P ID="1">D1129-A.M.100.E.1</P>
     <P ID="2">D1129-A.M.100.E.2</P>
     <P ID="3">D1129-A.M.100.E.3</P>
+    <P ID="4">D1129-A.M.100.E.4</P>
 </PEERS>
 <MODELS>
 <M ID="B">D1129-A.M.100.E.B</M>
@@ -610,10 +639,10 @@
 </EVAL>
 <EVAL ID="D1130-A.M.100.F">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -621,6 +650,7 @@
 <P ID="1">D1130-A.M.100.F.1</P>
     <P ID="2">D1130-A.M.100.F.2</P>
     <P ID="3">D1130-A.M.100.F.3</P>
+    <P ID="4">D1130-A.M.100.F.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1130-A.M.100.F.A</M>
@@ -631,10 +661,10 @@
 </EVAL>
 <EVAL ID="D1131-A.M.100.F">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -642,6 +672,7 @@
 <P ID="1">D1131-A.M.100.F.1</P>
     <P ID="2">D1131-A.M.100.F.2</P>
     <P ID="3">D1131-A.M.100.F.3</P>
+    <P ID="4">D1131-A.M.100.F.4</P>
 </PEERS>
 <MODELS>
 <M ID="D">D1131-A.M.100.F.D</M>
@@ -652,10 +683,10 @@
 </EVAL>
 <EVAL ID="D1132-A.M.100.F">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -663,6 +694,7 @@
 <P ID="1">D1132-A.M.100.F.1</P>
     <P ID="2">D1132-A.M.100.F.2</P>
     <P ID="3">D1132-A.M.100.F.3</P>
+    <P ID="4">D1132-A.M.100.F.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1132-A.M.100.F.A</M>
@@ -673,10 +705,10 @@
 </EVAL>
 <EVAL ID="D1133-A.M.100.F">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -684,6 +716,7 @@
 <P ID="1">D1133-A.M.100.F.1</P>
     <P ID="2">D1133-A.M.100.F.2</P>
     <P ID="3">D1133-A.M.100.F.3</P>
+    <P ID="4">D1133-A.M.100.F.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1133-A.M.100.F.A</M>
@@ -694,10 +727,10 @@
 </EVAL>
 <EVAL ID="D1134-A.M.100.F">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -705,6 +738,7 @@
 <P ID="1">D1134-A.M.100.F.1</P>
     <P ID="2">D1134-A.M.100.F.2</P>
     <P ID="3">D1134-A.M.100.F.3</P>
+    <P ID="4">D1134-A.M.100.F.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1134-A.M.100.F.A</M>
@@ -715,10 +749,10 @@
 </EVAL>
 <EVAL ID="D1135-A.M.100.G">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -726,6 +760,7 @@
 <P ID="1">D1135-A.M.100.G.1</P>
     <P ID="2">D1135-A.M.100.G.2</P>
     <P ID="3">D1135-A.M.100.G.3</P>
+    <P ID="4">D1135-A.M.100.G.4</P>
 </PEERS>
 <MODELS>
 <M ID="E">D1135-A.M.100.G.E</M>
@@ -736,10 +771,10 @@
 </EVAL>
 <EVAL ID="D1136-A.M.100.G">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -747,6 +782,7 @@
 <P ID="1">D1136-A.M.100.G.1</P>
     <P ID="2">D1136-A.M.100.G.2</P>
     <P ID="3">D1136-A.M.100.G.3</P>
+    <P ID="4">D1136-A.M.100.G.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1136-A.M.100.G.A</M>
@@ -757,10 +793,10 @@
 </EVAL>
 <EVAL ID="D1137-A.M.100.G">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -768,6 +804,7 @@
 <P ID="1">D1137-A.M.100.G.1</P>
     <P ID="2">D1137-A.M.100.G.2</P>
     <P ID="3">D1137-A.M.100.G.3</P>
+    <P ID="4">D1137-A.M.100.G.4</P>
 </PEERS>
 <MODELS>
 <M ID="B">D1137-A.M.100.G.B</M>
@@ -778,10 +815,10 @@
 </EVAL>
 <EVAL ID="D1138-A.M.100.G">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -789,6 +826,7 @@
 <P ID="1">D1138-A.M.100.G.1</P>
     <P ID="2">D1138-A.M.100.G.2</P>
     <P ID="3">D1138-A.M.100.G.3</P>
+    <P ID="4">D1138-A.M.100.G.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1138-A.M.100.G.A</M>
@@ -799,10 +837,10 @@
 </EVAL>
 <EVAL ID="D1139-A.M.100.G">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -810,6 +848,7 @@
 <P ID="1">D1139-A.M.100.G.1</P>
     <P ID="2">D1139-A.M.100.G.2</P>
     <P ID="3">D1139-A.M.100.G.3</P>
+    <P ID="4">D1139-A.M.100.G.4</P>
 </PEERS>
 <MODELS>
 <M ID="C">D1139-A.M.100.G.C</M>
@@ -820,10 +859,10 @@
 </EVAL>
 <EVAL ID="D1140-A.M.100.H">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -831,6 +870,7 @@
 <P ID="1">D1140-A.M.100.H.1</P>
     <P ID="2">D1140-A.M.100.H.2</P>
     <P ID="3">D1140-A.M.100.H.3</P>
+    <P ID="4">D1140-A.M.100.H.4</P>
 </PEERS>
 <MODELS>
 <M ID="B">D1140-A.M.100.H.B</M>
@@ -841,10 +881,10 @@
 </EVAL>
 <EVAL ID="D1141-A.M.100.H">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -852,6 +892,7 @@
 <P ID="1">D1141-A.M.100.H.1</P>
     <P ID="2">D1141-A.M.100.H.2</P>
     <P ID="3">D1141-A.M.100.H.3</P>
+    <P ID="4">D1141-A.M.100.H.4</P>
 </PEERS>
 <MODELS>
 <M ID="D">D1141-A.M.100.H.D</M>
@@ -862,10 +903,10 @@
 </EVAL>
 <EVAL ID="D1142-A.M.100.H">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -873,6 +914,7 @@
 <P ID="1">D1142-A.M.100.H.1</P>
     <P ID="2">D1142-A.M.100.H.2</P>
     <P ID="3">D1142-A.M.100.H.3</P>
+    <P ID="4">D1142-A.M.100.H.4</P>
 </PEERS>
 <MODELS>
 <M ID="C">D1142-A.M.100.H.C</M>
@@ -883,10 +925,10 @@
 </EVAL>
 <EVAL ID="D1143-A.M.100.H">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -894,6 +936,7 @@
 <P ID="1">D1143-A.M.100.H.1</P>
     <P ID="2">D1143-A.M.100.H.2</P>
     <P ID="3">D1143-A.M.100.H.3</P>
+    <P ID="4">D1143-A.M.100.H.4</P>
 </PEERS>
 <MODELS>
 <M ID="A">D1143-A.M.100.H.A</M>
@@ -904,10 +947,10 @@
 </EVAL>
 <EVAL ID="D1144-A.M.100.H">
 <PEER-ROOT>
-/home/tac/tac2011/Summarization/eval/peers/peers_segmented/peers_A
+/home2/batraa/Summarization/outputs/D5_evaltest
 </PEER-ROOT>
 <MODEL-ROOT>
-/dropbox/14-15/573/Data/models/evaltest
+/home2/batraa/dropbox/22-23/575x/Data/models/evaltest
 </MODEL-ROOT>
 <INPUT-FORMAT TYPE="SPL">
 </INPUT-FORMAT>
@@ -915,6 +958,7 @@
 <P ID="1">D1144-A.M.100.H.1</P>
     <P ID="2">D1144-A.M.100.H.2</P>
     <P ID="3">D1144-A.M.100.H.3</P>
+    <P ID="4">D1144-A.M.100.H.4</P>
 </PEERS>
 <MODELS>
 <M ID="C">D1144-A.M.100.H.C</M>
