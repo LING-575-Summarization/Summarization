@@ -149,7 +149,7 @@ def verify_element(nounp: "Span", subnp: "Span"):
     gen_case_1 = nounp.text.endswith("'s") and subnp.text.endswith("'s")
     gen_case_2 = not nounp.text.endswith("'s") and not subnp.text.endswith("'s")
     same_case = gen_case_1 or gen_case_2
-    if contains_a_pronoun(nounp) and len(nounp) == 1 and contains_a_pronoun(subnp) and len(subnp) == 1:
+    if contains_a_pronoun(nounp) and contains_a_pronoun(subnp):
         same_case = False if nounp[0].morph != subnp[0].morph else same_case
     not_brackets = not nounp.text == "(" + subnp.text + ")"
     not_quotes = not nounp.text == "\"" + subnp.text + "\""
@@ -159,7 +159,10 @@ def verify_element(nounp: "Span", subnp: "Span"):
         subnp_proper_nouns = set([tkn.text for tkn in subnp if tkn.tag_ in PRONOUNTAGS])
         intersection = subnp_proper_nouns.intersection(nounp_proper_nouns)
         same_proper_noun = False if len(intersection) == 0 else True
-    return same_case and not_brackets and same_proper_noun and not_quotes
+    third_person_pn = True
+    if contains_a_pronoun(subnp):
+        third_person_pn = False if any(["Person=1" in str(tkn.morph) or "Person=2" in str(tkn.morph) for tkn in subnp]) else True
+    return same_case and not_brackets and same_proper_noun and not_quotes and third_person_pn
 
 
 def contains_a_pronoun(span, pronoun_tags: Set[str] = PRONOUNTAGS):
@@ -188,22 +191,27 @@ def replace_nth(string: str, sub: str, replacement: str, n: int):
        NOTE: It also corrects for replacements that use "I" in quotes. 
              When it is followed by a "said." string
     '''
-    pattern = re.compile(f'(?<=[\s\"\']){sub.text}(?=[\s\"\'\.,?!])')
-    split = re.split(pattern, string)
+    pattern_mid = re.compile(f'(?<=[\s\"\']){sub.text}(?=[\s\"\'\.,?!])')
+    pattern_start = re.compile(f'^{sub.text}(?=[\s\"\'\.,?!])')
     repl_str = replacement.text
     # fix spelling
     if replacement[0].tag_ not in PROPERNOUNTAGS:
         repl_str = repl_str[0].lower() + repl_str[1:]
-    if re.search(r'[A-Z]', sub.text[0]):
+    if sub.text[0] in string.split()[0]:
         repl_str = repl_str[0].upper() + repl_str[1:]
-    start, end = f"{repl_str}".join(split[0:n]), f"{repl_str}".join(split[n:])
+    if re.match(pattern_start, string):
+        split = re.split(pattern_start, string)
+        start, end = f"{repl_str}".join(split[0:n]), f"{repl_str}".join(split[n+1:])
+    else:
+        split = re.split(pattern_mid, string)
+        start, end = f"{repl_str}".join(split[0:n]), f"{repl_str}".join(split[n+1:])
     is_quote = start.count("\"") % 2 == 1 and end.count("\"") % 2 == 1
     replacing_I = sub.text == "I" and re.search(f".*said", string) is not None
     if is_quote and replacing_I:
         return string, False
     if is_quote and not replacing_I:
         repl_str = f"[{repl_str}]"
-        start, end = f"{repl_str}".join(split[0:n]), f"{repl_str}".join(split[n:])
+        start, end = f"{repl_str}".join(split[0:n]), f"{repl_str}".join(split[n+1:])
     return start + end, True
 
 
@@ -319,11 +327,7 @@ class ContentRealizer:
                         if replace_np is not None: 
                             longest_nps = corefcluster.sort_by_length(reverse=True, filtered=False)
                             for repl_np in longest_nps:
-                                third_person_pn = all_pronouns(repl_np) and "Person=3" in repl_np[0].morph
-                                # only replace proper nouns with third person pronouns
-                                if all_propernouns(NP) and third_person_pn:
-                                    continue
-                                elif len(repl_np.text) == len(NP.text):
+                                if len(repl_np.text) == len(NP.text):
                                     continue
                                 elif verify_element(NP, repl_np):
                                     replace_np = repl_np
@@ -334,9 +338,6 @@ class ContentRealizer:
                         for repl_np in shortest_nps:
                             if len(repl_np.text) >= len(NP.text):
                                 break # no point in continuing search if existing is the shortest
-                            # only replace proper nouns with pronouns (not full that are in the third person)
-                            elif contains_a_propernoun(NP) and all_pronouns(repl_np):
-                                continue 
                             elif verify_element(NP, repl_np):
                                 replace_np = repl_np
                         
@@ -355,8 +356,8 @@ class ContentRealizer:
                             self.seen_clusters[cluster_i] = corefcluster
                             # Print changes to the summary
                             seen = "unseen" if new_cluster else "seen"
-                            print(f"({seen})", NP.text, "=>", replace_np.text)
-                            print(DETOKENIZER.detokenize(sentence), "=>", _sentence)
+                            # print(f"({seen})", NP.text, "=>", replace_np.text)
+                            # print(DETOKENIZER.detokenize(sentence), "=>", _sentence)
         
         replacement = DETOKENIZER.detokenize(sentence) if switched else None
 
