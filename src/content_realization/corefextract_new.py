@@ -335,7 +335,7 @@ class ContentRealizer:
                             if len(repl_np.text) >= len(NP.text):
                                 break # no point in continuing search if existing is the shortest
                             # only replace proper nouns with pronouns (not full that are in the third person)
-                            elif contains_a_propernoun(NP) and all_pronouns(replace_np):
+                            elif contains_a_propernoun(NP) and all_pronouns(repl_np):
                                 continue 
                             elif verify_element(NP, repl_np):
                                 replace_np = repl_np
