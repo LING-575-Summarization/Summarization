@@ -1,4 +1,4 @@
-executable            = src/scripts/lexrank.sh
+executable            = src/scripts/lexrank-archive.sh
 getenv                = true
 output                = log/lexrank.out
 error                 = log/lexrank.error

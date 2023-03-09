@@ -40,6 +40,11 @@ class Span:
     
     def __len__(self):
         return len(self.tokens)
+    
+
+PROPERNOUNTAGS={"PROPN", "NNP", "NNPS", "NE", "NNE", "NR"}
+PRONOUNTAGS={"PRP", "PRON", "PRP$"}
+DTTAGS={"DT", "WDT", "DET"}
 
 
 class ReferenceClusters:
@@ -48,14 +53,16 @@ class ReferenceClusters:
             self, 
             doc: str, 
             cluster: str,
-            pronoun_tags = {"PRP", "PRON", "PRP$"},
-            determiner_tags = {"DT", "WDT", "DET"}
+            reference_np: str,
+            pronoun_tags = PRONOUNTAGS,
+            determiner_tags = DTTAGS
         ) -> None:
         '''Class to hold coreference solutions and extract longest/shortest values'''
         self.doc = doc
         self.cluster = cluster
         self.pronoun_tags = pronoun_tags
         self.determiner_tags = determiner_tags
+        self.reference_np = reference_np
         self.spans = self.post_init()
 
     def __iter__(self):
@@ -74,7 +81,8 @@ class ReferenceClusters:
                 new_span = Span(tokens)
                 filtered_appositives.append(new_span)
         for span in filtered_appositives:
-            if not(len(span) == 1 or contains_a_pronoun(span, self.pronoun_tags)):
+            short_or_has_pronoun = len(span) == 1 or contains_a_pronoun(span, self.pronoun_tags)
+            if not short_or_has_pronoun:
                 filtered.append(span)
         return filtered
 
@@ -105,6 +113,12 @@ class ReferenceClusters:
         argmin = self.lengths.index(min_length)
         return self.doc.spans[self.cluster][argmin]
 
+    def sort_by_length(self, filtered: bool = True, reverse: bool = False):
+        arr = self.spans if filtered else self._spans
+        tuple_arr = [(span, len(span.text)) for span in arr]
+        sorted_arr = sorted(tuple_arr, reverse=reverse, key=lambda x: x[1])
+        return [s[0] for s in sorted_arr]
+
     @property
     def longest(self):
         lengths = self.lengths
@@ -130,12 +144,41 @@ class ReferenceClusters:
             return None
 
 
-def contains_a_pronoun(span, pronoun_tags: Set[str] = {"PRP", "PRON", "PRP$"}):
-    return len(set([tkn.tag_ for tkn in span]) & pronoun_tags) > 0
+def verify_element(nounp: "Span", subnp: "Span"):
+    # list of cases to filter out changes
+    gen_case_1 = nounp.text.endswith("'s") and subnp.text.endswith("'s")
+    gen_case_2 = not nounp.text.endswith("'s") and not subnp.text.endswith("'s")
+    same_case = gen_case_1 or gen_case_2
+    if contains_a_pronoun(nounp) and contains_a_pronoun(subnp):
+        same_case = False if nounp[0].morph != subnp[0].morph else same_case
+    not_brackets = not nounp.text == "(" + subnp.text + ")"
+    not_quotes = not nounp.text == "\"" + subnp.text + "\""
+    same_proper_noun = True
+    if contains_a_propernoun(nounp) and contains_a_propernoun(subnp):
+        nounp_proper_nouns = set([tkn.text for tkn in nounp if tkn.tag_ in PRONOUNTAGS])
+        subnp_proper_nouns = set([tkn.text for tkn in subnp if tkn.tag_ in PRONOUNTAGS])
+        intersection = subnp_proper_nouns.intersection(nounp_proper_nouns)
+        same_proper_noun = False if len(intersection) == 0 else True
+    third_person_pn = True
+    if contains_a_pronoun(subnp):
+        third_person_pn = False if any(["Person=1" in str(tkn.morph) or "Person=2" in str(tkn.morph) for tkn in subnp]) else True
+    return same_case and not_brackets and same_proper_noun and not_quotes and third_person_pn
 
 
-def all_pronouns(span, pronoun_tags: Set[str] = {"PRP", "PRON", "PRP$"}):
-    return set([tkn.tag_ for tkn in span]).union(pronoun_tags) == pronoun_tags
+def contains_a_pronoun(span, pronoun_tags: Set[str] = PRONOUNTAGS):
+    return any([tkn.tag_ in pronoun_tags for tkn in span])
+
+
+def all_pronouns(span, pronoun_tags: Set[str] = PRONOUNTAGS):
+    return all([tkn.tag_ in pronoun_tags for tkn in span])
+
+
+def contains_a_propernoun(span, propernp_tags: Set[str] = PROPERNOUNTAGS):
+    return any([tkn.tag_ in propernp_tags for tkn in span])
+
+
+def all_propernouns(span, propernp_tags: Set[str] = PROPERNOUNTAGS):
+    return all([tkn.tag_ in propernp_tags for tkn in span])
 
 
 def replace_via_indices(string: str, sub: str, start: int, end: int) -> str:
@@ -148,16 +191,28 @@ def replace_nth(string: str, sub: str, replacement: str, n: int):
        NOTE: It also corrects for replacements that use "I" in quotes. 
              When it is followed by a "said." string
     '''
-    pattern = re.compile(f'(?<=[\s\"\']){sub}(?=[\s\"\'\.,?!])')
-    split = re.split(pattern, string)
-    start, end = f"{sub}".join(split[0:n]), f"{sub}".join(split[n:])
+    pattern_mid = re.compile(f'(?<=[\s\"\']){sub.text}(?=[\s\"\'\.,?!])')
+    pattern_start = re.compile(f'^{sub.text}(?=[\s\"\'\.,?!])')
+    repl_str = replacement.text
+    # fix spelling
+    if replacement[0].tag_ not in PROPERNOUNTAGS:
+        repl_str = repl_str[0].lower() + repl_str[1:]
+    if sub.text[0] in string.split()[0]:
+        repl_str = repl_str[0].upper() + repl_str[1:]
+    if re.match(pattern_start, string):
+        split = re.split(pattern_start, string)
+        start, end = f"{repl_str}".join(split[0:n]), f"{repl_str}".join(split[n+1:])
+    else:
+        split = re.split(pattern_mid, string)
+        start, end = f"{repl_str}".join(split[0:n]), f"{repl_str}".join(split[n+1:])
     is_quote = start.count("\"") % 2 == 1 and end.count("\"") % 2 == 1
-    replacing_I = sub == "I" and re.search(f".*said", string) is not None
+    replacing_I = sub.text == "I" and re.search(f".*said", string) is not None
     if is_quote and replacing_I:
         return string, False
-    elif is_quote and not replacing_I:
-        replacement = f"[{replacement}]"
-    return start + replacement + end, True
+    if is_quote and not replacing_I:
+        repl_str = f"[{repl_str}]"
+        start, end = f"{repl_str}".join(split[0:n]), f"{repl_str}".join(split[n+1:])
+    return start + end, True
 
 
 class CoferenceResolver:
@@ -175,7 +230,6 @@ class CoferenceResolver:
         '''
         return self.nlp(self.parser(in_doc))
 
-    
     def prettyprint(self, input: str):
         doc = self.nlp(self.parser(input))
         for i, sp in enumerate(doc.spans.values()):
@@ -258,14 +312,34 @@ class ContentRealizer:
                     new_cluster = cluster_i not in self.seen_clusters
 
                     if new_cluster:
-                        corefcluster = ReferenceClusters(self.docset, cluster_i)
-                        replace_np = corefcluster.longest
-                        if replace_np is not None and len(replace_np.text) == len(NP.text): # If no longer replacement found
-                            replace_np = corefcluster._longest
+                        corefcluster = ReferenceClusters(self.docset, cluster_i, NP.text)
+                        # first try longest premodified
+                        longest_nps = corefcluster.sort_by_length(reverse=True, filtered=True)
+                        for repl_np in longest_nps:
+                            if contains_a_propernoun(NP) and not contains_a_propernoun(repl_np):
+                                continue
+                            elif len(repl_np.text) == len(NP.text):
+                                continue
+                            elif verify_element(NP, repl_np):
+                                replace_np = repl_np
+                        
+                        # If no longer replacement found
+                        if replace_np is not None: 
+                            longest_nps = corefcluster.sort_by_length(reverse=True, filtered=False)
+                            for repl_np in longest_nps:
+                                if len(repl_np.text) == len(NP.text):
+                                    continue
+                                elif verify_element(NP, repl_np):
+                                    replace_np = repl_np
 
                     else:
                         corefcluster = self.seen_clusters[cluster_i]
-                        replace_np = corefcluster.shortest
+                        shortest_nps = corefcluster.sort_by_length(reverse=False, filtered=False)
+                        for repl_np in shortest_nps:
+                            if len(repl_np.text) >= len(NP.text):
+                                break # no point in continuing search if existing is the shortest
+                            elif verify_element(NP, repl_np):
+                                replace_np = repl_np
                         
                     if replace_np:
                         same_length = len(replace_np.text) == len(NP.text)
@@ -273,15 +347,16 @@ class ContentRealizer:
                         if same_length or is_a_pronoun: # Don't replace NPs with pronouns
                             continue
                         # count previously seen NPs to replace the correct one in replace_nth function
-                        np_count = seen_nps.count(NP.text)
-                        _sentence, replaced = deepcopy(replace_nth(_sentence, NP.text, 
-                                                        replace_np.text, np_count))
+                        np_count = seen_nps.count(NP.text) + 1
+                        _sentence, replaced = deepcopy(replace_nth(_sentence, NP, 
+                                                        replace_np, np_count))
                         if replaced:
                             switched = True
                             # Add to seen clusters only if completed replacement
                             self.seen_clusters[cluster_i] = corefcluster
                             # Print changes to the summary
-                            print(f"({np_count})", NP.text, "=>", replace_np.text)
+                            seen = "unseen" if new_cluster else "seen"
+                            # print(f"({seen})", NP.text, "=>", replace_np.text)
                             # print(DETOKENIZER.detokenize(sentence), "=>", _sentence)
         
         replacement = DETOKENIZER.detokenize(sentence) if switched else None

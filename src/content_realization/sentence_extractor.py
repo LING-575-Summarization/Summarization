@@ -6,10 +6,12 @@ The function is optionally combined with the coreference extactor to generate su
 
 from utils import detokenizer_wrapper
 from nltk.metrics.distance import jaccard_distance
-from .corefextract import ContentRealizer
+from .corefextract_new import ContentRealizer
+from nltk.tokenize.treebank import TreebankWordDetokenizer
 from typing import *
 import re
 
+DETOKENIZER = TreebankWordDetokenizer()
 
 @detokenizer_wrapper
 def extract_summary(
@@ -50,7 +52,9 @@ def extract_summary(
         if re.match(r'^\"[^\"]+$|^[^\"]+\"$', " ".join(ranked_list[i])):
             i += 1
             continue
-        current_sentence, _ = cr(ranked_list[i])
+        current_sentence, former_sentence = cr(ranked_list[i])
+        if former_sentence and former_sentence != DETOKENIZER.detokenize(current_sentence):
+            ranked_list[i] = current_sentence
         if min_jaccard_dist is not None:
             too_similar = False
             for previous_sent_id in summary_ids:
@@ -69,6 +73,8 @@ def extract_summary(
             summary_ids.append(i)
             words += len(current_sentence)
             i += 1
+            if former_sentence:
+                print(f"{former_sentence} => {DETOKENIZER.detokenize(current_sentence)}")
     summary = [detokenize(ranked_list[sum_id]) for sum_id in summary_ids]
     assert words - len(current_sentence) < max_tokens, \
         f"words: {words - len(current_sentence)} | sentence: {current_sentence}"
