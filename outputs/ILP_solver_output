@@ -1,285 +1,2280 @@
-GLPSOL: GLPK LP/MIP Solver, v4.65
+GLPSOL: GLPK LP/MIP Solver, v4.52
 Parameter(s) specified in the command line:
- --cpxlp /tmp/fc90e0054ede46b48bf426916613de36-pulp.lp -o /tmp/fc90e0054ede46b48bf426916613de36-pulp.sol
-Reading problem data from '/tmp/fc90e0054ede46b48bf426916613de36-pulp.lp'...
-132274 rows, 1713 columns, 137193 non-zeros
-1713 integer variables, all of which are binary
-149681 lines were read
-GLPK Integer Optimizer, v4.65
-132274 rows, 1713 columns, 137193 non-zeros
-1713 integer variables, all of which are binary
+ --cpxlp /var/lib/condor/execute/dir_692638/bc641246196d4b86b503410ed4fb1925-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/bc641246196d4b86b503410ed4fb1925-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/bc641246196d4b86b503410ed4fb1925-pulp.lp'...
+140449 rows, 1683 columns, 145693 non-zeros
+1683 integer variables, all of which are binary
+158641 lines were read
+GLPK Integer Optimizer, v4.52
+140449 rows, 1683 columns, 145693 non-zeros
+1683 integer variables, all of which are binary
 Preprocessing...
-1328 hidden packing inequaliti(es) were detected
-4054 rows, 1713 columns, 8973 non-zeros
-1713 integer variables, all of which are binary
+1197 hidden packing inequaliti(es) were detected
+4176 rows, 1683 columns, 9420 non-zeros
+1683 integer variables, all of which are binary
 Scaling...
- A: min|aij| =  1.000e+00  max|aij| =  6.000e+01  ratio =  6.000e+01
-GM: min|aij| =  8.185e-01  max|aij| =  1.222e+00  ratio =  1.493e+00
-EQ: min|aij| =  6.827e-01  max|aij| =  1.000e+00  ratio =  1.465e+00
-2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+ A: min|aij| =  1.000e+00  max|aij| =  8.100e+01  ratio =  8.100e+01
+GM: min|aij| =  7.454e-01  max|aij| =  1.342e+00  ratio =  1.800e+00
+EQ: min|aij| =  5.556e-01  max|aij| =  1.000e+00  ratio =  1.800e+00
+2N: min|aij| =  2.500e-01  max|aij| =  1.000e+00  ratio =  4.000e+00
 Constructing initial basis...
-Size of triangular part is 4054
+Size of triangular part is 4176
 Solving LP relaxation...
-GLPK Simplex Optimizer, v4.65
-4054 rows, 1713 columns, 8973 non-zeros
-*     0: obj =  -0.000000000e+00 inf =   0.000e+00 (1568)
-Perturbing LP to avoid stalling [518]...
-Removing LP perturbation [1789]...
-*  1789: obj =   2.640116364e+02 inf =   6.661e-15 (0) 2
+GLPK Simplex Optimizer, v4.52
+4176 rows, 1683 columns, 9420 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.606619603e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.938864525e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.987790244e+02  infeas =  1.376e-15 (0)
+*  1742: obj =   2.987790244e+02  infeas =  0.000e+00 (0)
 OPTIMAL LP SOLUTION FOUND
 Integer optimization begins...
-Long-step dual simplex will be used
-+  1789: mip =     not found yet <=              +inf        (1; 0)
-Solution found by heuristic: 228.312776106
-Solution found by heuristic: 242.949793037
-Solution found by heuristic: 245.518344226
-Solution found by heuristic: 245.824326502
-+  4755: >>>>>   2.495001915e+02 <=   2.501599168e+02   0.3% (48; 95)
-+  4764: mip =   2.495001915e+02 <=     tree is empty   0.0% (0; 269)
++  1742: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 279.758196086
++  5465: mip =   2.797581961e+02 <=     tree is empty   0.0% (0; 375)
 INTEGER OPTIMAL SOLUTION FOUND
-Time used:   1.0 secs
-Memory used: 47.5 Mb (49816876 bytes)
-Writing MIP solution to '/tmp/fc90e0054ede46b48bf426916613de36-pulp.sol'...
-GLPSOL: GLPK LP/MIP Solver, v4.65
+Time used:   1.9 secs
+Memory used: 50.3 Mb (52725524 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/bc641246196d4b86b503410ed4fb1925-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
 Parameter(s) specified in the command line:
- --cpxlp /tmp/6c85219e7d3942efb0b6fcd9422c2e7c-pulp.lp -o /tmp/6c85219e7d3942efb0b6fcd9422c2e7c-pulp.sol
-Reading problem data from '/tmp/6c85219e7d3942efb0b6fcd9422c2e7c-pulp.lp'...
-300161 rows, 2373 columns, 308407 non-zeros
-2373 integer variables, all of which are binary
-341259 lines were read
-GLPK Integer Optimizer, v4.65
-300161 rows, 2373 columns, 308407 non-zeros
-2373 integer variables, all of which are binary
+ --cpxlp /var/lib/condor/execute/dir_692638/3317672fd2534998bc707292bc513e98-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/3317672fd2534998bc707292bc513e98-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/3317672fd2534998bc707292bc513e98-pulp.lp'...
+200412 rows, 1979 columns, 206783 non-zeros
+1979 integer variables, all of which are binary
+227360 lines were read
+GLPK Integer Optimizer, v4.52
+200412 rows, 1979 columns, 206783 non-zeros
+1979 integer variables, all of which are binary
 Preprocessing...
-1582 hidden packing inequaliti(es) were detected
-6298 rows, 2373 columns, 14544 non-zeros
-2373 integer variables, all of which are binary
+1375 hidden packing inequaliti(es) were detected
+5007 rows, 1979 columns, 11378 non-zeros
+1979 integer variables, all of which are binary
 Scaling...
- A: min|aij| =  1.000e+00  max|aij| =  6.300e+01  ratio =  6.300e+01
-GM: min|aij| =  7.976e-01  max|aij| =  1.254e+00  ratio =  1.572e+00
-EQ: min|aij| =  6.424e-01  max|aij| =  1.000e+00  ratio =  1.557e+00
+ A: min|aij| =  1.000e+00  max|aij| =  5.900e+01  ratio =  5.900e+01
+GM: min|aij| =  8.068e-01  max|aij| =  1.239e+00  ratio =  1.536e+00
+EQ: min|aij| =  6.509e-01  max|aij| =  1.000e+00  ratio =  1.536e+00
 2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
 Constructing initial basis...
-Size of triangular part is 6298
+Size of triangular part is 5007
 Solving LP relaxation...
-GLPK Simplex Optimizer, v4.65
-6298 rows, 2373 columns, 14544 non-zeros
-*     0: obj =  -0.000000000e+00 inf =   0.000e+00 (2184)
-Perturbing LP to avoid stalling [406]...
-Removing LP perturbation [2440]...
-*  2440: obj =   3.013018990e+02 inf =   0.000e+00 (0) 3
+GLPK Simplex Optimizer, v4.52
+5007 rows, 1979 columns, 11378 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.215221813e+02  infeas =  4.441e-16 (0)
+*  1000: obj =   2.515672196e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.550051700e+02  infeas =  2.571e-14 (0)
+*  2000: obj =   2.550051700e+02  infeas =  0.000e+00 (0)
+*  2034: obj =   2.550051700e+02  infeas =  0.000e+00 (0)
 OPTIMAL LP SOLUTION FOUND
 Integer optimization begins...
-Long-step dual simplex will be used
-+  2440: mip =     not found yet <=              +inf        (1; 0)
-Solution found by heuristic: 263.935888719
-Solution found by heuristic: 267.838235474
-Solution found by heuristic: 270.584437431
-Solution found by heuristic: 274.076333509
-+  6474: >>>>>   2.860279780e+02 <=   2.949461137e+02   3.1% (273; 69)
-+  9916: >>>>>   2.863756939e+02 <=   2.863756939e+02 < 0.1% (29; 933)
-+  9916: mip =   2.863756939e+02 <=     tree is empty   0.0% (0; 1121)
++  2034: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 207.524947641
+Solution found by heuristic: 222.866751732
+Solution found by heuristic: 223.17478227
+Solution found by heuristic: 230.284249077
++  5093: >>>>>   2.349910804e+02 <=   2.489078163e+02   5.9% (204; 53)
++  6240: >>>>>   2.456260532e+02 <=   2.472750850e+02   0.7% (204; 191)
++  6512: mip =   2.456260532e+02 <=     tree is empty   0.0% (0; 695)
 INTEGER OPTIMAL SOLUTION FOUND
-Time used:   5.8 secs
-Memory used: 106.6 Mb (111794428 bytes)
-Writing MIP solution to '/tmp/6c85219e7d3942efb0b6fcd9422c2e7c-pulp.sol'...
-GLPSOL: GLPK LP/MIP Solver, v4.65
+Time used:   3.8 secs
+Memory used: 70.6 Mb (74020296 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/3317672fd2534998bc707292bc513e98-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
 Parameter(s) specified in the command line:
- --cpxlp /tmp/15a18b62531d4fce9598348ee2f5af7e-pulp.lp -o /tmp/15a18b62531d4fce9598348ee2f5af7e-pulp.sol
-Reading problem data from '/tmp/15a18b62531d4fce9598348ee2f5af7e-pulp.lp'...
-68401 rows, 1199 columns, 71879 non-zeros
-1199 integer variables, all of which are binary
-77965 lines were read
-GLPK Integer Optimizer, v4.65
-68401 rows, 1199 columns, 71879 non-zeros
-1199 integer variables, all of which are binary
+ --cpxlp /var/lib/condor/execute/dir_692638/82597e37a0ac4be187379a4930316e56-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/82597e37a0ac4be187379a4930316e56-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/82597e37a0ac4be187379a4930316e56-pulp.lp'...
+158432 rows, 1831 columns, 163923 non-zeros
+1831 integer variables, all of which are binary
+179965 lines were read
+GLPK Integer Optimizer, v4.52
+158432 rows, 1831 columns, 163923 non-zeros
+1831 integer variables, all of which are binary
 Preprocessing...
-870 hidden packing inequaliti(es) were detected
-2851 rows, 1199 columns, 6329 non-zeros
-1199 integer variables, all of which are binary
+1324 hidden packing inequaliti(es) were detected
+4443 rows, 1831 columns, 9934 non-zeros
+1831 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.700e+01  ratio =  6.700e+01
+GM: min|aij| =  7.816e-01  max|aij| =  1.279e+00  ratio =  1.637e+00
+EQ: min|aij| =  6.108e-01  max|aij| =  1.000e+00  ratio =  1.637e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.047e+00  ratio =  2.680e+00
+Constructing initial basis...
+Size of triangular part is 4443
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+4443 rows, 1831 columns, 9934 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.545325769e+02  infeas =  1.110e-16 (0)
+*  1000: obj =   2.689081708e+02  infeas =  5.274e-15 (0)
+*  1500: obj =   2.792388341e+02  infeas =  0.000e+00 (0)
+*  1851: obj =   2.792388341e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1851: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 249.070804991
+Solution found by heuristic: 252.656492432
+Solution found by heuristic: 256.188206183
+Solution found by heuristic: 259.155041934
+Solution found by heuristic: 264.053970938
++  2941: >>>>>   2.675856847e+02 <=   2.748307884e+02   2.7% (74; 61)
++  3355: >>>>>   2.725855229e+02 <=   2.725969525e+02 < 0.1% (70; 103)
++  3356: mip =   2.725855229e+02 <=     tree is empty   0.0% (0; 281)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   1.2 secs
+Memory used: 56.4 Mb (59106136 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/82597e37a0ac4be187379a4930316e56-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/90c5a43d21a949fd9e95c48ad90d7fa0-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/90c5a43d21a949fd9e95c48ad90d7fa0-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/90c5a43d21a949fd9e95c48ad90d7fa0-pulp.lp'...
+213006 rows, 1997 columns, 219421 non-zeros
+1997 integer variables, all of which are binary
+241982 lines were read
+GLPK Integer Optimizer, v4.52
+213006 rows, 1997 columns, 219421 non-zeros
+1997 integer variables, all of which are binary
+Preprocessing...
+1380 hidden packing inequaliti(es) were detected
+5038 rows, 1997 columns, 11453 non-zeros
+1997 integer variables, all of which are binary
 Scaling...
  A: min|aij| =  1.000e+00  max|aij| =  5.500e+01  ratio =  5.500e+01
 GM: min|aij| =  8.211e-01  max|aij| =  1.218e+00  ratio =  1.483e+00
 EQ: min|aij| =  6.742e-01  max|aij| =  1.000e+00  ratio =  1.483e+00
 2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
 Constructing initial basis...
-Size of triangular part is 2851
+Size of triangular part is 5038
 Solving LP relaxation...
-GLPK Simplex Optimizer, v4.65
-2851 rows, 1199 columns, 6329 non-zeros
-*     0: obj =  -0.000000000e+00 inf =   0.000e+00 (1102)
-Perturbing LP to avoid stalling [610]...
-Removing LP perturbation [1309]...
-*  1309: obj =   2.651153563e+02 inf =   0.000e+00 (0) 2
+GLPK Simplex Optimizer, v4.52
+5038 rows, 1997 columns, 11453 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.706342096e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   3.309597228e+02  infeas =  1.480e-16 (0)
+*  1500: obj =   3.447897899e+02  infeas =  0.000e+00 (0)
+*  1997: obj =   3.470197566e+02  infeas =  0.000e+00 (0)
 OPTIMAL LP SOLUTION FOUND
 Integer optimization begins...
-Long-step dual simplex will be used
-+  1309: mip =     not found yet <=              +inf        (1; 0)
-Solution found by heuristic: 216.36285267
-Solution found by heuristic: 230.321181976
-+  1467: >>>>>   2.305845950e+02 <=   2.629574261e+02  14.0% (14; 1)
-Solution found by heuristic: 234.426542815
-+  8869: mip =   2.344265428e+02 <=     tree is empty   0.0% (0; 909)
++  1997: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 301.706138132
+Solution found by heuristic: 311.746347053
+Solution found by heuristic: 321.297521058
+Solution found by heuristic: 321.297521058
+Solution found by heuristic: 330.848695063
+Solution found by heuristic: 330.848695063
++  6358: >>>>>   3.313377300e+02 <=   3.357695054e+02   1.3% (133; 172)
++  7608: mip =   3.313377300e+02 <=     tree is empty   0.0% (0; 623)
 INTEGER OPTIMAL SOLUTION FOUND
-Time used:   1.9 secs
-Memory used: 24.8 Mb (25971848 bytes)
-Writing MIP solution to '/tmp/15a18b62531d4fce9598348ee2f5af7e-pulp.sol'...
-GLPSOL: GLPK LP/MIP Solver, v4.65
+Time used:   3.6 secs
+Memory used: 77.1 Mb (80887836 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/90c5a43d21a949fd9e95c48ad90d7fa0-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
 Parameter(s) specified in the command line:
- --cpxlp /tmp/57b6f1f0d45e47bb81cc8ac1582d3909-pulp.lp -o /tmp/57b6f1f0d45e47bb81cc8ac1582d3909-pulp.sol
-Reading problem data from '/tmp/57b6f1f0d45e47bb81cc8ac1582d3909-pulp.lp'...
-88197 rows, 1364 columns, 92095 non-zeros
-1364 integer variables, all of which are binary
-100377 lines were read
-GLPK Integer Optimizer, v4.65
-88197 rows, 1364 columns, 92095 non-zeros
-1364 integer variables, all of which are binary
+ --cpxlp /var/lib/condor/execute/dir_692638/c5c361e6ccb84054a0973dff3e435e2c-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/c5c361e6ccb84054a0973dff3e435e2c-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/c5c361e6ccb84054a0973dff3e435e2c-pulp.lp'...
+40525 rows, 964 columns, 43187 non-zeros
+964 integer variables, all of which are binary
+46412 lines were read
+GLPK Integer Optimizer, v4.52
+40525 rows, 964 columns, 43187 non-zeros
+964 integer variables, all of which are binary
 Preprocessing...
-967 hidden packing inequaliti(es) were detected
-3214 rows, 1364 columns, 7112 non-zeros
-1364 integer variables, all of which are binary
-Scaling...
- A: min|aij| =  1.000e+00  max|aij| =  5.600e+01  ratio =  5.600e+01
-GM: min|aij| =  8.214e-01  max|aij| =  1.217e+00  ratio =  1.482e+00
-EQ: min|aij| =  6.814e-01  max|aij| =  1.000e+00  ratio =  1.468e+00
-2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
-Constructing initial basis...
-Size of triangular part is 3214
-Solving LP relaxation...
-GLPK Simplex Optimizer, v4.65
-3214 rows, 1364 columns, 7112 non-zeros
-*     0: obj =  -0.000000000e+00 inf =   0.000e+00 (1236)
-Perturbing LP to avoid stalling [633]...
-Removing LP perturbation [1432]...
-*  1432: obj =   2.654122119e+02 inf =   1.269e-15 (0) 2
-OPTIMAL LP SOLUTION FOUND
-Integer optimization begins...
-Long-step dual simplex will be used
-+  1432: mip =     not found yet <=              +inf        (1; 0)
-Solution found by heuristic: 226.210801814
-Solution found by heuristic: 246.176440321
-Solution found by heuristic: 258.192653422
-+  1880: mip =   2.581926534e+02 <=     tree is empty   0.0% (0; 61)
-INTEGER OPTIMAL SOLUTION FOUND
-Time used:   0.2 secs
-Memory used: 31.4 Mb (32922124 bytes)
-Writing MIP solution to '/tmp/57b6f1f0d45e47bb81cc8ac1582d3909-pulp.sol'...
-GLPSOL: GLPK LP/MIP Solver, v4.65
-Parameter(s) specified in the command line:
- --cpxlp /tmp/fd0a2c2649734c7aa78a88e8df9e7357-pulp.lp -o /tmp/fd0a2c2649734c7aa78a88e8df9e7357-pulp.sol
-Reading problem data from '/tmp/fd0a2c2649734c7aa78a88e8df9e7357-pulp.lp'...
-56539 rows, 1100 columns, 59605 non-zeros
-1100 integer variables, all of which are binary
-64282 lines were read
-GLPK Integer Optimizer, v4.65
-56539 rows, 1100 columns, 59605 non-zeros
-1100 integer variables, all of which are binary
-Preprocessing...
-813 hidden packing inequaliti(es) were detected
-2555 rows, 1100 columns, 5621 non-zeros
-1100 integer variables, all of which are binary
-Scaling...
- A: min|aij| =  1.000e+00  max|aij| =  4.600e+01  ratio =  4.600e+01
-GM: min|aij| =  8.586e-01  max|aij| =  1.165e+00  ratio =  1.356e+00
-EQ: min|aij| =  7.372e-01  max|aij| =  1.000e+00  ratio =  1.356e+00
-2N: min|aij| =  7.812e-01  max|aij| =  1.438e+00  ratio =  1.840e+00
-Constructing initial basis...
-Size of triangular part is 2555
-Solving LP relaxation...
-GLPK Simplex Optimizer, v4.65
-2555 rows, 1100 columns, 5621 non-zeros
-*     0: obj =  -0.000000000e+00 inf =   0.000e+00 (997)
-Perturbing LP to avoid stalling [435]...
-Removing LP perturbation [1181]...
-*  1181: obj =   2.103259095e+02 inf =   0.000e+00 (0) 2
-OPTIMAL LP SOLUTION FOUND
-Integer optimization begins...
-Long-step dual simplex will be used
-+  1181: mip =     not found yet <=              +inf        (1; 0)
-Solution found by heuristic: 175.401939894
-Solution found by heuristic: 181.04210134
-Solution found by heuristic: 182.756600287
-Solution found by heuristic: 190.089141869
-+ 11817: >>>>>   1.923257779e+02 <=   1.923257779e+02   0.0% (132; 648)
-+ 11817: mip =   1.923257779e+02 <=     tree is empty   0.0% (0; 1229)
-INTEGER OPTIMAL SOLUTION FOUND
-Time used:   2.4 secs
-Memory used: 20.8 Mb (21799688 bytes)
-Writing MIP solution to '/tmp/fd0a2c2649734c7aa78a88e8df9e7357-pulp.sol'...
-GLPSOL: GLPK LP/MIP Solver, v4.65
-Parameter(s) specified in the command line:
- --cpxlp /tmp/1d4ba2a77bde488d8aa7bddf35f317ee-pulp.lp -o /tmp/1d4ba2a77bde488d8aa7bddf35f317ee-pulp.sol
-Reading problem data from '/tmp/1d4ba2a77bde488d8aa7bddf35f317ee-pulp.lp'...
-569945 rows, 3174 columns, 581810 non-zeros
-3174 integer variables, all of which are binary
-648640 lines were read
-GLPK Integer Optimizer, v4.65
-569945 rows, 3174 columns, 581810 non-zeros
-3174 integer variables, all of which are binary
-Preprocessing...
-2118 hidden packing inequaliti(es) were detected
-8823 rows, 3174 columns, 20688 non-zeros
-3174 integer variables, all of which are binary
-Scaling...
- A: min|aij| =  1.000e+00  max|aij| =  6.600e+01  ratio =  6.600e+01
-GM: min|aij| =  7.875e-01  max|aij| =  1.270e+00  ratio =  1.612e+00
-EQ: min|aij| =  6.209e-01  max|aij| =  1.000e+00  ratio =  1.611e+00
-2N: min|aij| =  3.906e-01  max|aij| =  1.031e+00  ratio =  2.640e+00
-Constructing initial basis...
-Size of triangular part is 8823
-Solving LP relaxation...
-GLPK Simplex Optimizer, v4.65
-8823 rows, 3174 columns, 20688 non-zeros
-*     0: obj =  -0.000000000e+00 inf =   0.000e+00 (2920)
-Perturbing LP to avoid stalling [324]...
-Removing LP perturbation [3150]...
-*  3150: obj =   3.706800282e+02 inf =   4.037e-17 (0) 2
-OPTIMAL LP SOLUTION FOUND
-Integer optimization begins...
-Long-step dual simplex will be used
-+  3150: mip =     not found yet <=              +inf        (1; 0)
-Solution found by heuristic: 341.135292027
-Solution found by heuristic: 348.056101223
-+  7079: mip =   3.480561012e+02 <=     tree is empty   0.0% (0; 473)
-INTEGER OPTIMAL SOLUTION FOUND
-Time used:   4.1 secs
-Memory used: 202.1 Mb (211923640 bytes)
-Writing MIP solution to '/tmp/1d4ba2a77bde488d8aa7bddf35f317ee-pulp.sol'...
-GLPSOL: GLPK LP/MIP Solver, v4.65
-Parameter(s) specified in the command line:
- --cpxlp /tmp/3a51b4a44d31489e9deaf7ff80e201ec-pulp.lp -o /tmp/3a51b4a44d31489e9deaf7ff80e201ec-pulp.sol
-Reading problem data from '/tmp/3a51b4a44d31489e9deaf7ff80e201ec-pulp.lp'...
-58136 rows, 1111 columns, 61413 non-zeros
-1111 integer variables, all of which are binary
-65954 lines were read
-GLPK Integer Optimizer, v4.65
-58136 rows, 1111 columns, 61413 non-zeros
-1111 integer variables, all of which are binary
-Preprocessing...
-744 hidden packing inequaliti(es) were detected
-2670 rows, 1111 columns, 5947 non-zeros
-1111 integer variables, all of which are binary
+715 hidden packing inequaliti(es) were detected
+2232 rows, 964 columns, 4894 non-zeros
+964 integer variables, all of which are binary
 Scaling...
  A: min|aij| =  1.000e+00  max|aij| =  5.300e+01  ratio =  5.300e+01
-GM: min|aij| =  8.388e-01  max|aij| =  1.192e+00  ratio =  1.421e+00
-EQ: min|aij| =  7.071e-01  max|aij| =  1.000e+00  ratio =  1.414e+00
+GM: min|aij| =  8.328e-01  max|aij| =  1.201e+00  ratio =  1.442e+00
+EQ: min|aij| =  7.004e-01  max|aij| =  1.000e+00  ratio =  1.428e+00
 2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
 Constructing initial basis...
-Size of triangular part is 2670
+Size of triangular part is 2232
 Solving LP relaxation...
-GLPK Simplex Optimizer, v4.65
-2670 rows, 1111 columns, 5947 non-zeros
-*     0: obj =  -0.000000000e+00 inf =   0.000e+00 (996)
-Perturbing LP to avoid stalling [873]...
-Removing LP perturbation [1191]...
-*  1191: obj =   2.533222825e+02 inf =   7.994e-15 (0) 2
+GLPK Simplex Optimizer, v4.52
+2232 rows, 964 columns, 4894 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.407367905e+02  infeas =  1.055e-14 (0)
+*  1000: obj =   2.661097406e+02  infeas =  0.000e+00 (0)
+*  1070: obj =   2.661097406e+02  infeas =  0.000e+00 (0)
 OPTIMAL LP SOLUTION FOUND
 Integer optimization begins...
-Long-step dual simplex will be used
-+  1191: mip =     not found yet <=              +inf        (1; 0)
-+  1195: >>>>>   2.511818141e+02 <=   2.532257302e+02   0.8% (2; 0)
-+  1197: mip =   2.511818141e+02 <=     tree is empty   0.0% (0; 5)
++  1070: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 251.066282412
+Solution found by heuristic: 252.5699205
+Solution found by heuristic: 254.522263913
+Solution found by heuristic: 254.606254668
+Solution found by heuristic: 256.558598081
++  1986: mip =   2.565585981e+02 <=     tree is empty   0.0% (0; 77)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.2 secs
+Memory used: 14.9 Mb (15582708 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/c5c361e6ccb84054a0973dff3e435e2c-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/cec80c3393dd4300b0ad557a930fcef3-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/cec80c3393dd4300b0ad557a930fcef3-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/cec80c3393dd4300b0ad557a930fcef3-pulp.lp'...
+146961 rows, 1757 columns, 152377 non-zeros
+1757 integer variables, all of which are binary
+165992 lines were read
+GLPK Integer Optimizer, v4.52
+146961 rows, 1757 columns, 152377 non-zeros
+1757 integer variables, all of which are binary
+Preprocessing...
+1287 hidden packing inequaliti(es) were detected
+4336 rows, 1757 columns, 9752 non-zeros
+1757 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.200e+01  ratio =  5.200e+01
+GM: min|aij| =  8.389e-01  max|aij| =  1.192e+00  ratio =  1.421e+00
+EQ: min|aij| =  7.143e-01  max|aij| =  1.000e+00  ratio =  1.400e+00
+2N: min|aij| =  7.812e-01  max|aij| =  1.625e+00  ratio =  2.080e+00
+Constructing initial basis...
+Size of triangular part is 4336
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+4336 rows, 1757 columns, 9752 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.802403904e+02  infeas =  5.551e-17 (0)
+*  1000: obj =   2.814967173e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.938451412e+02  infeas =  0.000e+00 (0)
+*  1843: obj =   2.942654448e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1843: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 262.535961153
+Solution found by heuristic: 264.625671718
+Solution found by heuristic: 264.625671718
+Solution found by heuristic: 267.946919643
+Solution found by heuristic: 269.352919575
+Solution found by heuristic: 271.481622875
++  6103: >>>>>   2.845981852e+02 <=   2.893417662e+02   1.7% (249; 119)
++  7361: mip =   2.845981852e+02 <=     tree is empty   0.0% (0; 817)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   3.8 secs
+Memory used: 52.5 Mb (55064756 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/cec80c3393dd4300b0ad557a930fcef3-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/d83abb738873426e8f89be552e04cbe9-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/d83abb738873426e8f89be552e04cbe9-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/d83abb738873426e8f89be552e04cbe9-pulp.lp'...
+81115 rows, 1294 columns, 84985 non-zeros
+1294 integer variables, all of which are binary
+92569 lines were read
+GLPK Integer Optimizer, v4.52
+81115 rows, 1294 columns, 84985 non-zeros
+1294 integer variables, all of which are binary
+Preprocessing...
+943 hidden packing inequaliti(es) were detected
+3133 rows, 1294 columns, 7003 non-zeros
+1294 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  7.700e+01  ratio =  7.700e+01
+GM: min|aij| =  7.549e-01  max|aij| =  1.325e+00  ratio =  1.755e+00
+EQ: min|aij| =  5.698e-01  max|aij| =  1.000e+00  ratio =  1.755e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.203e+00  ratio =  3.080e+00
+Constructing initial basis...
+Size of triangular part is 3133
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+3133 rows, 1294 columns, 7003 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   1.918982187e+02  infeas =  2.776e-17 (0)
+*  1000: obj =   2.488561672e+02  infeas =  6.498e-17 (0)
+*  1378: obj =   2.488561672e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1378: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 207.43451387
+Solution found by heuristic: 214.755977854
++  5518: >>>>>   2.267643381e+02 <=   2.379257627e+02   4.9% (259; 67)
++  9680: mip =   2.267643381e+02 <=     tree is empty   0.0% (0; 1001)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   3.4 secs
+Memory used: 29.0 Mb (30440624 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/d83abb738873426e8f89be552e04cbe9-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/d392348110f84ca2a99dda5da13c71a6-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/d392348110f84ca2a99dda5da13c71a6-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/d392348110f84ca2a99dda5da13c71a6-pulp.lp'...
+62441 rows, 1170 columns, 65735 non-zeros
+1170 integer variables, all of which are binary
+70685 lines were read
+GLPK Integer Optimizer, v4.52
+62441 rows, 1170 columns, 65735 non-zeros
+1170 integer variables, all of which are binary
+Preprocessing...
+874 hidden packing inequaliti(es) were detected
+2736 rows, 1170 columns, 6030 non-zeros
+1170 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  4.500e+01  ratio =  4.500e+01
+GM: min|aij| =  8.683e-01  max|aij| =  1.152e+00  ratio =  1.326e+00
+EQ: min|aij| =  7.625e-01  max|aij| =  1.000e+00  ratio =  1.311e+00
+2N: min|aij| =  7.812e-01  max|aij| =  1.406e+00  ratio =  1.800e+00
+Constructing initial basis...
+Size of triangular part is 2736
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+2736 rows, 1170 columns, 6030 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.040555557e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.399682518e+02  infeas =  0.000e+00 (0)
+*  1226: obj =   2.399682518e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1226: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 214.587245779
+Solution found by heuristic: 222.611206492
+Solution found by heuristic: 223.051413683
+Solution found by heuristic: 225.803557894
++  3009: >>>>>   2.282075076e+02 <=   2.305522359e+02   1.0% (54; 82)
++  3140: mip =   2.282075076e+02 <=     tree is empty   0.0% (0; 257)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.7 secs
+Memory used: 22.8 Mb (23889780 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/d392348110f84ca2a99dda5da13c71a6-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/a36a299a52c140508f1da6603eac51cf-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/a36a299a52c140508f1da6603eac51cf-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/a36a299a52c140508f1da6603eac51cf-pulp.lp'...
+133880 rows, 1695 columns, 139029 non-zeros
+1695 integer variables, all of which are binary
+152239 lines were read
+GLPK Integer Optimizer, v4.52
+133880 rows, 1695 columns, 139029 non-zeros
+1695 integer variables, all of which are binary
+Preprocessing...
+1183 hidden packing inequaliti(es) were detected
+4148 rows, 1695 columns, 9297 non-zeros
+1695 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.800e+01  ratio =  5.800e+01
+GM: min|aij| =  8.103e-01  max|aij| =  1.234e+00  ratio =  1.523e+00
+EQ: min|aij| =  6.565e-01  max|aij| =  1.000e+00  ratio =  1.523e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 4148
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+4148 rows, 1695 columns, 9297 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.386992494e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.714612865e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.758816867e+02  infeas =  6.939e-18 (0)
+*  1717: obj =   2.758816867e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1717: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 262.733831327
++  1778: >>>>>   2.740142655e+02 <=   2.753814915e+02   0.5% (15; 0)
++  1812: mip =   2.740142655e+02 <=     tree is empty   0.0% (0; 29)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.3 secs
+Memory used: 48.1 Mb (50420004 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/a36a299a52c140508f1da6603eac51cf-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/54ea248c9fe143de9b4797df1563f2d3-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/54ea248c9fe143de9b4797df1563f2d3-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/54ea248c9fe143de9b4797df1563f2d3-pulp.lp'...
+18313 rows, 681 columns, 19977 non-zeros
+681 integer variables, all of which are binary
+21182 lines were read
+GLPK Integer Optimizer, v4.52
+18313 rows, 681 columns, 19977 non-zeros
+681 integer variables, all of which are binary
+Preprocessing...
+531 hidden packing inequaliti(es) were detected
+1474 rows, 681 columns, 3138 non-zeros
+681 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.900e+01  ratio =  5.900e+01
+GM: min|aij| =  8.068e-01  max|aij| =  1.239e+00  ratio =  1.536e+00
+EQ: min|aij| =  6.509e-01  max|aij| =  1.000e+00  ratio =  1.536e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 1474
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+1474 rows, 681 columns, 3138 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   1.872864778e+02  infeas =  0.000e+00 (0)
+*   876: obj =   1.911906819e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++   876: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 160.065503256
+Solution found by heuristic: 162.140752984
+Solution found by heuristic: 163.367138538
+Solution found by heuristic: 165.222376217
+Solution found by heuristic: 165.92101215
+Solution found by heuristic: 169.802573702
++  6051: >>>>>   1.713436426e+02 <=   1.743500417e+02   1.8% (76; 237)
++  6224: mip =   1.713436426e+02 <=     tree is empty   0.0% (0; 515)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.8 secs
+Memory used: 7.0 Mb (7322892 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/54ea248c9fe143de9b4797df1563f2d3-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/be2991ef137f421bb26d221ef3a8dab3-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/be2991ef137f421bb26d221ef3a8dab3-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/be2991ef137f421bb26d221ef3a8dab3-pulp.lp'...
+166251 rows, 1844 columns, 171970 non-zeros
+1844 integer variables, all of which are binary
+187944 lines were read
+GLPK Integer Optimizer, v4.52
+166251 rows, 1844 columns, 171970 non-zeros
+1844 integer variables, all of which are binary
+Preprocessing...
+1338 hidden packing inequaliti(es) were detected
+4564 rows, 1844 columns, 10283 non-zeros
+1844 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.800e+01  ratio =  5.800e+01
+GM: min|aij| =  8.138e-01  max|aij| =  1.229e+00  ratio =  1.510e+00
+EQ: min|aij| =  6.682e-01  max|aij| =  1.000e+00  ratio =  1.497e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 4564
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+4564 rows, 1844 columns, 10283 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.610660779e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.679821045e+02  infeas =  3.331e-16 (0)
+*  1500: obj =   2.885223794e+02  infeas =  0.000e+00 (0)
+*  1830: obj =   2.885223794e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1830: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 273.354357716
+Solution found by heuristic: 278.486322548
+Solution found by heuristic: 280.375500505
++  2452: mip =   2.803755005e+02 <=     tree is empty   0.0% (0; 63)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.5 secs
+Memory used: 59.0 Mb (61902724 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/be2991ef137f421bb26d221ef3a8dab3-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/1a7edca7fda0438481545220ad2bd298-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/1a7edca7fda0438481545220ad2bd298-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/1a7edca7fda0438481545220ad2bd298-pulp.lp'...
+251443 rows, 2182 columns, 258805 non-zeros
+2182 integer variables, all of which are binary
+285231 lines were read
+GLPK Integer Optimizer, v4.52
+251443 rows, 2182 columns, 258805 non-zeros
+2182 integer variables, all of which are binary
+Preprocessing...
+1521 hidden packing inequaliti(es) were detected
+5683 rows, 2182 columns, 13045 non-zeros
+2182 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.300e+01  ratio =  6.300e+01
+GM: min|aij| =  7.937e-01  max|aij| =  1.260e+00  ratio =  1.587e+00
+EQ: min|aij| =  6.299e-01  max|aij| =  1.000e+00  ratio =  1.587e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 5683
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+5683 rows, 2182 columns, 13045 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.501945286e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   3.238874771e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   3.274457637e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   3.289753194e+02  infeas =  0.000e+00 (0)
+*  2194: obj =   3.289753194e+02  infeas =  1.903e-16 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2194: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 275.419164457
+Solution found by heuristic: 285.188011422
+Solution found by heuristic: 295.437434176
++  7441: mip =   2.954374342e+02 <=   3.137447754e+02   6.2% (400; 134)
+Solution found by heuristic: 296.35648488
+Solution found by heuristic: 296.35648488
++ 14365: mip =   2.963564849e+02 <=   3.096439985e+02   4.5% (637; 377)
+Solution found by heuristic: 299.015075281
++ 22046: mip =   2.990150753e+02 <=   3.045695021e+02   1.9% (450; 1101)
++ 26757: mip =   2.990150753e+02 <=     tree is empty   0.0% (0; 3135)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   19.0 secs
+Memory used: 90.2 Mb (94566040 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/1a7edca7fda0438481545220ad2bd298-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/df16b50017d24dbebf48544128dc8a12-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/df16b50017d24dbebf48544128dc8a12-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/df16b50017d24dbebf48544128dc8a12-pulp.lp'...
+201286 rows, 2021 columns, 207715 non-zeros
+2021 integer variables, all of which are binary
+228627 lines were read
+GLPK Integer Optimizer, v4.52
+201286 rows, 2021 columns, 207715 non-zeros
+2021 integer variables, all of which are binary
+Preprocessing...
+1443 hidden packing inequaliti(es) were detected
+5081 rows, 2021 columns, 11510 non-zeros
+2021 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.600e+01  ratio =  5.600e+01
+GM: min|aij| =  8.174e-01  max|aij| =  1.223e+00  ratio =  1.497e+00
+EQ: min|aij| =  6.682e-01  max|aij| =  1.000e+00  ratio =  1.497e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 5081
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+5081 rows, 2021 columns, 11510 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.325512578e+02  infeas =  8.022e-16 (0)
+*  1000: obj =   2.505901495e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.627354137e+02  infeas =  2.317e-16 (0)
+*  2000: obj =   2.636775880e+02  infeas =  0.000e+00 (0)
+*  2086: obj =   2.636775880e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2086: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 220.573233509
+Solution found by heuristic: 240.549939149
+Solution found by heuristic: 248.516211149
++  8203: mip =   2.485162111e+02 <=   2.531743019e+02   1.9% (203; 305)
++ 10103: mip =   2.485162111e+02 <=     tree is empty   0.0% (0; 1085)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   6.7 secs
+Memory used: 70.9 Mb (74382624 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/df16b50017d24dbebf48544128dc8a12-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/10b0f19f22e24838afec731416b5f629-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/10b0f19f22e24838afec731416b5f629-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/10b0f19f22e24838afec731416b5f629-pulp.lp'...
+109574 rows, 1465 columns, 114303 non-zeros
+1465 integer variables, all of which are binary
+123996 lines were read
+GLPK Integer Optimizer, v4.52
+109574 rows, 1465 columns, 114303 non-zeros
+1465 integer variables, all of which are binary
+Preprocessing...
+1003 hidden packing inequaliti(es) were detected
+3714 rows, 1465 columns, 8443 non-zeros
+1465 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.500e+01  ratio =  6.500e+01
+GM: min|aij| =  7.875e-01  max|aij| =  1.270e+00  ratio =  1.612e+00
+EQ: min|aij| =  6.202e-01  max|aij| =  1.000e+00  ratio =  1.612e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.016e+00  ratio =  2.600e+00
+Constructing initial basis...
+Size of triangular part is 3714
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+3714 rows, 1465 columns, 8443 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.492423454e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.551927525e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.626540352e+02  infeas =  2.041e-16 (0)
+*  1511: obj =   2.626540352e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1511: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 245.061002453
+Solution found by heuristic: 250.673098699
++  2698: >>>>>   2.578041087e+02 <=   2.578041087e+02 < 0.1% (49; 29)
++  2698: mip =   2.578041087e+02 <=     tree is empty   0.0% (0; 153)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.6 secs
+Memory used: 39.8 Mb (41730700 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/10b0f19f22e24838afec731416b5f629-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/c40b91384e8f48e0b179fa7aed9b6036-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/c40b91384e8f48e0b179fa7aed9b6036-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/c40b91384e8f48e0b179fa7aed9b6036-pulp.lp'...
+112711 rows, 1522 columns, 117519 non-zeros
+1522 integer variables, all of which are binary
+127736 lines were read
+GLPK Integer Optimizer, v4.52
+112711 rows, 1522 columns, 117519 non-zeros
+1522 integer variables, all of which are binary
+Preprocessing...
+1069 hidden packing inequaliti(es) were detected
+3812 rows, 1522 columns, 8620 non-zeros
+1522 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.000e+01  ratio =  6.000e+01
+GM: min|aij| =  8.034e-01  max|aij| =  1.245e+00  ratio =  1.549e+00
+EQ: min|aij| =  6.455e-01  max|aij| =  1.000e+00  ratio =  1.549e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 3812
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+3812 rows, 1522 columns, 8620 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.879451932e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.879451932e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   3.209689972e+02  infeas =  9.489e-15 (0)
+*  1585: obj =   3.209689972e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1585: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 252.271374507
+Solution found by heuristic: 263.232067042
++  2116: >>>>>   2.701169292e+02 <=   3.178836261e+02  17.7% (23; 6)
+Solution found by heuristic: 304.769717813
+Solution found by heuristic: 310.026986816
++  2917: mip =   3.100269868e+02 <=     tree is empty   0.0% (0; 107)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.6 secs
+Memory used: 40.9 Mb (42872420 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/c40b91384e8f48e0b179fa7aed9b6036-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/e8671f5bc5d34921a553ccd9042c2098-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/e8671f5bc5d34921a553ccd9042c2098-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/e8671f5bc5d34921a553ccd9042c2098-pulp.lp'...
+29481 rows, 776 columns, 31719 non-zeros
+776 integer variables, all of which are binary
+33461 lines were read
+GLPK Integer Optimizer, v4.52
+29481 rows, 776 columns, 31719 non-zeros
+776 integer variables, all of which are binary
+Preprocessing...
+553 hidden packing inequaliti(es) were detected
+1838 rows, 776 columns, 4076 non-zeros
+776 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.100e+01  ratio =  6.100e+01
+GM: min|aij| =  8.151e-01  max|aij| =  1.227e+00  ratio =  1.505e+00
+EQ: min|aij| =  6.686e-01  max|aij| =  1.000e+00  ratio =  1.496e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 1838
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+1838 rows, 776 columns, 4076 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.038212847e+02  infeas =  7.619e-16 (0)
+*   999: obj =   2.085476396e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++   999: mip =     not found yet <=              +inf        (1; 0)
++  1004: >>>>>   2.068734151e+02 <=   2.071477760e+02   0.1% (2; 0)
++  1010: mip =   2.068734151e+02 <=     tree is empty   0.0% (0; 3)
 INTEGER OPTIMAL SOLUTION FOUND
 Time used:   0.1 secs
-Memory used: 21.4 Mb (22411500 bytes)
-Writing MIP solution to '/tmp/3a51b4a44d31489e9deaf7ff80e201ec-pulp.sol'...
+Memory used: 11.1 Mb (11629500 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/e8671f5bc5d34921a553ccd9042c2098-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/b7cf2febd89e4d7fa343133d5653694e-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/b7cf2febd89e4d7fa343133d5653694e-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/b7cf2febd89e4d7fa343133d5653694e-pulp.lp'...
+398641 rows, 2790 columns, 408214 non-zeros
+2790 integer variables, all of which are binary
+452484 lines were read
+GLPK Integer Optimizer, v4.52
+398641 rows, 2790 columns, 408214 non-zeros
+2790 integer variables, all of which are binary
+Preprocessing...
+1942 hidden packing inequaliti(es) were detected
+7353 rows, 2790 columns, 16926 non-zeros
+2790 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  9.600e+01  ratio =  9.600e+01
+GM: min|aij| =  7.144e-01  max|aij| =  1.400e+00  ratio =  1.960e+00
+EQ: min|aij| =  5.103e-01  max|aij| =  1.000e+00  ratio =  1.960e+00
+2N: min|aij| =  2.500e-01  max|aij| =  1.047e+00  ratio =  4.188e+00
+Constructing initial basis...
+Size of triangular part is 7353
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+7353 rows, 2790 columns, 16926 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   3.042346693e+02  infeas =  4.163e-17 (0)
+*  1000: obj =   3.042346693e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   3.188233084e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   3.235605281e+02  infeas =  0.000e+00 (0)
+*  2500: obj =   3.235605281e+02  infeas =  0.000e+00 (0)
+*  2834: obj =   3.235605281e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2834: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 302.892071399
++  2844: >>>>>   3.188233084e+02 <=   3.234980589e+02   1.5% (3; 0)
++  2931: mip =   3.188233084e+02 <=     tree is empty   0.0% (0; 23)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.7 secs
+Memory used: 139.8 Mb (146597792 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/b7cf2febd89e4d7fa343133d5653694e-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/b7a26b0a88f349938fbe6307f6025585-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/b7a26b0a88f349938fbe6307f6025585-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/b7a26b0a88f349938fbe6307f6025585-pulp.lp'...
+249241 rows, 2196 columns, 256223 non-zeros
+2196 integer variables, all of which are binary
+283240 lines were read
+GLPK Integer Optimizer, v4.52
+249241 rows, 2196 columns, 256223 non-zeros
+2196 integer variables, all of which are binary
+Preprocessing...
+1552 hidden packing inequaliti(es) were detected
+5510 rows, 2196 columns, 12492 non-zeros
+2196 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.100e+01  ratio =  6.100e+01
+GM: min|aij| =  8.001e-01  max|aij| =  1.250e+00  ratio =  1.562e+00
+EQ: min|aij| =  6.402e-01  max|aij| =  1.000e+00  ratio =  1.562e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 5510
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+5510 rows, 2196 columns, 12492 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.964964170e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   3.299641757e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   3.566592293e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   3.566592293e+02  infeas =  0.000e+00 (0)
+*  2196: obj =   3.581361827e+02  infeas =  3.747e-30 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2196: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 319.473037418
+Solution found by heuristic: 319.473037418
+Solution found by heuristic: 324.53403798
+Solution found by heuristic: 324.53403798
+Solution found by heuristic: 326.679836376
++  7781: mip =   3.266798364e+02 <=   3.511974408e+02   7.5% (353; 198)
+Solution found by heuristic: 326.679836376
++ 15206: mip =   3.266798364e+02 <=   3.464783396e+02   6.1% (585; 419)
++ 22259: mip =   3.266798364e+02 <=   3.439470289e+02   5.3% (807; 614)
+Solution found by heuristic: 326.85800205
+Solution found by heuristic: 328.201835484
++ 30234: mip =   3.282018355e+02 <=   3.412523961e+02   4.0% (923; 965)
++ 39033: mip =   3.282018355e+02 <=   3.379910199e+02   3.0% (998; 1305)
++ 48405: mip =   3.282018355e+02 <=   3.329150697e+02   1.4% (550; 2350)
++ 50393: mip =   3.282018355e+02 <=     tree is empty   0.0% (0; 5051)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   31.9 secs
+Memory used: 89.4 Mb (93712572 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/b7a26b0a88f349938fbe6307f6025585-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/c2af0c621fa240babe11bb1a0f0b9a7d-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/c2af0c621fa240babe11bb1a0f0b9a7d-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/c2af0c621fa240babe11bb1a0f0b9a7d-pulp.lp'...
+261622 rows, 2249 columns, 269245 non-zeros
+2249 integer variables, all of which are binary
+296490 lines were read
+GLPK Integer Optimizer, v4.52
+261622 rows, 2249 columns, 269245 non-zeros
+2249 integer variables, all of which are binary
+Preprocessing...
+1523 hidden packing inequaliti(es) were detected
+5879 rows, 2249 columns, 13502 non-zeros
+2249 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  7.000e+01  ratio =  7.000e+01
+GM: min|aij| =  7.731e-01  max|aij| =  1.294e+00  ratio =  1.673e+00
+EQ: min|aij| =  5.976e-01  max|aij| =  1.000e+00  ratio =  1.673e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.094e+00  ratio =  2.800e+00
+Constructing initial basis...
+Size of triangular part is 5879
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+5879 rows, 2249 columns, 13502 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   3.312350969e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   3.416310954e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   3.560484062e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   3.560484062e+02  infeas =  0.000e+00 (0)
+*  2278: obj =   3.560484062e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2278: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 319.809121464
+Solution found by heuristic: 333.422601042
+Solution found by heuristic: 343.194562898
++  3647: mip =   3.431945629e+02 <=     tree is empty   0.0% (0; 173)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   1.3 secs
+Memory used: 93.7 Mb (98214920 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/c2af0c621fa240babe11bb1a0f0b9a7d-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/4d163ddf45ed4d78a4fae0990eff0983-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/4d163ddf45ed4d78a4fae0990eff0983-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/4d163ddf45ed4d78a4fae0990eff0983-pulp.lp'...
+746047 rows, 3654 columns, 759118 non-zeros
+3654 integer variables, all of which are binary
+849979 lines were read
+GLPK Integer Optimizer, v4.52
+746047 rows, 3654 columns, 759118 non-zeros
+3654 integer variables, all of which are binary
+Preprocessing...
+2570 hidden packing inequaliti(es) were detected
+9867 rows, 3654 columns, 22938 non-zeros
+3654 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  8.400e+01  ratio =  8.400e+01
+GM: min|aij| =  7.386e-01  max|aij| =  1.354e+00  ratio =  1.833e+00
+EQ: min|aij| =  5.455e-01  max|aij| =  1.000e+00  ratio =  1.833e+00
+2N: min|aij| =  2.500e-01  max|aij| =  1.078e+00  ratio =  4.312e+00
+Constructing initial basis...
+Size of triangular part is 9867
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+9867 rows, 3654 columns, 22938 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.622309001e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   3.169913379e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   3.218069531e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   3.250406964e+02  infeas =  0.000e+00 (0)
+*  2500: obj =   3.271190037e+02  infeas =  0.000e+00 (0)
+*  3000: obj =   3.277221953e+02  infeas =  0.000e+00 (0)
+*  3500: obj =   3.277221953e+02  infeas =  0.000e+00 (0)
+*  3600: obj =   3.277221953e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  3600: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 282.022166119
+Solution found by heuristic: 293.492901677
+Solution found by heuristic: 310.899053887
++  6761: mip =   3.108990539e+02 <=   3.182080230e+02   2.4% (141; 116)
++  9654: mip =   3.108990539e+02 <=     tree is empty   0.0% (0; 871)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   10.4 secs
+Memory used: 261.0 Mb (273680760 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/4d163ddf45ed4d78a4fae0990eff0983-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/43b5507fa63d4487a252b2f45487a872-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/43b5507fa63d4487a252b2f45487a872-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/43b5507fa63d4487a252b2f45487a872-pulp.lp'...
+242491 rows, 2172 columns, 249379 non-zeros
+2172 integer variables, all of which are binary
+274538 lines were read
+GLPK Integer Optimizer, v4.52
+242491 rows, 2172 columns, 249379 non-zeros
+2172 integer variables, all of which are binary
+Preprocessing...
+1577 hidden packing inequaliti(es) were detected
+5442 rows, 2172 columns, 12330 non-zeros
+2172 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  7.000e+01  ratio =  7.000e+01
+GM: min|aij| =  7.731e-01  max|aij| =  1.294e+00  ratio =  1.673e+00
+EQ: min|aij| =  5.976e-01  max|aij| =  1.000e+00  ratio =  1.673e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.094e+00  ratio =  2.800e+00
+Constructing initial basis...
+Size of triangular part is 5442
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+5442 rows, 2172 columns, 12330 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.684177560e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   3.098456292e+02  infeas =  1.537e-15 (0)
+*  1500: obj =   3.402994479e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   3.402994479e+02  infeas =  0.000e+00 (0)
+*  2164: obj =   3.402994479e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2164: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 277.691169535
+Solution found by heuristic: 290.507343123
+Solution found by heuristic: 293.463602418
+Solution found by heuristic: 295.8154899
++  9500: >>>>>   3.138385494e+02 <=   3.177036552e+02   1.2% (281; 174)
++  9996: mip =   3.138385494e+02 <=     tree is empty   0.0% (0; 901)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   5.1 secs
+Memory used: 87.1 Mb (91342316 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/43b5507fa63d4487a252b2f45487a872-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/cdc878508ce14c79b8b42e2cc2f95e54-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/cdc878508ce14c79b8b42e2cc2f95e54-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/cdc878508ce14c79b8b42e2cc2f95e54-pulp.lp'...
+318238 rows, 2397 columns, 326191 non-zeros
+2397 integer variables, all of which are binary
+361918 lines were read
+GLPK Integer Optimizer, v4.52
+318238 rows, 2397 columns, 326191 non-zeros
+2397 integer variables, all of which are binary
+Preprocessing...
+1747 hidden packing inequaliti(es) were detected
+6165 rows, 2397 columns, 14118 non-zeros
+2397 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.800e+01  ratio =  5.800e+01
+GM: min|aij| =  8.103e-01  max|aij| =  1.234e+00  ratio =  1.523e+00
+EQ: min|aij| =  6.565e-01  max|aij| =  1.000e+00  ratio =  1.523e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 6165
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+6165 rows, 2397 columns, 14118 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.689308740e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   3.375696969e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   3.375696969e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   3.459591319e+02  infeas =  0.000e+00 (0)
+*  2358: obj =   3.468431104e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2358: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 286.919424459
+Solution found by heuristic: 304.409807953
+Solution found by heuristic: 306.987827749
+Solution found by heuristic: 320.862603174
++  5246: >>>>>   3.240434469e+02 <=   3.343982861e+02   3.2% (145; 107)
++  7621: mip =   3.240434469e+02 <=     tree is empty   0.0% (0; 737)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   4.9 secs
+Memory used: 112.5 Mb (117993136 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/cdc878508ce14c79b8b42e2cc2f95e54-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/d8c5bde1acff492db634ce07e760184b-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/d8c5bde1acff492db634ce07e760184b-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/d8c5bde1acff492db634ce07e760184b-pulp.lp'...
+101809 rows, 1485 columns, 106251 non-zeros
+1485 integer variables, all of which are binary
+115093 lines were read
+GLPK Integer Optimizer, v4.52
+101809 rows, 1485 columns, 106251 non-zeros
+1485 integer variables, all of which are binary
+Preprocessing...
+1070 hidden packing inequaliti(es) were detected
+3601 rows, 1485 columns, 8043 non-zeros
+1485 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.300e+01  ratio =  5.300e+01
+GM: min|aij| =  8.328e-01  max|aij| =  1.201e+00  ratio =  1.442e+00
+EQ: min|aij| =  6.970e-01  max|aij| =  1.000e+00  ratio =  1.435e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 3601
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+3601 rows, 1485 columns, 8043 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.970500855e+02  infeas =  1.110e-16 (0)
+*  1000: obj =   3.092002180e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   3.139353903e+02  infeas =  0.000e+00 (0)
+*  1521: obj =   3.139353903e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1521: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 273.036889969
+Solution found by heuristic: 284.29426088
+Solution found by heuristic: 288.753504812
+Solution found by heuristic: 298.609164359
++  3592: mip =   2.986091644e+02 <=     tree is empty   0.0% (0; 261)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   1.0 secs
+Memory used: 36.0 Mb (37737536 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/d8c5bde1acff492db634ce07e760184b-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/ccd55f4f0ca44c829fd0a40c45787c36-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/ccd55f4f0ca44c829fd0a40c45787c36-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/ccd55f4f0ca44c829fd0a40c45787c36-pulp.lp'...
+141724 rows, 1715 columns, 146915 non-zeros
+1715 integer variables, all of which are binary
+160287 lines were read
+GLPK Integer Optimizer, v4.52
+141724 rows, 1715 columns, 146915 non-zeros
+1715 integer variables, all of which are binary
+Preprocessing...
+1233 hidden packing inequaliti(es) were detected
+4183 rows, 1715 columns, 9374 non-zeros
+1715 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.100e+01  ratio =  5.100e+01
+GM: min|aij| =  8.367e-01  max|aij| =  1.195e+00  ratio =  1.428e+00
+EQ: min|aij| =  7.001e-01  max|aij| =  1.000e+00  ratio =  1.428e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 4183
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+4183 rows, 1715 columns, 9374 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.316204763e+02  infeas =  4.441e-16 (0)
+*  1000: obj =   2.810069162e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.868416894e+02  infeas =  1.143e-16 (0)
+*  1768: obj =   2.868416894e+02  infeas =  1.775e-30 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1768: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 261.489456421
+Solution found by heuristic: 268.276768079
+Solution found by heuristic: 272.701489692
++  6633: mip =   2.727014897e+02 <=     tree is empty   0.0% (0; 773)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   3.5 secs
+Memory used: 50.7 Mb (53175400 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/ccd55f4f0ca44c829fd0a40c45787c36-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/e9e872d193504f41a83a7fc4ad305e91-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/e9e872d193504f41a83a7fc4ad305e91-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/e9e872d193504f41a83a7fc4ad305e91-pulp.lp'...
+209521 rows, 2047 columns, 216237 non-zeros
+2047 integer variables, all of which are binary
+237442 lines were read
+GLPK Integer Optimizer, v4.52
+209521 rows, 2047 columns, 216237 non-zeros
+2047 integer variables, all of which are binary
+Preprocessing...
+1421 hidden packing inequaliti(es) were detected
+5246 rows, 2047 columns, 11962 non-zeros
+2047 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.800e+01  ratio =  6.800e+01
+GM: min|aij| =  7.825e-01  max|aij| =  1.278e+00  ratio =  1.633e+00
+EQ: min|aij| =  6.183e-01  max|aij| =  1.000e+00  ratio =  1.617e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.062e+00  ratio =  2.720e+00
+Constructing initial basis...
+Size of triangular part is 5246
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+5246 rows, 2047 columns, 11962 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.868393188e+02  infeas =  2.220e-16 (0)
+*  1000: obj =   2.876938616e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.978095062e+02  infeas =  4.718e-15 (0)
+*  2000: obj =   2.986016096e+02  infeas =  1.046e-14 (0)
+*  2108: obj =   2.986016096e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2108: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 252.311261189
+Solution found by heuristic: 255.436176083
+Solution found by heuristic: 258.250615458
+Solution found by heuristic: 258.434291841
+Solution found by heuristic: 262.141885317
+Solution found by heuristic: 277.537455409
+Solution found by heuristic: 278.631769246
+Solution found by heuristic: 280.846046686
++  6752: >>>>>   2.830833128e+02 <=   2.865183197e+02   1.2% (130; 281)
++  7480: mip =   2.830833128e+02 <=     tree is empty   0.0% (0; 715)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   4.2 secs
+Memory used: 76.1 Mb (79757820 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/e9e872d193504f41a83a7fc4ad305e91-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/cee3b16d38bb484d91ab6a79c10c08db-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/cee3b16d38bb484d91ab6a79c10c08db-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/cee3b16d38bb484d91ab6a79c10c08db-pulp.lp'...
+222881 rows, 2101 columns, 229817 non-zeros
+2101 integer variables, all of which are binary
+253200 lines were read
+GLPK Integer Optimizer, v4.52
+222881 rows, 2101 columns, 229817 non-zeros
+2101 integer variables, all of which are binary
+Preprocessing...
+1529 hidden packing inequaliti(es) were detected
+5404 rows, 2101 columns, 12340 non-zeros
+2101 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.800e+01  ratio =  6.800e+01
+GM: min|aij| =  7.787e-01  max|aij| =  1.284e+00  ratio =  1.649e+00
+EQ: min|aij| =  6.063e-01  max|aij| =  1.000e+00  ratio =  1.649e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.062e+00  ratio =  2.720e+00
+Constructing initial basis...
+Size of triangular part is 5404
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+5404 rows, 2101 columns, 12340 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.915856781e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   3.188468668e+02  infeas =  1.761e-14 (0)
+*  1500: obj =   3.188468668e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   3.188468668e+02  infeas =  0.000e+00 (0)
+*  2111: obj =   3.188468668e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2111: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 286.457798164
+Solution found by heuristic: 294.58841215
+Solution found by heuristic: 306.361591992
++  2427: >>>>>   3.144922060e+02 <=   3.160486097e+02   0.5% (30; 6)
++  2463: mip =   3.144922060e+02 <=     tree is empty   0.0% (0; 73)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.6 secs
+Memory used: 80.6 Mb (84506628 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/cee3b16d38bb484d91ab6a79c10c08db-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/dedd9e4d706449709105349cb4f4b0d0-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/dedd9e4d706449709105349cb4f4b0d0-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/dedd9e4d706449709105349cb4f4b0d0-pulp.lp'...
+151471 rows, 1772 columns, 156719 non-zeros
+1772 integer variables, all of which are binary
+172188 lines were read
+GLPK Integer Optimizer, v4.52
+151471 rows, 1772 columns, 156719 non-zeros
+1772 integer variables, all of which are binary
+Preprocessing...
+1310 hidden packing inequaliti(es) were detected
+4264 rows, 1772 columns, 9512 non-zeros
+1772 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.400e+01  ratio =  6.400e+01
+GM: min|aij| =  8.021e-01  max|aij| =  1.247e+00  ratio =  1.554e+00
+EQ: min|aij| =  6.460e-01  max|aij| =  1.000e+00  ratio =  1.548e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 4264
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+4264 rows, 1772 columns, 9512 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.295381942e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.295381942e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.567231390e+02  infeas =  0.000e+00 (0)
+*  1850: obj =   2.567231390e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1850: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 233.214040063
+Solution found by heuristic: 250.884776376
++  2320: >>>>>   2.531840183e+02 <=   2.545728905e+02   0.5% (7; 36)
++  2328: mip =   2.531840183e+02 <=     tree is empty   0.0% (0; 61)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.4 secs
+Memory used: 54.0 Mb (56606036 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/dedd9e4d706449709105349cb4f4b0d0-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/53c2d4ab66b54ca0bb91b3467e3ffc3e-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/53c2d4ab66b54ca0bb91b3467e3ffc3e-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/53c2d4ab66b54ca0bb91b3467e3ffc3e-pulp.lp'...
+133645 rows, 1674 columns, 138753 non-zeros
+1674 integer variables, all of which are binary
+151767 lines were read
+GLPK Integer Optimizer, v4.52
+133645 rows, 1674 columns, 138753 non-zeros
+1674 integer variables, all of which are binary
+Preprocessing...
+1180 hidden packing inequaliti(es) were detected
+4105 rows, 1674 columns, 9213 non-zeros
+1674 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.400e+01  ratio =  5.400e+01
+GM: min|aij| =  8.439e-01  max|aij| =  1.185e+00  ratio =  1.404e+00
+EQ: min|aij| =  7.121e-01  max|aij| =  1.000e+00  ratio =  1.404e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 4105
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+4105 rows, 1674 columns, 9213 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.671175544e+02  infeas =  2.096e-15 (0)
+*  1000: obj =   2.792553479e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.855931435e+02  infeas =  0.000e+00 (0)
+*  1709: obj =   2.855931435e+02  infeas =  6.163e-33 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1709: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 260.639761009
+Solution found by heuristic: 271.13658986
++  2094: >>>>>   2.796889057e+02 <=   2.843747800e+02   1.7% (55; 9)
++  2889: mip =   2.796889057e+02 <=     tree is empty   0.0% (0; 223)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   1.0 secs
+Memory used: 48.0 Mb (50323104 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/53c2d4ab66b54ca0bb91b3467e3ffc3e-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/0ca76a7ee8b747c88543e40bbdeac16e-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/0ca76a7ee8b747c88543e40bbdeac16e-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/0ca76a7ee8b747c88543e40bbdeac16e-pulp.lp'...
+158596 rows, 1731 columns, 164385 non-zeros
+1731 integer variables, all of which are binary
+179240 lines were read
+GLPK Integer Optimizer, v4.52
+158596 rows, 1731 columns, 164385 non-zeros
+1731 integer variables, all of which are binary
+Preprocessing...
+1175 hidden packing inequaliti(es) were detected
+4483 rows, 1731 columns, 10272 non-zeros
+1731 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.100e+01  ratio =  6.100e+01
+GM: min|aij| =  8.078e-01  max|aij| =  1.238e+00  ratio =  1.532e+00
+EQ: min|aij| =  6.563e-01  max|aij| =  1.000e+00  ratio =  1.524e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 4483
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+4483 rows, 1731 columns, 10272 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.699425473e+02  infeas =  7.661e-15 (0)
+*  1000: obj =   2.846572228e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.909995547e+02  infeas =  0.000e+00 (0)
+*  1745: obj =   2.909995547e+02  infeas =  4.930e-32 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1745: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 239.237552298
+Solution found by heuristic: 241.352438356
+Solution found by heuristic: 252.121452392
+Solution found by heuristic: 255.340470002
+Solution found by heuristic: 260.919494129
+Solution found by heuristic: 270.977390178
++  5100: >>>>>   2.717654433e+02 <=   2.771853763e+02   2.0% (102; 285)
++  5614: mip =   2.717654433e+02 <=     tree is empty   0.0% (0; 657)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   2.9 secs
+Memory used: 56.5 Mb (59203000 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/0ca76a7ee8b747c88543e40bbdeac16e-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/2770ef46e4614bada5638472a323c75e-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/2770ef46e4614bada5638472a323c75e-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/2770ef46e4614bada5638472a323c75e-pulp.lp'...
+166564 rows, 1883 columns, 172279 non-zeros
+1883 integer variables, all of which are binary
+188757 lines were read
+GLPK Integer Optimizer, v4.52
+166564 rows, 1883 columns, 172279 non-zeros
+1883 integer variables, all of which are binary
+Preprocessing...
+1312 hidden packing inequaliti(es) were detected
+4604 rows, 1883 columns, 10319 non-zeros
+1883 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.100e+01  ratio =  5.100e+01
+GM: min|aij| =  8.499e-01  max|aij| =  1.177e+00  ratio =  1.384e+00
+EQ: min|aij| =  7.335e-01  max|aij| =  1.000e+00  ratio =  1.363e+00
+2N: min|aij| =  7.812e-01  max|aij| =  1.594e+00  ratio =  2.040e+00
+Constructing initial basis...
+Size of triangular part is 4604
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+4604 rows, 1883 columns, 10319 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.943807290e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   3.211032709e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   3.307353771e+02  infeas =  2.418e-15 (0)
+*  1926: obj =   3.324077341e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1926: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 306.360874969
+Solution found by heuristic: 319.181393981
+Solution found by heuristic: 324.125176686
++  3577: mip =   3.241251767e+02 <=     tree is empty   0.0% (0; 199)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   1.2 secs
+Memory used: 59.2 Mb (62055812 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/2770ef46e4614bada5638472a323c75e-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/42150eda25c44f6eabc66f9fee304888-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/42150eda25c44f6eabc66f9fee304888-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/42150eda25c44f6eabc66f9fee304888-pulp.lp'...
+387165 rows, 2714 columns, 396422 non-zeros
+2714 integer variables, all of which are binary
+439452 lines were read
+GLPK Integer Optimizer, v4.52
+387165 rows, 2714 columns, 396422 non-zeros
+2714 integer variables, all of which are binary
+Preprocessing...
+1881 hidden packing inequaliti(es) were detected
+7119 rows, 2714 columns, 16376 non-zeros
+2714 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.200e+01  ratio =  6.200e+01
+GM: min|aij| =  7.969e-01  max|aij| =  1.255e+00  ratio =  1.575e+00
+EQ: min|aij| =  6.350e-01  max|aij| =  1.000e+00  ratio =  1.575e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 7119
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+7119 rows, 2714 columns, 16376 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.222184363e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.442210738e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.701278280e+02  infeas =  4.102e-15 (0)
+*  2000: obj =   2.710023681e+02  infeas =  0.000e+00 (0)
+*  2500: obj =   2.722431095e+02  infeas =  0.000e+00 (0)
+*  2744: obj =   2.722431095e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2744: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 227.676818437
+Solution found by heuristic: 240.011481099
+Solution found by heuristic: 247.330347596
+Solution found by heuristic: 248.576721186
+Solution found by heuristic: 249.540889821
++  5002: >>>>>   2.546906078e+02 <=   2.663821371e+02   4.6% (129; 33)
+Solution found by heuristic: 263.702360549
++  5999: >>>>>   2.649840094e+02 <=   2.652535762e+02   0.1% (26; 271)
++  6018: mip =   2.649840094e+02 <=     tree is empty   0.0% (0; 375)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   3.7 secs
+Memory used: 135.9 Mb (142498664 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/42150eda25c44f6eabc66f9fee304888-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/668f160e2da64a43a58ad97a87429bf6-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/668f160e2da64a43a58ad97a87429bf6-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/668f160e2da64a43a58ad97a87429bf6-pulp.lp'...
+133451 rows, 1654 columns, 138482 non-zeros
+1654 integer variables, all of which are binary
+151346 lines were read
+GLPK Integer Optimizer, v4.52
+133451 rows, 1654 columns, 138482 non-zeros
+1654 integer variables, all of which are binary
+Preprocessing...
+1165 hidden packing inequaliti(es) were detected
+4045 rows, 1654 columns, 9076 non-zeros
+1654 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.300e+01  ratio =  6.300e+01
+GM: min|aij| =  7.976e-01  max|aij| =  1.254e+00  ratio =  1.572e+00
+EQ: min|aij| =  6.424e-01  max|aij| =  1.000e+00  ratio =  1.557e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 4045
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+4045 rows, 1654 columns, 9076 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   1.925432885e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.471579474e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.689195468e+02  infeas =  1.045e-15 (0)
+*  1761: obj =   2.689195468e+02  infeas =  8.135e-31 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1761: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 242.290862131
+Solution found by heuristic: 243.754993601
++  2247: >>>>>   2.547388095e+02 <=   2.665267455e+02   4.6% (35; 3)
++  4362: >>>>>   2.577250029e+02 <=   2.596726131e+02   0.8% (93; 118)
++  4484: mip =   2.577250029e+02 <=     tree is empty   0.0% (0; 409)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   1.9 secs
+Memory used: 47.9 Mb (50234032 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/668f160e2da64a43a58ad97a87429bf6-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/340270aeb5c04943bdc4f0d50d9f4d86-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/340270aeb5c04943bdc4f0d50d9f4d86-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/340270aeb5c04943bdc4f0d50d9f4d86-pulp.lp'...
+52990 rows, 1089 columns, 56123 non-zeros
+1089 integer variables, all of which are binary
+60657 lines were read
+GLPK Integer Optimizer, v4.52
+52990 rows, 1089 columns, 56123 non-zeros
+1089 integer variables, all of which are binary
+Preprocessing...
+807 hidden packing inequaliti(es) were detected
+2582 rows, 1089 columns, 5715 non-zeros
+1089 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.900e+01  ratio =  5.900e+01
+GM: min|aij| =  8.068e-01  max|aij| =  1.239e+00  ratio =  1.536e+00
+EQ: min|aij| =  6.509e-01  max|aij| =  1.000e+00  ratio =  1.536e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 2582
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+2582 rows, 1089 columns, 5715 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.482213926e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.617985630e+02  infeas =  0.000e+00 (0)
+*  1155: obj =   2.665405358e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1155: mip =     not found yet <=              +inf        (1; 0)
++  1308: >>>>>   2.163498220e+02 <=   2.657407408e+02  22.8% (5; 0)
+Solution found by heuristic: 261.557308166
++  1824: mip =   2.615573082e+02 <=     tree is empty   0.0% (0; 33)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.2 secs
+Memory used: 19.7 Mb (20610876 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/340270aeb5c04943bdc4f0d50d9f4d86-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/da54c27620db468dbb1737817d7c77cb-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/da54c27620db468dbb1737817d7c77cb-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/da54c27620db468dbb1737817d7c77cb-pulp.lp'...
+221029 rows, 2068 columns, 227740 non-zeros
+2068 integer variables, all of which are binary
+251082 lines were read
+GLPK Integer Optimizer, v4.52
+221029 rows, 2068 columns, 227740 non-zeros
+2068 integer variables, all of which are binary
+Preprocessing...
+1455 hidden packing inequaliti(es) were detected
+5257 rows, 2068 columns, 11968 non-zeros
+2068 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.600e+01  ratio =  6.600e+01
+GM: min|aij| =  7.884e-01  max|aij| =  1.268e+00  ratio =  1.609e+00
+EQ: min|aij| =  6.276e-01  max|aij| =  1.000e+00  ratio =  1.593e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.031e+00  ratio =  2.640e+00
+Constructing initial basis...
+Size of triangular part is 5257
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+5257 rows, 2068 columns, 11968 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.301690490e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.464421214e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.695902546e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   2.697428973e+02  infeas =  0.000e+00 (0)
+*  2086: obj =   2.697428973e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2086: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 225.327634493
+Solution found by heuristic: 233.543400057
+Solution found by heuristic: 233.874974978
+Solution found by heuristic: 236.090766425
+Solution found by heuristic: 252.987714596
+Solution found by heuristic: 253.319289516
+Solution found by heuristic: 255.156612708
+Solution found by heuristic: 255.535080964
++  6587: >>>>>   2.573361264e+02 <=   2.585607314e+02   0.5% (83; 215)
++  6774: mip =   2.573361264e+02 <=     tree is empty   0.0% (0; 539)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   3.3 secs
+Memory used: 79.9 Mb (83781984 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/da54c27620db468dbb1737817d7c77cb-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/8733e92e159f44e69d5ccc7c4a79bb1c-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/8733e92e159f44e69d5ccc7c4a79bb1c-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/8733e92e159f44e69d5ccc7c4a79bb1c-pulp.lp'...
+346774 rows, 2505 columns, 355493 non-zeros
+2505 integer variables, all of which are binary
+394487 lines were read
+GLPK Integer Optimizer, v4.52
+346774 rows, 2505 columns, 355493 non-zeros
+2505 integer variables, all of which are binary
+Preprocessing...
+1711 hidden packing inequaliti(es) were detected
+6647 rows, 2505 columns, 15366 non-zeros
+2505 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.500e+01  ratio =  5.500e+01
+GM: min|aij| =  8.211e-01  max|aij| =  1.218e+00  ratio =  1.483e+00
+EQ: min|aij| =  6.742e-01  max|aij| =  1.000e+00  ratio =  1.483e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 6647
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+6647 rows, 2505 columns, 15366 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.710071602e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   3.009390053e+02  infeas =  3.609e-16 (0)
+*  1500: obj =   3.195720355e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   3.206055369e+02  infeas =  2.191e-17 (0)
+*  2500: obj =   3.206055369e+02  infeas =  2.191e-17 (0)
+*  2527: obj =   3.206055369e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2527: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 298.170996627
+Solution found by heuristic: 300.828119723
+Solution found by heuristic: 302.444709444
+Solution found by heuristic: 305.331270899
++  4801: >>>>>   3.102448273e+02 <=   3.152662914e+02   1.6% (112; 82)
++  5577: mip =   3.102448273e+02 <=     tree is empty   0.0% (0; 423)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   3.6 secs
+Memory used: 122.3 Mb (128228168 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/8733e92e159f44e69d5ccc7c4a79bb1c-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/7fa56f0bac0d40099ac2c18bc9f7bfea-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/7fa56f0bac0d40099ac2c18bc9f7bfea-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/7fa56f0bac0d40099ac2c18bc9f7bfea-pulp.lp'...
+155195 rows, 1744 columns, 160755 non-zeros
+1744 integer variables, all of which are binary
+175664 lines were read
+GLPK Integer Optimizer, v4.52
+155195 rows, 1744 columns, 160755 non-zeros
+1744 integer variables, all of which are binary
+Preprocessing...
+1227 hidden packing inequaliti(es) were detected
+4386 rows, 1744 columns, 9946 non-zeros
+1744 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.500e+01  ratio =  5.500e+01
+GM: min|aij| =  8.211e-01  max|aij| =  1.218e+00  ratio =  1.483e+00
+EQ: min|aij| =  6.742e-01  max|aij| =  1.000e+00  ratio =  1.483e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 4386
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+4386 rows, 1744 columns, 9946 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.381852218e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.647178848e+02  infeas =  2.776e-16 (0)
+*  1500: obj =   2.805385265e+02  infeas =  0.000e+00 (0)
+*  1846: obj =   2.805670712e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1846: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 209.311920774
+Solution found by heuristic: 241.181974953
+Solution found by heuristic: 244.03486468
+Solution found by heuristic: 244.223825809
+Solution found by heuristic: 246.515948918
+Solution found by heuristic: 252.563969672
+Solution found by heuristic: 256.964135553
++ 10641: mip =   2.569641356e+02 <=   2.578369563e+02   0.3% (43; 965)
++ 10735: mip =   2.569641356e+02 <=     tree is empty   0.0% (0; 1227)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   5.3 secs
+Memory used: 55.3 Mb (57956876 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/7fa56f0bac0d40099ac2c18bc9f7bfea-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/672c9fd3b0d5418cab1ef26eb2566d0b-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/672c9fd3b0d5418cab1ef26eb2566d0b-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/672c9fd3b0d5418cab1ef26eb2566d0b-pulp.lp'...
+420229 rows, 2755 columns, 429801 non-zeros
+2755 integer variables, all of which are binary
+478177 lines were read
+GLPK Integer Optimizer, v4.52
+420229 rows, 2755 columns, 429801 non-zeros
+2755 integer variables, all of which are binary
+Preprocessing...
+1903 hidden packing inequaliti(es) were detected
+7301 rows, 2755 columns, 16873 non-zeros
+2755 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.700e+01  ratio =  6.700e+01
+GM: min|aij| =  7.816e-01  max|aij| =  1.279e+00  ratio =  1.637e+00
+EQ: min|aij| =  6.108e-01  max|aij| =  1.000e+00  ratio =  1.637e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.047e+00  ratio =  2.680e+00
+Constructing initial basis...
+Size of triangular part is 7301
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+7301 rows, 2755 columns, 16873 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.956189299e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   3.087775547e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   3.537974118e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   3.537974118e+02  infeas =  0.000e+00 (0)
+*  2500: obj =   3.552416480e+02  infeas =  0.000e+00 (0)
+*  2692: obj =   3.552416480e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2692: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 346.649605749
++  3402: mip =   3.466496057e+02 <=     tree is empty   0.0% (0; 85)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   1.3 secs
+Memory used: 151.7 Mb (159030320 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/672c9fd3b0d5418cab1ef26eb2566d0b-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/f24ca813d3d1450cb302febc84123b5e-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/f24ca813d3d1450cb302febc84123b5e-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/f24ca813d3d1450cb302febc84123b5e-pulp.lp'...
+191361 rows, 1943 columns, 197587 non-zeros
+1943 integer variables, all of which are binary
+216286 lines were read
+GLPK Integer Optimizer, v4.52
+191361 rows, 1943 columns, 197587 non-zeros
+1943 integer variables, all of which are binary
+Preprocessing...
+1383 hidden packing inequaliti(es) were detected
+4903 rows, 1943 columns, 11129 non-zeros
+1943 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.500e+01  ratio =  5.500e+01
+GM: min|aij| =  8.251e-01  max|aij| =  1.212e+00  ratio =  1.469e+00
+EQ: min|aij| =  6.839e-01  max|aij| =  1.000e+00  ratio =  1.462e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 4903
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+4903 rows, 1943 columns, 11129 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.362562381e+02  infeas =  1.448e-16 (0)
+*  1000: obj =   2.436058797e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.614406091e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   2.614406091e+02  infeas =  0.000e+00 (0)
+*  2016: obj =   2.614406091e+02  infeas =  1.110e-16 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2016: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 223.108724113
+Solution found by heuristic: 228.3646031
+Solution found by heuristic: 230.710561433
+Solution found by heuristic: 240.424825661
+Solution found by heuristic: 243.437494373
+Solution found by heuristic: 245.680704648
+Solution found by heuristic: 248.026662981
++  9043: mip =   2.480266630e+02 <=     tree is empty   0.0% (0; 869)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   4.7 secs
+Memory used: 67.5 Mb (70814280 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/f24ca813d3d1450cb302febc84123b5e-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/15c2dae686364851a6b01472a461a11d-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/15c2dae686364851a6b01472a461a11d-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/15c2dae686364851a6b01472a461a11d-pulp.lp'...
+353511 rows, 2582 columns, 362228 non-zeros
+2582 integer variables, all of which are binary
+400805 lines were read
+GLPK Integer Optimizer, v4.52
+353511 rows, 2582 columns, 362228 non-zeros
+2582 integer variables, all of which are binary
+Preprocessing...
+1795 hidden packing inequaliti(es) were detected
+6726 rows, 2582 columns, 15443 non-zeros
+2582 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  6.600e+01  ratio =  6.600e+01
+GM: min|aij| =  7.884e-01  max|aij| =  1.268e+00  ratio =  1.609e+00
+EQ: min|aij| =  6.276e-01  max|aij| =  1.000e+00  ratio =  1.593e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.031e+00  ratio =  2.640e+00
+Constructing initial basis...
+Size of triangular part is 6726
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+6726 rows, 2582 columns, 15443 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.938777118e+02  infeas =  2.220e-16 (0)
+*  1000: obj =   2.976482561e+02  infeas =  2.220e-16 (0)
+*  1500: obj =   3.336844454e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   3.411931120e+02  infeas =  1.196e-14 (0)
+*  2500: obj =   3.443678527e+02  infeas =  7.763e-16 (0)
+*  2567: obj =   3.443678527e+02  infeas =  9.171e-30 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2567: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 295.982414127
+Solution found by heuristic: 306.218219361
+Solution found by heuristic: 307.353593323
+Solution found by heuristic: 307.398744299
+Solution found by heuristic: 313.943988116
+Solution found by heuristic: 326.613200431
+Solution found by heuristic: 329.565236342
+Solution found by heuristic: 333.203595225
++  4765: >>>>>   3.361556311e+02 <=   3.366697007e+02   0.2% (84; 139)
++  4803: mip =   3.361556311e+02 <=     tree is empty   0.0% (0; 373)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   2.6 secs
+Memory used: 124.5 Mb (130598556 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/15c2dae686364851a6b01472a461a11d-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/104ffb67c5fd48798d4101487dc82656-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/104ffb67c5fd48798d4101487dc82656-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/104ffb67c5fd48798d4101487dc82656-pulp.lp'...
+89218 rows, 1361 columns, 93213 non-zeros
+1361 integer variables, all of which are binary
+101368 lines were read
+GLPK Integer Optimizer, v4.52
+89218 rows, 1361 columns, 93213 non-zeros
+1361 integer variables, all of which are binary
+Preprocessing...
+969 hidden packing inequaliti(es) were detected
+3258 rows, 1361 columns, 7253 non-zeros
+1361 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  4.800e+01  ratio =  4.800e+01
+GM: min|aij| =  8.613e-01  max|aij| =  1.161e+00  ratio =  1.348e+00
+EQ: min|aij| =  7.485e-01  max|aij| =  1.000e+00  ratio =  1.336e+00
+2N: min|aij| =  7.812e-01  max|aij| =  1.500e+00  ratio =  1.920e+00
+Constructing initial basis...
+Size of triangular part is 3258
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+3258 rows, 1361 columns, 7253 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.311687284e+02  infeas =  5.148e-18 (0)
+*  1000: obj =   2.727484042e+02  infeas =  1.055e-15 (0)
+*  1463: obj =   2.791315920e+02  infeas =  5.009e-30 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1463: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 246.796088863
+Solution found by heuristic: 256.173318742
++  2073: >>>>>   2.754578684e+02 <=   2.784373173e+02   1.1% (46; 7)
++  2222: mip =   2.754578684e+02 <=     tree is empty   0.0% (0; 131)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.5 secs
+Memory used: 31.8 Mb (33323852 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/104ffb67c5fd48798d4101487dc82656-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/9cf723e922544f9cbc8dbfec51b70904-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/9cf723e922544f9cbc8dbfec51b70904-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/9cf723e922544f9cbc8dbfec51b70904-pulp.lp'...
+126991 rows, 1612 columns, 131976 non-zeros
+1612 integer variables, all of which are binary
+144384 lines were read
+GLPK Integer Optimizer, v4.52
+126991 rows, 1612 columns, 131976 non-zeros
+1612 integer variables, all of which are binary
+Preprocessing...
+1157 hidden packing inequaliti(es) were detected
+3983 rows, 1612 columns, 8968 non-zeros
+1612 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.500e+01  ratio =  5.500e+01
+GM: min|aij| =  8.211e-01  max|aij| =  1.218e+00  ratio =  1.483e+00
+EQ: min|aij| =  6.742e-01  max|aij| =  1.000e+00  ratio =  1.483e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 3983
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+3983 rows, 1612 columns, 8968 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.442158066e+02  infeas =  1.270e-15 (0)
+*  1000: obj =   2.556910808e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.577711156e+02  infeas =  0.000e+00 (0)
+*  1643: obj =   2.577711156e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1643: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 220.87716936
+Solution found by heuristic: 225.844971071
+Solution found by heuristic: 227.325657553
++  2359: >>>>>   2.287347135e+02 <=   2.518816314e+02  10.1% (53; 16)
+Solution found by heuristic: 232.44469793
+Solution found by heuristic: 232.45126859
++ 12033: mip =   2.324512686e+02 <=   2.375796496e+02   2.2% (227; 548)
++ 13314: mip =   2.324512686e+02 <=     tree is empty   0.0% (0; 1531)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   6.3 secs
+Memory used: 45.7 Mb (47952200 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/9cf723e922544f9cbc8dbfec51b70904-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/e6d31acea2414521b226d0857fcb0d95-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/e6d31acea2414521b226d0857fcb0d95-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/e6d31acea2414521b226d0857fcb0d95-pulp.lp'...
+120367 rows, 1566 columns, 125080 non-zeros
+1566 integer variables, all of which are binary
+136141 lines were read
+GLPK Integer Optimizer, v4.52
+120367 rows, 1566 columns, 125080 non-zeros
+1566 integer variables, all of which are binary
+Preprocessing...
+1132 hidden packing inequaliti(es) were detected
+3804 rows, 1566 columns, 8517 non-zeros
+1566 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.700e+01  ratio =  5.700e+01
+GM: min|aij| =  8.138e-01  max|aij| =  1.229e+00  ratio =  1.510e+00
+EQ: min|aij| =  6.623e-01  max|aij| =  1.000e+00  ratio =  1.510e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 3804
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+3804 rows, 1566 columns, 8517 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.585988291e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.752964880e+02  infeas =  0.000e+00 (0)
+*  1500: obj =   2.841890239e+02  infeas =  0.000e+00 (0)
+*  1590: obj =   2.841890239e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1590: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 246.6298348
+Solution found by heuristic: 268.88822366
++  2883: mip =   2.688882237e+02 <=     tree is empty   0.0% (0; 137)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   0.7 secs
+Memory used: 43.4 Mb (45530916 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/e6d31acea2414521b226d0857fcb0d95-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/98876c5662ba46ccbcdbb8446d17fdd0-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/98876c5662ba46ccbcdbb8446d17fdd0-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/98876c5662ba46ccbcdbb8446d17fdd0-pulp.lp'...
+58851 rows, 1124 columns, 62030 non-zeros
+1124 integer variables, all of which are binary
+66764 lines were read
+GLPK Integer Optimizer, v4.52
+58851 rows, 1124 columns, 62030 non-zeros
+1124 integer variables, all of which are binary
+Preprocessing...
+820 hidden packing inequaliti(es) were detected
+2634 rows, 1124 columns, 5813 non-zeros
+1124 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.600e+01  ratio =  5.600e+01
+GM: min|aij| =  8.253e-01  max|aij| =  1.212e+00  ratio =  1.468e+00
+EQ: min|aij| =  6.860e-01  max|aij| =  1.000e+00  ratio =  1.458e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 2634
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+2634 rows, 1124 columns, 5813 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.447716882e+02  infeas =  3.331e-15 (0)
+*  1000: obj =   2.754422186e+02  infeas =  0.000e+00 (0)
+*  1192: obj =   2.823175281e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  1192: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 242.543653792
+Solution found by heuristic: 248.911440018
+Solution found by heuristic: 256.259506288
+Solution found by heuristic: 260.243041602
+Solution found by heuristic: 261.99407012
++  6095: mip =   2.619940701e+02 <=     tree is empty   0.0% (0; 559)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   1.7 secs
+Memory used: 21.6 Mb (22635564 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/98876c5662ba46ccbcdbb8446d17fdd0-pulp.sol'...
+huggingface/tokenizers: The current process just got forked, after parallelism has already been used. Disabling parallelism to avoid deadlocks...
+To disable this warning, you can either:
+	- Avoid using `tokenizers` before the fork if possible
+	- Explicitly set the environment variable TOKENIZERS_PARALLELISM=(true | false)
+GLPSOL: GLPK LP/MIP Solver, v4.52
+Parameter(s) specified in the command line:
+ --cpxlp /var/lib/condor/execute/dir_692638/e50e271bb64e40d6885fa0cdd90682c9-pulp.lp
+ -o /var/lib/condor/execute/dir_692638/e50e271bb64e40d6885fa0cdd90682c9-pulp.sol
+Reading problem data from '/var/lib/condor/execute/dir_692638/e50e271bb64e40d6885fa0cdd90682c9-pulp.lp'...
+318871 rows, 2496 columns, 327240 non-zeros
+2496 integer variables, all of which are binary
+362279 lines were read
+GLPK Integer Optimizer, v4.52
+318871 rows, 2496 columns, 327240 non-zeros
+2496 integer variables, all of which are binary
+Preprocessing...
+1747 hidden packing inequaliti(es) were detected
+6481 rows, 2496 columns, 14850 non-zeros
+2496 integer variables, all of which are binary
+Scaling...
+ A: min|aij| =  1.000e+00  max|aij| =  5.800e+01  ratio =  5.800e+01
+GM: min|aij| =  8.120e-01  max|aij| =  1.231e+00  ratio =  1.517e+00
+EQ: min|aij| =  6.612e-01  max|aij| =  1.000e+00  ratio =  1.512e+00
+2N: min|aij| =  3.906e-01  max|aij| =  1.000e+00  ratio =  2.560e+00
+Constructing initial basis...
+Size of triangular part is 6481
+Solving LP relaxation...
+GLPK Simplex Optimizer, v4.52
+6481 rows, 2496 columns, 14850 non-zeros
+*     0: obj =   0.000000000e+00  infeas =  0.000e+00 (0)
+*   500: obj =   2.093181107e+02  infeas =  0.000e+00 (0)
+*  1000: obj =   2.711543033e+02  infeas =  3.275e-15 (0)
+*  1500: obj =   3.023878656e+02  infeas =  0.000e+00 (0)
+*  2000: obj =   3.056302807e+02  infeas =  4.095e-16 (0)
+*  2470: obj =   3.056302807e+02  infeas =  0.000e+00 (0)
+OPTIMAL LP SOLUTION FOUND
+Integer optimization begins...
++  2470: mip =     not found yet <=              +inf        (1; 0)
+Solution found by heuristic: 279.053351272
+Solution found by heuristic: 280.610507431
+Solution found by heuristic: 284.40933563
+Solution found by heuristic: 293.636659795
++  4139: >>>>>   2.943533267e+02 <=   3.020401695e+02   2.6% (99; 46)
++  6132: mip =   2.943533267e+02 <=     tree is empty   0.0% (0; 473)
+INTEGER OPTIMAL SOLUTION FOUND
+Time used:   3.6 secs
+Memory used: 113.0 Mb (118467296 bytes)
+Writing MIP solution to `/var/lib/condor/execute/dir_692638/e50e271bb64e40d6885fa0cdd90682c9-pulp.sol'...
+(1) Charles Carl Roberts IV => A man who laid siege to a one - room Amish schoolhouse
+(1) he => A gunman
+(1) the West Nickel Mines Amish School => a one-room Amish schoolhouse Monday in Pennsylvania's bucolic Lancaster County
+(2) he => A gunman
+(1) two young relatives => 10 - 12 girls and 15 boys
+(1) Roberts => A gunman
+(1) the Amish girls => the kids
+(1) he => A gunman
+(1) Charles Carl Roberts IV => A gunman
+(1) The Internet security industry => the high-tech security business
+(1) they => large companies
+(1) They => Industry experts
+(1) The trial => the trial of 29 mostly Moroccan suspects charged with involvement in the 2004 Madrid train bomb attacks
+(1) 191 people => the victims of the attacks which killed 191 people and injured 1,824 others
+(1) Spain => The then conservative government
+(1) Spain => Spain's
+(1) Badillo => Irkus Badillo
+(1) Vidal => Gorka Vidal
+(1) He => Kurt Weingand
+(1) He => Kurt Weingand
+(1) the company => A major manufacturer of pet foods sold throughout North America under dozens of store names
+(1) the company => Procter & amp; Gamble
+(1) it => Menu Foods
+(1) it => the company
+(1) the suspect cat food => pet food that was recalled over the weekend
+(1) the suspect cat food => wheat gluten purchased from a new supplier
+(1) He => Menu Foods' chief executive and president Paul Henderson
+(1) He => Menu Foods' chief executive and president Paul Henderson
+(1) the company => Menu Foods
+(1) its products => The food
+(1) An Indonesian lawmaker => Ahmad Muqowam, one of the leaders of the parliamentary transport and communications commission
+(1) he => Ahmad Muqowam
+(1) Sulawesi island => the Indonesian island of Sulawesi
+(1) 102 people => the 102 people on board
+(1) 102 people => the 102 passengers and crew on board an Adam Air plane which crashed into a remote mountainous region of Indonesia
+(1) the Boeing 737-400 aircraft => The Boeing 737-400 plane which carrying 96 passengers including four infants and 6 crew members
+(1) tuna stocks => the valuable resource
+(1) that meeting => a meeting in Miyazaki
+(1) Japan => The country
+(1) the southern bluefin tuna => the endangered southern bluefin tuna
+(1) it => Japan's
+(1) China => The Chinese government
+(1) the city => the capital's
+(1) Beijing => the city
+(1) it => the city
+(1) India => India's
+(1) the area => the Khulna-Barishal coast
+(1) the border => Bangladesh's border with India
+(1) India => India's
+(1) the coast => Bangladesh's southwestern coast
+(1) a powerful cyclone => the storm--visible from space as a huge swirling white mass that moved north from the Bay of Bengal--
+(1) impoverished Bangladesh => low-lying Bangladesh--one of the world's poorest countries
+(1) Bangladesh => the country
+(1) an Israeli woman => the Israeli victim
+(1) Monday => Monday's
+(1) China's Sichuan Province => the southwestern Sichuan Province
+(1) the disaster => Monday's earthquake that killed more than 8,600 people
+(1) Sichuan Province => Sichuan alone
+(1) Monday => Monday's
+(1) 18-year-old Pekka-Eric Auvinen => the perpetrator of one of the worst tragedies in recent Finnish history
+(1) he => the guy
+(1) the gun => his weapon
+(1) eight people => the victims in the shooting incident
+(1) a Finnish school => Jokela High School in the small town of Tuusula
+(1) Thursday => Wednesday's
+(1) An 18-year-old man => the guy
+(1) Wednesday => the day
+(1) at least seven people => Eight victims of the Finnish school shooting
+(1) Alvarez => A man found guilty of murder for causing a Los Angeles train crash that left 11 people dead
+(1) Glendale => suburban Glendale
+(1) Alvarez => James'
+(1) his wife => Alvarez's mother
+(1) the accident => A tremendous collision
+(1) Mali => Mali's
+(1) CITES => The UN agency regulating the trade in endangered species
+(1) Africa => the whole continent
+(1) the species => the giant beasts
+(1) the gene variant => A certain gene variant
+(1) it => cardiovascular disease
+(1) The study => The heart peptide test
+(1) them => those most at risk of heart disease
+(1) South Korea => The South Korean government
+(1) they => Police officials
+(1) the gunman => The gunman "in custody"
+(1) he => White House spokesman Tony Snow
+(1) the army => the U.S. military
+(1) the hospital => a facility Priest and Hull found full of " mouse droppings
+(1) The general => Defense Secretary Robert M. Gates
+(1) Hawkins => The teenage gunman who went on a shooting rampage in an Omaha department store
+(1) Wednesday => Wednesday's
+(1) eight people => The five women and three men who died
+(1) Fidler => Keith Fidler
+(1) Fidler => Keith Fidler
+(1) Fidler => Keith Fidler
+(1) he => Keith Fidler
+(1) he => Keith Fidler
+(1) he => Keith Fidler
+(1) the store => a Von Maur store
+(1) the store => a department store
+(1) she => Mickey Vickory
+(1) she => Mickey Vickory
+(1) they => the roughly 800 popular medicines marketed in the United States under names like Toddler's Dimetapp
+(1) they => the makers of over-the-counter oral cough and cold medicine for infants
+(1) their products => the drugs'
+(2) they => the drugs'
+(2) they => the makers of over - the - counter
+(1) they => the drugs'
+(1) they => the makers of over-the-counter oral cough and cold medicine for infants
+(1) their products => the drugs'
+(2) they => the drugs'
+(2) they => Major makers of over-the-counter infant cough and cold medicines
+(1) the agency => the U.S. Food and Drug Administration
+(1) the plant => a desalination plant built 15 years ago
+(1) seven states => the seven states that draw water
+(1) the Colorado River => a river that serves 30 million people
+(1) The plea hearing => a plea-agreement hearing
+(1) Taylor => One of the men indicted with Michael Vick on federal dogfighting charges
+(1) the charges => conspiracy charges involving competitive dogfighting
+(1) Michael Vick => Atlanta Falcons quarterback Michael Vick
+(1) federal dogfighting charges => charges of conspiring to travel in interstate commerce in aid of unlawful activities and to sponsoring "a dog in an animal fighting venture
+(1) the state => the city that will host next year's Republican National Convention
+(1) the bridge => the bridge in the city that will host next year's Republican National Convention
+(1) it => The US State Department
+(1) Athens => Athens'
+(1) A rocket => The 2.36 - inch (60 millimeter) rocket
+(1) the U.S. Embassy => the heavily guarded building
+(1) the modern, glass-fronted building => the modern
+(1) a domestic terrorist group => a militant left-wing group called Revolutionary Struggle
+(1) PT Lapindo Brantas => An Indonesian airline offering short flights to avoid a "mud volcano" that has inundated villages on the island of Java
+(1) steaming mud => the spewing mud
+(1) the flow => a massive mud flow which has swallowed villages and left 15,000 people homeless
+(1) Lapindo => Lapindo Brantas Inc.
+(1) global warming => this whole issue of climate change
+(1) The corals => the staghorn and elkhorn corals
+(1) global warming => this warming
+(1) his shoes => a pair of shoes
+(1) President George W. Bush => the outgoing US leader who acknowledged that the war is still not won
+(1) Iraq => a nation still riven by ethnic strife
+(1) the study => the study presented last week at the Associated Professional Sleep Societies' meeting in Minneapolis
+(1) Taylor => former Liberian president Charles Taylor
+(1) Liberia => the war-scarred African nation
+(1) neighbouring Sierra Leone => the war-scarred African nation
+(1) The Hague => The Hague, where the ex-leader is imprisoned
+(1) he => study co- author Cedric Garland
+(1) The study => The colorectal cancer study
+(1) The new research => the study by researchers at the Moores Cancer Center at the University of California
+(1) vitamin D => the 1,000 IU supplement
+(1) it => Vitamin D
+(1) Indonesia => the country's main island of Java
+(1) Java island => Java's
+(1) Java island => the country's main island of Java
+(1) The Senopati Nusantara => a packed ferry that sank during a violent storm in central Indonesia
+(1) the CITES meeting => until June 15 in The Hague
+(1) He => Ilze Berzins of the Florida Aquarium
+(1) he => Berzins'
+(1) something => this precious material
+(1) them => a few bits of rubble
+(1) He => Jeff George of Sea Turtle Inc.
+(1) the turtles => the 240 Hawksbill and Green turtles
+(1) they => the eggs
+(1) Malaysia's Sabah state => Malaysia's eastern Sabah state
+(1) Britain's senior police officer => Peter Clarke, Deputy Assistant Commissioner of the anti- terrorism branch at the Metropolitan Police,
+(1) Saturday night => Saturday evening
+(1) Glasgow airport => Glasgow Airport in Scotland
+(1) Brown => British Prime Minister Gordon Brown
+(1) British Prime Minister Gordon Brown => Prime Minister Gordon Brown
+(1) Scotland's Glasgow airport => the airport
+(1) he => Prime Minister Gordon Brown
+(1) the virus => A highly drug-resistant form of tuberculosis
+(1) them => Trials showing that male circumcision more than halves the risk of HIV infection
+(1) Madoff => a Wall Street firm whose owner is accused in a $50 billion swindle
+(1) a giant pyramid scheme => a giant pyramid scheme that collapsed in the global financial crisis
+(1) the Yangtze River => China's longest waterway
+(1) the report => an official report evaluating climate change
+(1) The crane => the white crane that crushed the townhouse
+(1) the planned 43-story building => a new high-rise condo building
+(1) the construction site => the site of the collapse to figure out how best to remove the crane and debris
+(1) The crane => A crane mounted to the side of a skyscraper under construction
+(1) it => The crane
+(1) the planned 43-story building => the 43-story condominium building
+(1) Kaiser => Kaiser's
+(1) it => UNOS'
+(1) the MV Sirius Star => a Saudi supertanker loaded with crude oil hundreds of miles (kilometers) off the coast of East Africa
+(1) the bandits => Somali pirates
+(1) Bangladesh => the Bangladesh government's
+(1) Bangladesh => the country
+(1) China => the government's
+(1) E => Vice Water Resources Minister E Jingping
+(1) the country => China's
+(1) Tuesday => Tuesday's
+(1) Seven near-simultaneous bomb blasts => the near- simultaneous bombings in the Indian city of Jaipur that killed at least 80 people
+(1) Simpson => Former American football star OJ Simpson
+(1) a judge => the judge
+(1) he => Charles Cashmore
+(1) a felony => the armed robbery of sports memorabilia collectors at a Las Vegas hotel
+(1) Simpson => O.J .
+(1) two memorabilia dealers => two sports memorabilia dealers
+(1) The recall => this week's recall of nearly a million playthings from Mattel Inc.'s Fisher- Price unit because of possible lead paint contamination
+(1) Thursday's toy recall => the recall
+(1) Mattel => the world's largest toymaker
+(1) it => Fisher-

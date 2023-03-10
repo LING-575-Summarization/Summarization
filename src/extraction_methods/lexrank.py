@@ -10,7 +10,7 @@ References:
 import numpy as np
 import pandas as pd
 from vectorizer import DocumentToVectors, DocumentToVectorsFactory
-from content_realization import extract_summary
+from content_realization import extract_summary, extract_summary_naive
 from typing import *
 import logging
 import argparse
@@ -132,7 +132,8 @@ class LexRank(DocumentToVectors):
             max_tokens: Optional[int] = 100,
             topk_sentences: Optional[int] = 25,
             coreference_resolution: Optional[bool] = False, 
-            detokenize: Optional[Union[Callable, bool]] = False
+            detokenize: Optional[Union[Callable, bool]] = False,
+            return_original: Optional[bool] = False
         ) -> Union[str, List[List[str]]]:
         '''
         Obtain a "summary" of the document by running the method `solve_lexrank`
@@ -147,9 +148,10 @@ class LexRank(DocumentToVectors):
         '''
         ranked_list = self.solve_lexrank('list')
         ranked_list = [s for s in ranked_list if len(s) > self.min_length]
-        return extract_summary(ranked_list, reference_documents, max_tokens=max_tokens,
+        return extract_summary_naive(ranked_list, reference_documents, max_tokens=max_tokens,
                                   topk_sentences=topk_sentences, min_jaccard_dist=self.min_jaccard_dist,
-                                  coreference_resolution=coreference_resolution, detokenize=detokenize)
+                                  coreference_resolution=coreference_resolution, detokenize=detokenize,
+                                  return_original=return_original)
     
 
 def power_method(

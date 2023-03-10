@@ -194,8 +194,9 @@ def replace_nth(string: str, sub: str, replacement: str, n: int):
     pattern_mid = re.compile(f'(?<=[\s\"\']){sub.text}(?=[\s\"\'\.,?!])')
     pattern_start = re.compile(f'^{sub.text}(?=[\s\"\'\.,?!])')
     repl_str = replacement.text
+    repl_tags = [tkn.tag_ for tkn in replacement]
     # fix spelling
-    if replacement[0].tag_ not in PROPERNOUNTAGS:
+    if repl_tags[0] not in PROPERNOUNTAGS:
         repl_str = repl_str[0].lower() + repl_str[1:]
     if sub.text[0] in string.split()[0]:
         repl_str = repl_str[0].upper() + repl_str[1:]

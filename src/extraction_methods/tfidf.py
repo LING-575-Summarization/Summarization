@@ -168,7 +168,6 @@ class TFIDF:
             raise ValueError(
                 f"ngram argument must be 1, 2, or 3, not {self.ngram}"
             )
-
         if self.doc_level == 'sentence':
             # turn each document set into a list of sentences
             new_doc_ids = []

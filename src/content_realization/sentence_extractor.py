@@ -10,6 +10,7 @@ from .corefextract_new import ContentRealizer
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 from typing import *
 import re
+from copy import deepcopy
 
 DETOKENIZER = TreebankWordDetokenizer()
 
@@ -21,7 +22,8 @@ def extract_summary(
         topk_sentences: Optional[int] = 25,
         min_jaccard_dist: Optional[float] = 0.,
         coreference_resolution: Optional[bool] = True, 
-        detokenize: Optional[Union[Callable, bool]] = False
+        detokenize: Optional[Union[Callable, bool]] = False,
+        return_original: Optional[bool] = False
     ) -> Union[str, List[List[str]]]:
     '''
     Obtain a "summary" of the document by running the method `solve_lexrank`
@@ -37,11 +39,14 @@ def extract_summary(
         - detokenize: whether to combine the tokens into a typical English sentence
             or leave as a list of whitespace delimited tokens. The decorator 
             wrap_detokenizer transforms the tokenize bool into a function behind the scenes
+        - return_original: whether to return the original sentences (unchanged by content 
+                           realization)
     '''
     i = 0
     words = 0
     summary_ids = []
     number_of_sentences = len(ranked_list)
+    original = deepcopy(ranked_list)
     if coreference_resolution:
         assert reference_documents is not None, "coreference_resolution requires reference documents"
         cr = ContentRealizer(reference_documents)
@@ -76,8 +81,74 @@ def extract_summary(
             if former_sentence:
                 print(f"{former_sentence} => {DETOKENIZER.detokenize(current_sentence)}")
     summary = [detokenize(ranked_list[sum_id]) for sum_id in summary_ids]
+    original = [detokenize(original[sum_id]) for sum_id in summary_ids]
     assert words - len(current_sentence) < max_tokens, \
         f"words: {words - len(current_sentence)} | sentence: {current_sentence}"
     if isinstance(summary[-1], str):
         summary = list(map(lambda x: x + "\n", summary))
-    return detokenize(summary)
+    if return_original:
+        return detokenize(summary), detokenize(original)
+    else:
+        return detokenize(summary)
+
+
+
+@detokenizer_wrapper
+def extract_summary_naive(
+        ranked_list: List[List[str]],
+        reference_documents: Optional[List[List[str]]] = None,
+        max_tokens: Optional[int] = 100,
+        topk_sentences: Optional[int] = 25,
+        min_jaccard_dist: Optional[float] = 0.,
+        coreference_resolution: Optional[bool] = True, 
+        detokenize: Optional[Union[Callable, bool]] = False,
+        return_original: Optional[bool] = False
+    ) -> Union[str, List[List[str]]]:
+    '''
+    Obtain a "summary" of the document by running the method `solve_lexrank`
+    and then selecting sentences until it reaches the max number of words
+    Arguments:
+        - ranked_list: a ranked list of extracted sentences formatted as a list of tokens
+        - reference_documents: the document set being analyzed
+        - max_words: max tokens in the summary
+        - topk_sentences: consider only sentences in the topk for the summary
+        - min_jaccard_dist: the minimum Jaccard distance (1 is most dissimilar) required in a new
+                            sentence to include in the summary
+        - coreference_resolution: whether or not to perform coreference resolution on the sentence
+        - detokenize: whether to combine the tokens into a typical English sentence
+            or leave as a list of whitespace delimited tokens. The decorator 
+            wrap_detokenizer transforms the tokenize bool into a function behind the scenes
+        - return_original: whether to return the original sentences (unchanged by content 
+                           realization)
+    '''
+    i = 0
+    words = 0
+    summary_ids = []
+    number_of_sentences = len(ranked_list)
+    original = deepcopy(ranked_list)
+    cr = lambda x: (x, None)
+    while words < max_tokens and i < min(topk_sentences, number_of_sentences):
+        # filter unfinished quotes
+        if re.match(r'^\"[^\"]+$|^[^\"]+\"$', " ".join(ranked_list[i])):
+            i += 1
+            continue
+        current_sentence, former_sentence = cr(ranked_list[i])
+        if len(current_sentence) + words > max_tokens:
+            i += 1
+            continue
+        else:
+            summary_ids.append(i)
+            words += len(current_sentence)
+            i += 1
+            if former_sentence:
+                print(f"{former_sentence} => {DETOKENIZER.detokenize(current_sentence)}")
+    summary = [detokenize(ranked_list[sum_id]) for sum_id in summary_ids]
+    original = [detokenize(original[sum_id]) for sum_id in summary_ids]
+    assert words - len(current_sentence) < max_tokens, \
+        f"words: {words - len(current_sentence)} | sentence: {current_sentence}"
+    if isinstance(summary[-1], str):
+        summary = list(map(lambda x: x + "\n", summary))
+    if return_original:
+        return detokenize(summary), detokenize(original)
+    else:
+        return detokenize(summary)

@@ -189,7 +189,7 @@
 
 # echo "finished with J10"
 
-./src/scripts/linear_programming.sh data/devtest.json 100 outputs/trying/ILP 1 25 0.7 0.01 False True True
+./src/scripts/linear_programming.sh data/evaltest.json 100 outputs/D5_evaltest 1 25 0.7 0.01 False True True
 
 # echo "finished with F8 clustering but no content realization"
 
