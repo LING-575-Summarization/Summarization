@@ -1,0 +1,16 @@
+\subsection{Data Pre-processing}
+
+\subsubsection{Accessing Input Data}
+
+We used the data from the TAC 2009 \cite{tac20009}, 2010 \cite{tac2010}, 2011 \cite{tac2011} Shared Task data. TAC 2009 was used for training, TAC 2010 was use for testing, and TAC 2011 was used for validation. To process the given XML files to retrieve the set of document names in docSetA, we used xml.etree.ElementTree. We then figured out which corpus data path matched each document in docSetA.
+
+In order to read in these AQUAINT and AQUIANT2 files that are organized differently, we used lxml.etree as this can parse non-XML compliant files. We found there are three different organization methods that were used, and we made sure to process each kind uniquely. From these files, we parsed the headline, time, and raw text paragraphs.
+
+\subsubsection{Tokenization}
+
+ After getting the raw text, we used NLTK \cite{nltk} for text tokenization. Specifically, we used the English model tokenizer (\texttt{tokenizers/punkt/english.pickle}). We first tokenize the document on sentence level, and then for each tokenized sentence, we ran a word tokenizer. This gave us a list of sentences, where each sentence contains tokenized words. 
+
+\subsubsection{Sentence Embeddings}\label{sentence_embeddings}
+We wanted to investigate whether semantic information can improve the performance of various algorithms used to generate summaries. We compared the performance of the LexRank and topic clustering algorithms by utilizing TF-IDF, Word2Vec \cite{mikolov2013-word2vec}, and DistilBERT \cite{Sanh2019DistilBERTAD} to generate document vectors. For the pretrained word2vec model, we used the continuous bag of words (CBOW) model trained on the Google News corpus. 
+
+Creating vectors from each document involve different pooling methods. The TF-IDF vector was constructed by using either calculating TF-IDF for each document, with IDF values obtain either from the document set or data set. IDF values can also be derived from the training set in order to upweight uncommon words and downweight common ones. Word2vec vectors were created by averaging each word vector (obtained from the pretrained model). DistilBERT vectors were created by obtaining the final hidden states of the pretrained model, and averaging these final states.

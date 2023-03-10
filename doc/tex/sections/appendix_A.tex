@@ -1,0 +1,62 @@
+
+\section{Appendices}
+\appendix
+\section{Workload distribution}
+
+\subsection{D1 Workload}
+
+\begin{itemize}
+    \item Anna Batra set up the Github repository, turned in D1
+    \item Junyin Chen got the team together and set up a communication channel
+    \item Sam Briggs set up the Overleaf file and sent out a when-to-meet to schedule weekly meetings
+    \item Hilly Steinmetz edited the Overleaf file to prepare it for D1.
+\end{itemize}
+
+\subsection{D2 Workload}
+
+\begin{itemize}
+    \item Anna Batra and Sam Briggs wrote test code to test the file structure of the output docSets, created the outline for the presentation, and updated the report.  
+
+    \item Junyin Chen wrote code for tokenizing documents in the docSets using spaCy, PR reviewed the code to merge with Hilly's, cleaned up the code, and created slides for the pre-processing section.
+
+    \item Hilly Steinmetz wrote the code for the pre-processing steps before tokenization, such as locating paths for AQUAINT and AQUAINT2 files. Hilly also wrote code for tokenizing documents using NLTK.
+\end{itemize}
+
+\subsection{D3 Workload}
+
+\begin{itemize}
+    \item Anna Batra and Sam Briggs wrote the code to create a json file to easily access our data for the rest of the project. They also wrote the code for the TF-IDF and Linear Programming content selection methods. The Linear Programming information ordering and content realization was also written by them. They also drew the system architecture.
+
+    \item Junyin Chen wrote the code to create JSON file writer which contains doc\_id, text for summarization, the gold standard summarization based on doc\_id for both docsetA and docsetB. The writer help cache the JSON file for easier access. He also wrote the code for Gap sentences generation content selection method, truncate the input text based on ROUGE score for information ordering, and write the code for training a large language model for content realization. He also performs quick error analysis.
+
+    \item Hilly Steinmetz wrote the code for the LexRank method and debugged issues with the original XML document parser.
+    
+\end{itemize}
+
+Everyone worked on the paper and presentation slides for the parts we explicitly worked on.
+
+\subsection{D4 Workload}
+
+\begin{itemize}
+    \item Anna Batra and Sam Briggs incorporated ngrams into TF-IDF and helped test the IDF to work over the entire data. They also worked on improving ILP and wrote the clustering information ordering method. They updated the system architecture.
+
+    \item Junyin Chen wrote and trained zero shot information ordering language model. He also improved pre-processing scripts for data parsing, such as using different ROUGE score and comparing with different documents. He done multiple experiments with information ordering model and summarizing model with multiple parameter combination.
+
+    \item Hilly Steinmetz created an interface to generate vectors using TF-IDF, Word2vec, or DistilBERT. He also worked on creating a new TF-IDF class that takes various inputs to modify its behavior (e.g., smoothing). Lastly, he implemented the improvements to LexRank.
+    
+\end{itemize}
+
+Everyone worked on the paper and presentation slides for the parts we explicitly worked on.
+
+\subsection{D5 Workload}
+
+\begin{itemize}
+    \item Anna Batra tested the clustering information ordering method on different hyperparameters using an error analysis and ran ablation on the top model. She also wrote the baseline top K and redrew the system architecture. She updated this all into the slides.
+
+    \item Sam Briggs fixed the paper based on the feedback by Fei, incorporated what Anna did into the paper, and overall worked to improve the quality of the paper.
+
+    \item Junyin Chen experimented on zero-shot information ordering methods. He wrote the abstract, introduction, and related work section of the paper. He also updated the correspondent section in the paper about LLM.
+
+    \item Hilly Steinmetz implemented the entity-driven rewrite and experimented with LexRank to improve its results (with marginal improvements).
+    
+\end{itemize}

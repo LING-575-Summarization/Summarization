@@ -1,0 +1,12 @@
+
+\section{Introduction}
+
+Text summarization is a process of generating summaries that are both accurate and concise from one or more input documents. It is an important task in Natural Language Processing and its applications are growing due to the increasing demand for concise and easily-understood content. There are currently extractive and abstractive approaches to summarization. Extractive summarization pulls key phrases from the source document to combine them to make a summary. Abstractive summarization generates new sentences that capture the main ideas of the source documents. A well-written abstractive summary includes the main information from the source and is expressed in fluent language.
+
+Creating a well-organized summary that comprehensively covers a news event while avoiding repetition is a challenge when summarizing from multiple documents. The input documents may have varying focuses and viewpoints on the event. 
+
+In the past, two common algorithms for summarization were tackled by using non-neural methods, such as framing the task as a binary integer linear programming problem (ILP), or by employing the LexRank algorithm to rank sentences automatically based on internal relations between sentences.
+
+Neural methods for text summarization have recently advanced and have mostly been used for single-document summarization (SDS) and headline generation. \citet{multinews} created the Multi-News dataset, the first large-scale Multi-document summarization (MDS) news dataset, as previous MDS datasets such as TAC 2011 \cite{tac2011} contain less than 100 document clusters. However, current popular language models for summarization, such as BART \cite{bart}, T5 \cite{t5}, PEGASUS \cite{pegasus}, have optimized for single document summarization.
+
+In our paper, we have made the following contributions: We evaluated the performance of LexRank and Integer Linear Programming as content selection methods and evaluated a topic clustering algorithm for information ordering using different sentence vectors. We implemented an content realization algorithm (and redundancy filter) to improve summary readability. We also evaluated the performance of PEGASUS when dealing with the MDS dataset. We built end-to-end systems to incorporate various methods and benchmark our systems' performance, as well as perform error analyses on our selected methods.

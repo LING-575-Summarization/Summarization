@@ -1,0 +1,78 @@
+\subsection{Information Ordering}
+
+\subsubsection{Topic Clustering}
+
+This algorithm tries to order topics in the order that they are most likely to appear in a document. The intuition being that similar sentences form topics, and topics must be ordered in the original documents in a cohesive manner. This algorithm tries to recreate this cohesive topic order. This algorithm is heavily modified from the 'Augmented Ordering Algorithm' presented in \citet{barzilay_2002}. Barzilay groups similar themes from different documents into blocks, and then orders the blocks by timestamp. However, in our algorithm, we instead put all of the documents together and consider it one document, clustering similar sentences/topics of information into themes. There are no senses of block here as discussed in \citet{barzilay_2002}.
+
+Similarity between sentences is determined by the similarity of sentence embeddings. To group topics, we group similar sentences over a whole document set. We calculate sentence as calculated in section \ref{sentence_embeddings} using TFIDF embeddings for each word in a sentence. We have chosen between TFIDF, Word2Vec, and DistilBERT as a hyperparemeter for sentence embeddings. Please see Tables \ref{clustering_mean} and \ref{clustering_median} for an error analysis between them.
+
+We then use sentence embeddings to create topic clusters to group similar sentences. To group sentences, we used K-means clustering using \texttt{sklearn.cluster.KMeans}. 
+
+To order topic clusters, we used the 'fractional ordering' of the sentences, namely, let $d$ be a document with length $n$, then the fractional ordering $f$ of sentence $s_i$ at position $i$ in $d$ is:
+\begin{align}
+    f(s_i, d) = \dfrac{i}{n}
+\end{align}
+
+For example, the first sentence in the given document is always $\dfrac{1}{n}$, the second $\dfrac{2}{n}$, etc. We divide by the number of sentences in the document to try to normalize both short and long documents. 
+
+We then ordered each topic cluster $t_k$ with $m$ sentences by their respective median fractional ordering, namely, for each sentence $j$ in the given topic, the median fractional ordering $f_{med}$ is found by sorting all the fractional orderings for each sentence, and using the one in the middle.
+
+Using average (see below) versus median fractional ordering was another hyperparameter we chose from\footnote{Please see Table \ref{clustering_mean} and Table \ref{clustering_median} in for an error analysis between them.}
+
+The average fractional ordering $f_{avg}$ is:
+\begin{align}
+    f_{avg}(t_k) = \dfrac{\sum_{j} f(s_j, d)}{m}
+\end{align}
+
+We then order the sentences in the given summary based on which topic cluster they appear in and the fractional ordering of that topic. In other words, if $f_{med}(t_k) < f_{med}(t_k')$, then any sentence that appeared in the summary and in topic cluster $t_k$ would appear before all the sentences that appeared in the summary and in topic cluster $t_k'$. 
+
+ It is possible that multiple sentences appear in the given summary and the same topic cluster. In this case, we order the sentences by their own fractional ordering. In other words, for sentence $i$ and sentence $j$ in documents $d$ and $d'$ respectively, if $f(i, d) < f(j, d')$ we put sentence $i$ before sentence $j$ in the ordered summary.
+
+% to do if we have time
+%  \begin{algorithm}[H]
+% \caption{Topic Clustering}\label{alg:clustering}
+% \begin{algorithmic}[1]
+%     \State $S := \{s_i\}_n \gets \text{n sentences in document set}$
+%     \State $S^* := \{s^*_k\}_m \gets \text{m sentences in summary}$
+%     \State $e := \emptyset$
+%     \For{$i\gets 1 \text{ to } n$}
+%         \State $e_i \gets \text{embedding representation of } s_i$
+%         \State add $e_i$ to $e$
+%     \EndFor
+%     \State Cluster embeddings $e$ into $t$ themes $\{t_j\}_t$
+
+%     \For{$j \gets 1 \text{ to } t$}
+%         \State $f_{j} \gets f_{med}(t_j)$ or $f_{mean}(t_j)$
+%     \EndFor
+%     \State Order themes by $f_j$
+%     \State $S^* = \emptyset$
+%     \For{$k\gets 1 \text{ to } m$}
+%         \State $s^*_k \gets \text{sentence } k \text{ in summary}$
+
+%         \For{$j\gets 1 \text{ to } t$}
+%             \If{$s^*_k\in t_j$}
+%                 \State $f_{s^*_k} := f_j$
+%             \EndIf
+%         \EndFor
+%     \EndFor
+    
+    
+% \State $ \textit{D} := \{x_i\}_n \gets \text{sentences in all}\textit{document}$
+% \State $ \textit{S} := \emptyset$
+% \State $ \textit{I} \gets \text{list contains index from 0 to n}$
+% \For{$j \gets 1 \text{ to } n$} 
+% \State $ s_i := \textit{rouge}(x_i, D \setminus \{x_i\}) $
+% \State $ S := S \cup \{s_i\} $
+% \EndFor
+% \State $ I := sort(I) \text{ Based on the value in S}$
+% \end{algorithmic}
+% \end{algorithm}
+
+\subsubsection{Seq2Seq language model}
+
+We fin-tuned a sequance to sequance language model based on the implementation of Reorder-BART (RE-BART) by \citeauthor{rebart}.  RE-BART is a fine-tuned model based on BART by to identify a coherent order for a given set of shuffled sentences. We shuffle the sentences of each input document set based on the Gap sentence generation content selection method without masking. We mark the index of the sentences at the beginning of each sentences. The model takes the sets of shuffled sentences with sentence-specific markers as input and generates a sequence of position markers of the sentences in the ordered text. We trained the model using Huggingface transformer library \citet{transformers}. We trained the model using the PyTorch framework with a NVIDIA A100 GPU. We trained the model with batch size of 4 and epoch of 24. 
+
+\subsubsection{ROUGE score ranking}
+Due to the input size limitation for the majority of the language model, we have to truncate the input text to 1024 tokens. After we mask the important sentence, we then use the ROUGE score ranking calculated for the gap sentence generation to discard sentences that are ranked in the low thirty percent. We keep the ordering of the remainder of the sentences. Discarding unimportant sentences based on ROUGE score helps including more important sentences from multiple documents. When discarding, we calculate the token length for each added sentences and stop when adding additional sentence will cause the token size to exceed 1024 tokens. This make sure we have full sentences for the input sequence.
+
+To improve the system, we experiment on multiple parameters, such as what the percentage of the sentences should we discard. We also calculate the ROUGE score ranking based on either the average score based on the gold summary or based on all of the remaining sentences in all provided documents. 

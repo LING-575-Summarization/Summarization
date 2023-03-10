@@ -1,0 +1,23 @@
+
+\begin{table*}[h]
+    \centering
+    \begin{tabular}{|p{1cm}|p{1cm}|p{1.5cm}|p{1cm}|p{1cm}|p{1cm}|p{1cm}|p{0.7cm}|p{1.5cm}|p{1.5cm}|}
+        \hline
+         Exp-ID& Min Sent Length& n-gram& delta tf& delta idf& Elim Punc& Lower-casing & log & ROUGE1 & ROUGE2 \\
+         \hline
+        J0& 25&Unigram&0.01&0.7&No&Yes&Yes&0.33320&0.07410 \\
+        J1& None&Unigram&0.01&0.7&No&Yes&Yes&0.32508&0.06849 \\
+        J2& 25&Bigram&0.01&0.7&No&Yes&Yes&0.30059&0.07016 \\
+        J3& 25&Trigram&0.01&0.7&No&Yes&Yes&0.27682&0.06078 \\
+        J4& 26&Unigram&0.001&0.7&No&Yes&Yes&0.33114&0.07349 \\
+        J5& 25&Unigram&0.01&0.001&No&Yes&Yes&0.22592&0.03107 \\
+        J6& 25&Unigram&0.01&0.7&Yes&Yes&Yes&0.33320&0.07405 \\
+        J7& 25&Unigram&0.01&0.7&No&No&Yes&0.33320&0.07405 \\
+        J8& 25&Unigram&0.01&0.7&No&Yes&No&0.33320&0.07415 \\
+        \hline
+    \end{tabular}
+    \caption{The results of the experiments that we ran for our hyper-parameter ablation test on ILP. The top row is the top-model with the best combination of hyper-parameters that gets us the our very best ROUGE1 score.}
+    \label{ablation}
+\end{table*}
+
+

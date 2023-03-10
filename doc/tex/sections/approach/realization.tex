@@ -1,0 +1,25 @@
+
+\subsection{Content Realization}
+
+\subsubsection{NP Rewrite}
+We developed an entity replacement method inspired by the noun phrase rewriting method for multi-document summarization method described in \citet{siddharthan-etal-2011-information}. We take each document set being analyzed and cluster spans into categories denoting  the same entity. We accomplish this task using an experimental module spaCy \cite{spacy}. The module obtains token embeddings from RoBERTa and then obtains a score for embedding pairs before passing the score to a linear classifier (along with other features) to determine whether the spans refer to the same entity \cite{spacycoref}. Because the number of spans is $O(n^2)$, calculating each potential coreference is computationally expensive, so the spaCy implementation prunes the number of spans to compare before obtain the results from the linear classifier, adapting an algorithm described in \cite{dobrovolskii-2021-word}.
+
+% replace indices on the sentences, and say NP in the set of clusters (use set notification to describe the clusters {c|c in ,,,})
+
+We adapted our NP replacement algorithm from \citet{siddharthan-etal-2011-information}. We use our ILP and LexRank methods to extract the sentences with the highest weights. We also obtain coreference clusters for the entire document set (concatenating the documents) using spaCy's module described above. We apply the model to the concatenated document to minimize the number of clusters with the same or similar spans. Then, using, spaCy base module \cite{spacy}, we obtain the noun phrases contained in the highest-ranked sentence. For each NP in the highest-ranked sentence, we examine its coreferring NPs in the document set and replace it with the longest pre-modifidying NP. We use a rough heuristic to extract the longest pre-modified by discard all text followed by appositives, since those formed the bulk of the post-modifiers described in \citet{siddharthan-etal-2011-information}. If the longest pre-modifidying NP is the same length as the NP itself, we look for the longest post-modifying phrase. The cluster containing the longest pre-modifying NP is indexed. For all future NPs and sentences, if $NP_i \in s_j$ is contained in a seen cluster $c_k$, then the shortest non-pronominal NP is chosen to replace it. If the $NP_i \in s_j$ is not contained in a seen cluster $c_k$, it is replaced with the longest modifying phrase. This intuition was drawn from the observations of \citet{siddharthan-etal-2011-information}, about keeping NPs of previously seen referents terse and expanding upon unseen referents.
+
+In addition, added a few small rules to ensure a readable summary. We did not replace the pronoun "I" in the context of quotes. We also did not replace proper nouns with noun phrases that did not have word overlaps with the original expression. We also made sure that, if both the replacement and the original NPs contained pronouns, those pronouns must agree in grammatical case (to avoid ``we'' being replaced with ``our'').
+
+\subsubsection{Redundancy Removal}\label{sec:redundancy}
+
+After obtaining a ranked order of extracted sentences, we experimented with removing redundant sentences using the Jaccard similarity measure. Sentences with the top-$k$ values in ranking are extracted and added to the summary text until the summary reaches the maximum length. To avoid repeated information, we use the Jaccard similarity measure (provided by NLTK) to calculate each sentence's similarity to sentences already included in the bibliography \cite{bird-loper-2004-nltk}. To calculate Jaccard similarity for sentences, let $J$ denote the similarity function, $w$ denote a word and $s_i, s_j$ denote two sentences.
+\begin{align} 
+    J(s_i, s_j) = \frac{|\{w|w\in s_j\} \cap \{w|w\in s_i\}|}{|\{w|w\in s_i\} \cup \{w|w\in s_j\}|}
+\end{align}
+
+\noindent Additionally, sentences that are too long are discarded. We discard long sentences because we believe these sentences are likely to be too information-dense to be useful for constructing a summary. We also discard sentences that were a part of a quotation that was cut off by the tokenizer since we currently have no way of evaluating the importance of the sentence combine with its reconstructed context. The redundancy removal method was employed by the LexRank algorithm, but not by others. The algorithm is described in pseudo-code in algorithm \ref{alg:redundancy}. 
+
+\input{imports/sentence_extractor}
+
+\subsubsection{Sequence to Sequence language model}
+We fin-tuned "google/pegasus-large" and "google/pegasus-cnn\char`_dailymail" to generate the summary based on preprocessed input data discussed in Section \ref{alg:GSG}. We utilized the Huggingface's transformers library for the experiment. The experiments are conducted in PyTorch framework using NVIDIA Tesla A100 GPU. We trained on the training data and use the devtest data to select the best model based on the ROUGE 1 score of output summary based on devtest data.

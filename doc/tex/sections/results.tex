@@ -1,0 +1,137 @@
+\section{Results}
+
+Table \ref{tab:rouge_devtest} and \ref{tab:rouge_evaltest} show the performance of the selected summarization methods on the TAC 2010 (devtest) and TAC 2011 (evaltest) datasets.\footnote{The scores in these tables used the official ROUGE Perl script which, from our observations, tends to have lower scores than the Python modules. We believe this is due to the fact that the Perl script performs bootstrap oversampling as opposed to the Python module.} The best ROUGE 1 numbers of each dataset are bolded. Our experiments show that the Binary ILP achieves the highest ROUGE 1 score based on the evaltest dataset.
+
+The Binary ILP scores use a system that included Binary ILP, topic clustering, and NP-replace. The LexRank scores reflect a system that included LexRank, topic clustering, and redundancy removal.
+
+\begin{table}[H]
+    \caption{ROUGE recall scores on \textbf{devtest} files}
+    \centering
+    \begin{tabular}{c|c|c}
+        \hline 
+         & ROUGE1 & ROUGE2 \\
+         \hline
+         Best of TAC 2011 & - &  9.574\\
+         Binary ILP & 23.616 & 5.919 \\
+         LexRank & \textbf{24.959} & 6.936\\
+          GSG LLM & 19.162 & 5.129 \\
+          Baseline Lead K & 17.122 & 4.936 \\
+         \hline
+    \end{tabular}
+    \label{tab:rouge_devtest}
+\end{table}
+
+\begin{table}[H]
+    \caption{ROUGE recall scores on \textbf{evaltest} files}
+    \centering
+    \begin{tabular}{c|c|c}
+        \hline 
+         & ROUGE1 & ROUGE2 \\
+         \hline
+         Best of TAC 2011 & - & 13.440 \\
+         Binary ILP & 27.700 & 7.972 \\
+         LexRank &  \textbf{29.328} & 9.217\\
+          GSG LLM & 21.396 & 5.723 \\
+          Baseline Lead K & 23.030 & 7.585 \\
+         \hline
+    \end{tabular}
+    \label{tab:rouge_evaltest}
+\end{table}
+
+\subsection{Integer Linear Programming}
+To find the best combination of hyper-parameters, we ran a manual coordinate descent on our hyper-parameters. For each set of experiments, we changed one hyper-parameter at a time declaring the best value for each hyper-parameter only after the conclusion of each set of experiments. We then would keep this best value for the subsequent experiments until we had run experiments for every hyper-parameter.
+
+With the above method, we found that the best combination of hyper-parameters to pass in to our calculation of tf-idf was to use calculate tf-idf for unigrams, using a logged tf-idf with $\delta_{1}$ close to 0 (in our case $\delta_{1} = 0.01$), a $\delta_{2}$ close to $1$ (our best case uses $\delta_{2} = 0.7$). We also found that eliminating punctuation and lowercasing all tokens yielded the best results. We also found that removing sentences with less than around 25 tokens\footnote{We count tokens after begin tokenized by \texttt{nltk.word\_tokenize}} yielded the best ROUGE scores. 
+
+\subsection{Large Language Model}
+
+For our experiment for finetuning the PEGASUS model, we tested different combinations of the training arguments, such as different epoch and difference batch sizes. Table \ref{tab:rouge-LLM} listed all parameter changes we make for out experiment. ROUGE-on stands for calculating the ROUGE score of a selected sentence from a document, either with the other sentences in that document (single) or with the other sentences in all the documents in a docset (multi). We also experiment on different epoch. Discard stands for the percentage of sentences we selected to discard when generating the input. For example, if we change the ROUGE-on parameters to multi, then choosing 50\% discard rate means that we will discard the bottom 50\% of the sentences in all of the documents in a docset based on how high the ROUGE score is.
+Combine masking stands for whether or not we concatenate the gap-sentences into a single mask token. The result shows that when we calculate the ROUGE score of the selected sentence with the rest of the sentences in all documents in one docset, discard bottom 50\% of the sentences, and combine multiple masked sentences into a single mask token achieve the highest ROUGE 1 and ROUGE 2 score for the devtest data. We also experiments with both "google/pegasus-large" and "google/pegasus-cnn\_dailymail" checkpoints for the PEGASUS model. We find out that the news-summarzation focused "google/pegasus-cnn\_dailymail" performs better than "google/pegasus-large", which trained on more datasets than "google/pegasus-cnn\_dailymail.
+
+\begin{table*}[ht]
+    \centering
+    \begin{tabular}{c|c|c|c|c|c|c}
+        \hline 
+         model & ROUGE-on & epoch & Discard & \multicolumn{1}{|p{1.5cm}|}{\centering Combine\\Masking} & ROUGE1 & ROUGE2 \\
+         \hline
+         pegasus-large & single & 6 & 50\% & True & 0.21037 & 0.06214 \\
+         pegasus-large & multi & 12 & 50\% & True & 0.26419 & 0.05367\\
+         \rowcolor{green!30} pegasus-large & multi & 24 & 50\% & True & 0.28415 & 0.06464\\
+         \rowcolor{yellow!30} pegasus-cnn\_dailymail & multi & 24 & 50\% & True & 0.31355 & 0.08191\\
+         pegasus-large & multi & 12 &30\% & True & 0.24330 & 0.04773\\
+         pegasus-large & multi & 12 & 30\% & False & 0.24263 & 0.05343\\
+         \hline
+    \end{tabular}
+    \caption{Large langauge model ROUGE Recall Scores with different parameters}
+    \label{tab:rouge-LLM}
+\end{table*}
+
+We also experiment on the zero-shot learning method for information ordering using the BART model. The result, however, is disappointing. The model we trained for our experiment failed to generate a sequence of position makers as output. Instead, the model directly generates the ordered text as the output where each sentences are compressed and no longer contain the same level of information compare to the original sentences. We tried to investigate the cause of the issue by reducing input sizes, and increase training data coverage by including all of the sentences from training, testing, and validation data into groups of six sentences. We tried to tweak other parameters such as increasing the training epoch from 8 to 24. However, none of the above methods leads to having the generated output from the fine-tuned model produces sentence indexes, and we choose not to move forward with this information ordering method.
+
+\subsection{Topic Clustering}
+
+To run K-means clustering, we used 8 clusters, and the following parameters for \texttt{sklearn.clusters.KMeans}\footnote{These are the default parameters provided by \texttt{sklearn.cluster.KMeans}, and we did not test our topic clustering algorithm on other hyper-parameters.}:
+
+\begin{verbatim}
+    kmeans = KMeans(
+        n_clusters=8, init='k-means++', 
+        n_init=10, max_iter=300, 
+        tol=0.0001, verbose=0, 
+        random_state=None, copy_x=True, 
+        algorithm='lloyd')
+\end{verbatim}
+
+We also chose to use the median fractional ordering (rather than the mean fractional ordering) and \textit{tf-idf} vector embeddings (as opposed to DistilBert or Word2Vec vector embeddings) to order the sentences in the summary.
+
+\subsection{Content Realization}
+
+The addition of the NP-replace algorithm did not significantly alter the results of the ROUGE scores (see Section \ref{section::ablation} below). Upon visually examining the data, the algorithm does not seem to make a significant impact on the quality of the summaries. It's successes are certainly diminished by the frequency of its failures. Additionally, we suspect that because the unsupervised methods seem to favor longer, more descriptive sentences, replacing NPs is should not be considered to be a priority.
+
+On the other hand, detecting redundant sentences and excluding them from the final summary does seem to be more impactful on the resulting ROUGE score. We performed an ablation study to better understand its impact which is described in more detail below.
+
+\subsection{Ablation Studies on LexRank}\label{section::ablation}
+
+An ablation study was performed on the LexRank algorithm in combination with the redundancy removal algorithm (see \ref{sec:redundancy}). We compared the systems that naively chose the top ranked sentences until the maximum number of summary tokens is reached, a system that checks for similarity with existing sentences in the summary to eliminate redundancy, and a system that both checks for redundancy and performs NP-replacement. A list of ROUGE scores for these systems are found in table \ref{tab:ablation}. This finding is also surprising given LexRank's reliance on similarity scores to generate the graph representation of a document.
+
+\input{imports/ablation_lex}
+
+Interestingly, the neither the redundancy removal algorithm nor NP-replace significantly impact the performance of the algorithm (as measured by ROUGE scores). Visual examination indicates that between 3-6 sentences are selected for a typical summary and that it is uncommon for sentences to be similar. We speculate that either the summaries are too short for redundancy removal to have an effect on ROUGE scores or the minimum Jaccard distance chosen for the experiment (0.7) is too low (however, visual examination did not reveal redundancy to be a pervasive issue).
+
+\subsection{Error analyses}
+
+\subsubsection{Error Analysis of \textit{devtest} data}
+
+We perform a casual error analysis for the summaries based on \textbf{devtest} docset D1006, which are shown in Table \ref{tab:error_analysis_devtest}.
+
+The improved Binary ILP method makes leaps in achieving a better summary from D3. The old summary seemed to give important facts concerning the FDA and withdrawing Vioxx, but seemed to have a lot of more "unimportant facts" that didn't help the reader get a clear idea of what the article is about. An example of this is mentioning about rewriting abstract conclusions, and the amount of teleconferences that were gone to. The improved summary gives a clear picture of the latest update on Vioxx and the new findings of effects its gives. Comparing the output of D4 and D5, there does not seem to be a difference. This may be because the new hyperparameters from clustering did not effect the sentence ordering here, and content realization did not find anything to use co-reference resolution on.
+
+The improved LexRank method no longer produce unncessary information such as website address. The improved method successfully mention Vioxx, where the old method did not. However, the improved method still failed to catch one of the core story point, that Vioxx is recalled by the company. The improved method does capture that Vioxx has potential cardiovascular risks. Interestingly, the using TF-IDF vectors resulted in better performance than using word2vec or DistilBERT sentence vectors. A comparison is shown in Table \ref{tab:lexrank_expt} in Appendix B.
+
+The summary produced by the improved GSG LLM method provides more specific details than the previous system iteration. For example, it mentions that Vioxx was used by 20 million Americans, was Merck’s top-selling product, and that Merck had spent \$195 million to promote it. It also mentions that the FDA had been concerned about the drug’s cardiovascular risks since at least 2000 but did not issue a warning until 2004. These details provide more context and a better understanding of the situation. Another improvement is that it provides a clearer timeline of events. It mentions that Vioxx was approved in 1999, that the FDA had been concerned about its cardiovascular risks since at least 2000, and that the drug was recalled in 2004. This helps the reader understand the sequence of events and the time frame in which they occurred. Compared to the gold summary, however, the improved system still lacks certian information. For example, the improved GSG LLM method generated summary lacks information about the specific clinical trial that led to the recall of Vioxx. The gold summary mentions that the clinical trial was for the use of Vioxx in colon cancer and that it showed unacceptable rates of stroke and heart attack. The generated summary also does not mention that Vioxx was a COX inhibitor, which was safer for the digestive tracts of arthritis patients. Additionally, the gold summary mentions concerns about drug manufacturers’ advertising and the FDA’s role in ensuring the safety of drugs on the market, which is not mentioned in the generated summary.
+
+The summary produced by the baseline mentions a small amount of important details such withdraw the specific drug and how many people used it. But fails to mention many other important details mentioned in the gold standard and by the other methods.
+
+\subsubsection{Error Analysis of \textit{evaltest} data}
+We perform a casual error analysis for the summaries based on \textbf{evaltest} docset D1105, which are shown in Table \ref{tab:error_analysis_evaltest}.
+
+For the ILP method, it mentions most of the details in the gold standard summary. It does miss the exact date of the crash, and how many killed/ possible survivors. It also missed the detail on the unknown cause of the crash, but does mention about the stormy weather.
+
+For the GSG LLM method, the generated summary correctly states that an Adam Air Boeing 737-400 plane with 102 people on board crashed in a mountainous area near the town of Polewali, on its way from Surabaya to Manado. It also correctly states the casualty count of the crash. These are some of the main points of the gold text that the generated summary accurately captures. However, the generated summary lacks additional details such as the weather condition might be a factor of the crash, and there were three Americans on board. Lastly, the generated summary introduces new information about the Indonesian Navy sending planes to carry the bodies of its members, which is not mentioned in the gold text. Overall, the generated summary captures some of the main points of the gold text, but also contains errors and omissions.
+
+The baseline seems to mention mostly about a different event, but mentions the main event the gold standard summary is concerned about in the last sentence. This may be because the first article in the docset mentions about both the events in the first few lines.
+
+\subsubsection{Error analysis of Information Ordering}
+
+Although the correct ordering of a summary is most definitely subjective, we feel that ordering by median fractional ordering, as well as using \textit{tf-idf} vector embeddings produced the best, most cohesive summaries.
+
+In both table \ref{clustering_mean} and \ref{clustering_median}, we see that the summary of D1002-A using \textit{td-idf} embeddings follows a rough chronological order, namely there is a shooting (sentence 1), an accusation (sentence 2), a trial (sentence 3), and an elaboration of the trial (sentence 4). This is unlike the Word2Vec and DistilBert embeddings, which follows a timeline which is not as intuitive or cohesive, namely there is an accusation (sentence 1), an elaboration of the trial (sentence 2), etc. 
+
+The summary order produced for D1001-A using \textit{td-idf} is less convincing in both tables \ref{clustering_mean} and \ref{clustering_median}, but it still follows a rough cohesive manner, namely there is grieving (sentence 1), then uniting and healing (sentence 2), then some moving on (sentence 3). In our opinion, sentence 4 "The school wanted..." feels out of place, it possibly be ordered between sentence 2 and 3, but it also just feels like it doesn't quite belong in this summary in general, which would be a problem with our content selection method rather than our information ordering method. 
+
+Looking at tables \ref{clustering_mean} and \ref{clustering_median}, we can also see that looking at mean versus median, only one summary changed, namely the summary of document set D1001-A contained in the top row using \textit{tf-idf} embeddings. We therefore concluded that whether we use median or mean fractional ordering matters little. 
+
+\subsubsection{Error analysis of Content Realization}
+
+Examples of errors in the NP-replace algorithm can be found in table \ref{tab:error_analysis_realization}. The NP-replace algorithm is highly dependent on the performance of \texttt{}{spaCy}'s experimental coreference resolution model \cite{spacy}. Oftentimes, it clusters unrelated entities together. For instance, in the document set D1042, it associates the noun phrase ``a court martial'' with the noun phrase ``a deal'' (a bug is likely responsible for clipping the sentence). Additionally, the longest pre-modified NP isn't always the most complete description, sometimes making a sentence less readable. For instance, for document set D1010.B, the algorithm correctly marks the NP ``Suspected variant Crutzfeld-Jakob Disease'' a coreferring to the same entity as in the expression ``The fatal brain-wasting disease''. However, here the longer replacement is less descriptive than the longer one, since few readers know about Crutzfeld-Jakob Disease. Additionally, there were issues with the way \texttt{spaCy} parses noun phrases. In D1024, it parsed ``El-Shifa'' as two separate noun phrases, resulting in an awkward replacement. There were also some issues with ensuring that the grammar and punctuation matched the sentence.
+
+\input{imports/error_analysis_realization}

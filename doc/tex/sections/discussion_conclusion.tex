@@ -1,0 +1,91 @@
+\section{Discussion}
+
+\input{imports/error_analysis_devtest}
+\input{imports/error_analysis_evaltest}
+\input{imports/Mean_Clustering_error_analysis_D5}
+\input{imports/Median_Clustering_error_analysis_D5}
+
+\subsection{ILP Hyper-parameters}
+
+\input{imports/ablation_test_csv}
+
+We chose the ILP model with hyperparameters as follows as the top model:
+\begin{verbatim}
+    Min Sent Length = 25
+    n-gram = Unigram
+    delta tf = 0.01
+    delta idf = 0.7
+    Eliminate Punctuation = No
+    Lower Casing = Yes
+    log = Yes
+\end{verbatim}
+
+In table \ref{ablation}, we performed an hyper-parameter ablation test\footnote{The ILP hyper-parameter ablation test was performed using the \texttt{Python rouge-score} package, which has inflated scores when compared to the \texttt{Perl} rouge script. Because we are looking at which hyper-parameter made the largest decrease, this is unimportant for the results of the test.} on this top model, to see which hyper-parameter causes the greatest increase in ROUGE score. We found that \textit{delta idf} for smoothing is the most important hyper-parameter for this system. 
+
+Exp-ID J0 contains the best hyper-parameters, and has a ROUGE1 score of 0.33320. As we see in Exp-ID J5, we see that decreasing the \textit{delta idf} for smoothing to around 0, causes the greatest decrease in ROUGE1 score, (-0.10728). It also appears in Exp-ID J0, J2, and J3, that our choice of n-gram has an impact on the system with unigrams performing the best (-0.0), and trigrams performing the worst (-0.05638). Interestingly by Exp-ID J1, we found that discarding sentences under a certain sentence length has very little effect on the performance (-0.0812).
+
+Likewise as we see in Exp-ID J4, whether choose a \textit{delta tf} that is close to 0 we get a decrease of (-0.0206) in ROUGE1 score, and thus conclude that \textit{delta tf} carries very little weight. In Exp-ID J6 through J7, whether we choose to eliminate all punctuation (-0.0), to log the \textit{tf-idf} values, or choose to lowercase all terms we see that these keep the ROUGE1 score the same (-0.0), and thus conclude that these hyper-parameters also had little to no effect on the performance of the system.
+
+\subsubsection{Long Minimum Sentence Length}
+
+In the exploration of hyper-parameters for our Integer Linear Programming content selection method, we found that the larger the minimum sentence length, the better the ROUGE1 and ROUGE2 score, finally settling on minimum sentence length equal to $25$. Interestingly, our ablation test found that sentence length matters little for the ROUGE score. This discrepancy between our initial exploration and our ablation test could rely on a couple of factors: the method with which we picked our best combination of hyper-parameters, as well as the fact that we are using \texttt{nltk.word\_tokenize} before counting the length of a sentence. 
+
+Because we found the best combination of hyper-parameters using a manual coordinate descent, the order in which hyper-parameters are tested as well as which default hyper-parameters are chosen matters. We tested minimum sentence length first in our manual coordinate descent, and during these experiments found that increasing the minimum sentences length increased the ROUGE score. This correlation between increasing minimum sentence length and increasing ROUGE score makes sense, as longer sentences generally are more informative than shorter.
+
+Also the minimum sentence length also is not what one would think of as an intuitive sentence length because \texttt{nltk.word\_tokenize} tends to inflate the length of a sentence. For example, "Columbine!" would have sentence length of $4$ because it would be tokenized into \texttt{[", Columbine, !, "]}. Thus this large minimum sentence length might be shorter than intuitive.
+
+\subsubsection{$\delta_{idf}$ Creates ROUGE Score Jump}
+
+For ILP, we observed that $\delta_{idf}$ creates the largest difference in ROUGE1 and ROUGE2 score. From this, we conclude that \textit{inverse document frequency (idf)} must have a greater impact on the importance of an n-gram than \textit{term frequency (tf)}. This result feels counter intuitive, namely that terms that appear more frequently must carry more weight. 
+
+We do not know why $\delta_{idf}$ creates such a large jump in ROUGE score, but we suspect it might have to do with our choice not to remove stop words, and the way that $idf$ minimizes the importance of frequent words that appear in many documents. 
+
+\subsection{NP-Replace}
+
+The successes of the NP-replace algorithm are certainly diminished by the frequency of its failures. We suspect that because the unsupervised methods seem to favor longer, more descriptive sentences, the impact of replacing NPs is marginal to begin with. We also believe that many of the algorithm's failures can be attributed to its over-application--applying the algorithm to all NPs raises the likelihood of poor replacements. Perhaps the addition of an algorithm that can detect unseen references would improve its performance
+
+\subsection{Ablation study}
+
+The ablation study revealed that content realization algorithms have only marginal effects on the ROUGE scores (and quality upon visual examination) of the LexRank outputs. 
+
+\subsection{Performance of Different Sentence Vectors}
+
+For D4, we compared performance of LexRank using TF-IDF, DistilBERT, and Word2Vec vectors. Interestingly, the sentence vectors derived from neural network models performed worse than sparse vectors derived from TF-IDF values. This finding is surprising since neural networks have the potential to encode semantic information to some degree \cite{mikolov2013-word2vec}. 
+
+We are unsure of why vectors derived from word or sentence embeddings perform worse. We speculate that, in the case of Word2Vec, calculating a centroid value from ``overwrites'' some of the semantic information in a sentence--especially if we weight each word equivalently. In the case of DistilBERT, we speculate that the dimensions of sentence embeddings can be arbitrary--they don't correspond to particular linguistic information--for out-of-the-box models. Perhaps the model would need to be finetuned using a contrastive loss function to better characterize sentence similarity. However, we are still largely unsure of why we observed these outcomes.
+
+\subsection{Challenges}
+
+We encountered a few hiccups while finalizing the system. For one, we experienced some difficulties combining the different information extraction, ordering, and realization methods results.
+
+\subsection{Future Work}
+For future work, we could continue to improve our content selection methods. For Integer Linear Programming, we could try a different concept weighting scheme. We can run more tests in search of better hyper-parameters, for example, we could run manual coordinate descent with a different default hyper-parameters in a different order. We could also try other ways to create concepts, such as skip-grams to try to capture similar concepts such as "the pandas" and "the giant pandas".
+
+We could also improve our information ordering methods as well. For topic clustering, exploration is necessary on a different number of clusters other than 8. Too little clusters and one risks cramming the summary into the same space, too many clusters and one risks creating sparsity. Error analysis would then be necessary on the resulting summaries to find better topic clusters. 
+
+Lastly, we could explore ways to overcome the input limits of the language model by using recursive summarization introduced by \citet{openaibook}, such as generate a summary for each of the document in a docset, and use those summaries to generate a final summary. 
+
+
+
+
+
+
+
+%These are our future steps for the next step of the project:
+
+%\begin{itemize}
+%    \item Improve clustering by testing different K's for number of clusters.
+%    \item Find a way to incorporate supervised learning techniques to leverage training data.
+%    \item Possibly continue hyper-parameter tuning for ILP, LexRank, and large language model.
+%    \item Investigate why the zero-shot information ordering produce undesired output 
+%    \item Train the language model with other pre-trained models to compare the results.
+%\end{itemize}
+
+\section{Conclusion}
+
+%The system created for D4 was a substantial improvement over D3. We successfully incorporated improvements to existing systems, and implemented new information ordering algorithms. Still, many of of our methods (such as ILP and LexRank) are unsupervised, meaning that we are leaving training data is going unused--a potential area for future exploration.
+
+
+In conclusion, our paper explores multiple approaches to multi-document summarization, including both extractive and abstractive methods. We have built end-to-end systems using the selected methods and benchmarked them to evaluate their effectiveness. 
+Our error analysis provides insights into the strengths and weaknesses of the selected methods, paving the way for future research on improving existing summarization methods and developing new summarization systems.
+

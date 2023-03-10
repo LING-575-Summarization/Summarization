@@ -1,0 +1,20 @@
+\section{Related Works}
+
+% MENTION PREVIOUS USES OF LEXRANK AS WELL AS RECENT USE AS 
+
+\subsection{Content Selection}
+
+Before the advent of neural networks, researchers often took an extractive approach to summarization. Many extractive approaches attempt to assign sentences in a document set an importance value. Some approaches look to words to determine the importance of a sentence. For instance, MEAD \cite{radev-etal-2000-centroid} sums the term-frequency inverse-document-frequency (TF-IDF) scores in a sentence to obtain a centroid score for each sentence. RegSumm also determines importance based on words: it runs a regression model using a number of features, the key feature being the likelihood of a word appearing in a summary \cite{hong-nenkova-2014-improving}. Others, attempt to look to relationships between sentences to determine their relative importance, an approach taken by the CLASSY system \cite{conroy2005classy}, which trains a Hidden Markov model to calculate the probability that a sentence will be emitted given previous sentence emissions.
+
+Our system employs two unsupervised methods that calculate sentence importance using both word-based and sentence-based techniques. Both techniques make use of TF-IDF to determine the relative importance of a sentence or topic in a document set. Integer Linear Programming (ILP) optimizes the output summary by calculating the weights afforded to different concepts (with n-grams being a proxy for concepts). Previous content selection methods that used ILP include \citep{Gillick_2008_ILP} and \citep{luo_liu_liu_litman_2018}, on which we based our ILP content selection method. LexRank is an adaption of the PageRank algorithm \cite{pagerank}, and was proposed as an alternative to centroid-based approaches like MEAD. LexRank leverages relationships between documents by creating a weighted graph that connects sentences. Relating the sentences to one another has the advantage of (1) dampening the effect of high IDF scores of rare words (when using TF-IDF vectors) and (2) formalizing a preference for more informative (or more connected) sentences.
+
+In recent years, neural methods have emerged as a promising alternative for text summarization, with both extractive \cite{https://doi.org/10.48550/arxiv.1611.04244, narayan-etal-2018-ranking} or abstractive approaches \cite{chopra-etal-2016-abstractive, nallapati-etal-2016-abstractive, celikyilmaz-etal-2018-deep}. Additionally,  the advent of large language models (LLMs) and the pretraining-finetuning paradigm, has resulted in a  boost in performance for summarization tasks. Our system also implements a pretrained deep-learning model to generate summaries using the document sets as inputs. %Add more reference here
+
+\subsection{Content Ordering}
+
+% clustering paragraph
+Previous approaches to summarization also included information ordering, or reordering the sentences in a given summary to increase comprehensibility, cohesion and coherence. Previous information ordering approaches included \citep{barzilay_2002}, on which we loosely based our information ordering algorithm. 
+
+\subsection{Content Realization}
+
+Communication often relies on a common ground of knowledge between the person communicating a message and the receiver of that message. Because an extractive approach can take sentences from any point in an article, corrections need to be made to enhance a summary's readability. \citet{siddharthan-etal-2011-information} discuss the features of summaries that most impact its readability finding that unseen nouns should be explained clearly, while seen nouns can be compressed to pronouns or short phrases. Several papers attempt to improve summaries by replacing noun phrases (NPs) with coreferring noun phrases. \citet{nenkova2011automatic} calculates weights for NPs in a document using word frequencies and replaces coreferring NPs in summaries with the NP with the highest weight. \citet{siddharthan-etal-2011-information} replaces NPs in summaries with the longest premodified (or just longest if no premodified NP exists) coreferring NP in the original document.

@@ -4,6 +4,8 @@
 
 \documentclass[11pt]{article}
 
+\usepackage[table]{xcolor}
+
 \input{preamble.tex}
 
 % If the title and author information does not fit in the area allocated, uncomment the following
@@ -12,7 +14,7 @@
 %
 % and set <dim> to something 5cm or larger.
 
-\title{D1}
+\title{Exploring Extractive and Abstractive Approaches for Multi-Document Summarization: An End-to-End System with Benchmarking and Error Analysis}
 
 % Author information can be set in various styles:
 % For several authors from the same institution:
@@ -44,48 +46,28 @@
 
 \begin{document}
 \maketitle
+
 \begin{abstract}
-This deliverable contains a skeleton of the paper and a list of team members. This is an example citation \citep{jurafsky-martin-draft}. According to \citet{jurafsky-martin-draft}, this is another example citation.
+As the number of online publications continues to grow at a rapid pace, there is a pressing need for a valuable tool that can automatically generate summaries from multiple articles. Our paper explores multiple approaches to multi-document summarization. These approaches include both extractive and abstractive methods. In this paper, we choose to explore Integer Linear Programming, LexRank, and Pegasus summarization methods. We build end-to-end systems using these selected methods. Finally, we will benchmark selected methods and perform an error analysis to evaluate their effectiveness.
 \end{abstract}
 
-\section{Introduction}
+\input{sections/introduction}
 
-\section{Engines}
+\input{sections/related_works}
 
-\section{System Overview}
+\input{sections/system}
 
-\section{Approach}
+\input{sections/approach}
 
-\section{Results}
+\input{sections/results}
 
-\section{Discussion}
+\input{sections/discussion_conclusion}
 
-\section{Conclusion}
+\input{sections/appendix_A}
 
-\section{Appendix A: Workload distribution}
+\input{imports/lexrank_expt}
 
-\begin{itemize}
-    \item Anna Batra set up the Github repository, turned in D1
-    \item Junyin Chen got the team together and set up a communication channel
-    \item Sam Briggs set up the Overleaf file and sent out a when-to-meet to schedule weekly meetings
-    \item Hilly Steinmetz edited the Overleaf file to prepare it for D1.
-\end{itemize}
-
-\section{Appendix B: Code repository and additional software and data used in your system}
-
-The repository for our project can be found on Github at \href{https://github.com/LING-575-Summarization/Summarization}{github.com/LING-575-Summarization/Summarization}.
-
-We plan to use the following software for the project: 
-
-\begin{itemize}
-    \item Python
-    \item Anaconda (for virtual environment)
-    \item NLTK (for parsing, NER, and more)
-    \item spaCy (for parsing, NER, and more)
-    \item Scikit-learn (for machine learning models)
-    \item Pytorch (for large LMs)
-    \item Hugging Face's Transformer library (for auto-tokenization and find-tune trained model)
-\end{itemize}
+\input{sections/appendix_B}
 
 \nocite{jurafsky-martin-draft, radev-etal-2000-centroid}
 \bibliography{bibliography/custom}

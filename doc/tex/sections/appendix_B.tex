@@ -1,0 +1,79 @@
+
+\section{Code repository and additional software}
+
+\subsection{Source Code}
+
+The repository for our project can be found on Github at \href{https://github.com/LING-575-Summarization/Summarization}{github.com/LING-575-Summarization/Summarization}.
+
+\subsection{Packages}
+We used the following packages for our system:
+
+\subsubsection{Pre-processing}
+
+\begin{itemize}
+    \item lxml.etree (for processing AQUAINT, AQUAINT2, TAC files)
+    \item xml.etree.ElementTree (for processing docSetA file lists)
+    \item spaCy 2.0 (for word tokenization on paragraphs)
+    \begin{itemize}
+        \item English model ``en\_core\_web\_sm"
+    \end{itemize}
+    \item NLTK 
+    \begin{itemize}
+        \item English model \\ 
+        'tokenizers/punkt/english.pickle' (for sentence and word tokenization)
+        \item nltk.util.ngrams (for TF-IDF ngrams)
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Content Selection}
+
+\begin{itemize}
+    \item PuLP (for binary ILP)
+    \item rouge-score
+    \item Datasets
+    \item Evaluate
+    \item Pytorch
+    \item Transformers
+    \item Anaconda (for virtual environment)
+\end{itemize}
+
+\subsubsection{Information Ordering}
+
+\begin{itemize}
+    \item sci-kit learn (for Topic Clustering)
+\end{itemize}
+
+\section{Figures and Tables} \label{appendixtable}
+
+\subsection{ILP Hyper-parameter Ablation Test}
+
+% \input{imports/ablation_test_csv}
+
+\subsection{LexRank Experiments}
+
+\subsection{ROUGE score from previous deliverables}
+
+\begin{table}[H]
+    \caption{ROUGE Recall Scores}
+    \centering
+    \begin{tabular}{||c|c|c||}
+        \hline 
+        \hline 
+         & ROUGE1 & ROUGE2 \\
+         \hline
+         Binary ILP (D4) & 0.33697 & 0.07437 \\
+         \hline
+         Binary ILP (D3) & 0.12085 & 0.01533 \\
+         \hline
+         LexRank (D4) &  0.21925 & 0.05966\\
+         \hline
+        LexRank (D3) & 0.13720 & 0.02341\\
+         \hline
+          GSG LLM (D4) & 0.26419 & 0.05367 \\
+         \hline
+         GSG LLM (D3) & 0.21037 & 0.06214 \\
+         \hline
+         \hline
+    \end{tabular}
+    \label{tab:rouge}
+\end{table}

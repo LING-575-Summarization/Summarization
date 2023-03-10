@@ -1,0 +1,14 @@
+\begin{table*}[ht]
+\centering
+\begin{tabular}{|p{1.5cm}|p{5.5cm}|p{5.5cm}|p{2cm}|}
+  \hline
+Doc. Set & Sentence & Replacement & Description \\
+ \hline
+    D1042 & Lynndie England on Monday pled guilty to charges of abusing Iraqi prisoners at the Abu Ghraib prison but told \textbf{a court martial} \underline{she} did not believe she was doing wrong when photographed holding a leash on a naked inmate. & Lynndie England on Monday pled guilty to charges of abusing Iraqi prisoners at the Abu Ghraib prison but told \textbf{the deal} \underline{she} did not believe & Coreference error $+$ bug \\ \hline
+    D1002 & Through their lawyers, the officers have said \textbf{they} thought Diallo had a gun. & Through their lawyers, the officers have said \textbf{the couple} thought Diallo had a gun. & Wrong referent \\ \hline
+    D1010 & \textbf{The fatal brain-wasting disease} is believed to come from eating beef products from cows struck with mad cow disease. & \textbf{Suspected variant Crutzfeld-Jakob Disease} is believed to come from eating beef products from cows struck with mad cow disease. & Longer referent is less easy to read \\ 
+    \hline
+    D1024 & [...] Sudan maintains \textbf{it's} a pharmaceutical plant. & [...] Sudan maintains \textbf{El-'s} a pharmaceutical plant. & Parser error \\ \hline
+\end{tabular}\caption{Examples of content realization errors (devtest data)}
+\label{tab:error_analysis_realization}
+\end{table*}

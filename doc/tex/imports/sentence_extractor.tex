@@ -1,0 +1,33 @@
+\begin{algorithm}[ht]
+\caption{Redundancy removal algorithm}
+\small
+\hspace*{\algorithmicindent} \textbf{Input:} $top_k$, $max_w$, $min\_jaccard$\\
+\hspace*{\algorithmicindent} \textbf{Output:} Summary string
+\begin{algorithmic}[1]
+\State $\mathrm{Array} \ S \gets \mathrm{LexRank} (doc)$
+\State $\mathrm{Array} \ SeenSentences$
+\State $\mathrm{String} \ Results$
+\State $\mathrm{Int} \ Length \gets 0$
+\State $\mathrm{Int} \ i \gets 0$
+\While{$i \leq top_k$ or $i \leq \textrm{Len}(S)$}
+    \State $\mathrm{Bool} \ CheckJaccard \gets True$
+    \For{$j \gets 1 \ \mathrm{to} \ \mathrm{len}(SeenSentences)$}
+    \If{$D_{j}(S[i], S[j]) \geq min\_jaccard$}
+    \State $CheckJaccard \gets False$ 
+    \EndIf
+    \EndFor
+    \If{$CheckJaccard$ is $False$}
+        \State $i \gets i+1$
+    \ElsIf{$\mathrm{len}(S[i]) + Length > max_w$}
+        \State $i \gets i+1$
+    \Else
+        \State $w \gets w + \mathrm{len} (S[i])$
+        \State $Results \gets Results \oplus S[i]$
+        \State $SeenSentences \oplus S[i]$
+        \State $Length \gets \mathrm{len}(S[i]) + Length$
+        \State $i \gets i+1$
+    \EndIf
+\EndWhile 
+\end{algorithmic} \label{alg:redundancy}
+\end{algorithm} 
+\normalsize

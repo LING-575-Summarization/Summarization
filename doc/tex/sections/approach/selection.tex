@@ -1,0 +1,131 @@
+\subsection{Content Selection}
+
+\subsubsection{Baseline: Lead $K$}
+
+    For our baseline we implemented taking the first $k$ sentences of the first document in the docset. If the first sentence is too long (over 100 words), we keep skipping the first few sentences until we find one sentence less than 100 words. Then, we continue adding more sentences one by one until the next sentence makes the summary over 100 words. This means possibly we could end up with a one sentence summary if the proceeding sentence already makes it over 100 words.
+
+\subsubsection{TF-IDF}\label{content_selection_tf_idf}
+
+    To obtain the importance of an n-gram in a given document set, we used the term-frequency, inverse document frequency (\textbf{tf $\cdot$ idf}) metric. To calculate, we used a few different formulas with different parameters. The parameters were as follows:
+
+    \begin{itemize}
+       
+        \item N-gram: Whether to treat each term as a unigram, bigram, or trigram. Padding was incorporated here for both start of sentence and end of sentence tokens, using nltk.util.ngrams.
+
+        \item Eliminate\_punctuation: Whether to include punctuation or not.
+
+        \item Casing: Whether to lowercase all letters, or maintain original capitalization
+
+        \item log: Whether to use logged equations or not (see equations in section \ref{content_selection_tf_idf})
+
+        \begin{itemize}
+
+            \item log\_base: If logged equations are used, what base to use
+
+        \end{itemize}
+
+        \item smoothing: Whether or not to smooth TF and IDF by adding a small value to word counts
+
+        \begin{itemize}
+
+            \item tf\_delta: Add a small value $\delta_1$ to word counts when calculating TF (if smoothing)
+    
+            \item idf\_delta: Add a small value $\delta_2$ to word counts when calculating IDF (if smoothing)
+
+        \end{itemize}
+    \end{itemize}
+    One difference than normal tf-idf is that we used tf at a different level of document than idf. For LexRank we used a sentence level document, while allowing the idf to span over the entire data set. For ILP, we used a docset level document, while allowing the idf to span over the entire data set. This will help to make frequent words insignificant and help located the more important words for the sentence or document set.
+ 
+    Using the logarithmically scaled, add $\delta_1$ smoothed tf, and we used an add $\delta_2$ smoothed idf to weight each term in the document set \citep{seki_2003}.
+
+    Given all the training data $D$ with $N$ documents, an n-gram $t$, and a document set $d\subseteq D$, we calculated the logged term-frequency, inverse document frequency as follows: \\
+
+    First , we let:
+    \begin{align}
+        f_{t,d} &= \mathrm{count}(t) \; \mathrm{for} \: t\in d \\
+        n_t &= \vert \{d\mid t\in d, d\in D\}\vert
+    \end{align}        
+
+    If logged, we calculate as follows:    
+    \begin{align}
+        \mathrm{tf}\cdot \mathrm{idf}(t,d,D) 
+            &= \mathrm{tf}(t,d)\cdot \mathrm{idf}(t,d,D) \\
+        \mathrm{tf}(t,d) 
+            &= \log(\delta_1 + f_{t,d})\\
+        \mathrm{idf}(t,D) 
+            &= \delta_2 + \log\left(\dfrac{N}{\delta_2 + n_{t}}\right)
+    \end{align}
+    
+    If not logged, we calculate as follows:
+        \begin{align}
+            \mathrm{tf}\cdot \mathrm{idf}(t,d,D)
+                &= \mathrm{tf}(t,d)\cdot \mathrm{idf}(t,d,D) \\
+                \mathrm{tf}(t,d)
+                &= \delta_1 + f_{t,d}\\
+             \mathrm{idf}(t,D) 
+                &= \delta_2 + \dfrac{N}{\delta_2 + n_{t}} 
+        \end{align}
+
+    If not smoothed, $\delta_1$ and $\delta_2$ effectively become $0$.
+
+\subsubsection{Binary Linear Programming}
+Previous studies such as \citet{Gillick_2008_ILP} and \citet{luo_liu_liu_litman_2018} have treated content selection as an integer linear programming (ILP) task. For this method of content selection, we also treat it as such. As with \citet{Gillick_2008_ILP} and \citet{luo_liu_liu_litman_2018}, we also used n-grams for ``concepts", specifically unigrams, bigrams, and trigrams (exclusively). Unlike \citet{luo_liu_liu_litman_2018} who used \textit{term-frequency} for their concept weights, and \citet{Gillick_2008_ILP} who used \textit{document frequency} for their concept weights, we combined the two weighting methods and used the \textit{tf-idf} of n-grams as calculated in section \ref{content_selection_tf_idf}. For the formulation of the ILP, we used the objective function, constraints, and binary variables as proposed in \citet{Gillick_2008_ILP}. 
+
+For notation, we take a bag of sentences and bag of concepts approach. We call the given set of sentences $Y$ which constitute the given document set, and the set of concepts $Z$ which also constitute the given document set. We let the decision variable $y_j$ correspond to sentence $s_j\in Y$ and we use the decision variable $z_i$ correspond to concept $c_i\in Z$. We also let $y_j$ and $z_i$ be indicator functions, indicating whether to include or exclude a sentence $s_j$ and concept $c_i$ respectively from the summary, and thus $y_j$ and $z_i$ can only take on values of $0$ or $1$. 
+
+We use $A_{i,j}$ to denote the indicator function $\mathds{1}_{z_i\subseteq y_j}$, i.e. $A_{i,j}$ = 1. If concept $z_i$ appears in sentence $y_j$, we give a value of 0. Otherwise. We use the weight $w_i\in\mathbb R$ where weight $w_i$ is the corresponding weight for ''concept'' $z_i$. We also have a maximum term summary length $L$. If we have $N$ sentences in the optimal summary, and $M$ sentences total in the document set, we can then formulate the optimization problem as follows:
+\begin{align}
+    \text{maxmimize}_{y,z} \ \ &\mathlarger\sum_{c_i\in Z} w_iz_i \label{ilp_objective} \\
+    \text{Subject to} \ \ & \sum_{j=1}^M A_{i,j} y_j \geq z_i,\:\forall c_i\in Z  
+    \label{ilp_concepts_selected} \\
+    & A_{i,j}y_j \leq z_i, \: \forall c_i, s_j\in Z\times Y\label{ilp_all_concepts_included} \\
+    & \sum_{j=1}^N l_jy_j \geq L \label{ilp_sent_length_constraint} \\
+    & y_j\in \{0, 1\}, \ z_i\in \{0, 1\} \label{ilp_integer_constraint}
+\end{align}
+
+We see that Eq. (\ref{ilp_objective}) is the objective function where we are trying to maximize the total weight of the concepts chosen for the summary in an attempt to extract the most important concepts in a document set. 
+Eq. (\ref{ilp_concepts_selected}) ensures that a concept is included in the optimal summary if and only if there is a sentence that is selected for the optimal summary that contains said concept.
+Eq. (\ref{ilp_all_concepts_included}) ensures that all concepts in sentence $y_j$ are included if $y_j$ is included in the optimal summary. Eq. (\ref{ilp_sent_length_constraint}) ensures that the given summary remains under the maximum sentence length $L$. Eq. (\ref{ilp_integer_constraint}) ensures that the decision variables for sentences $y_j$ and concepts $z_i$ act as indicator functions. 
+For each "concept'' $z_i$, we tested unigrams, bigrams, and trigrams. For the corresponding weight $w_i$ for each concept, we used the tf-idf score of the unigram, bigram, or trigram $z_i$ (exclusive) as calculated in section \ref{content_selection_tf_idf}.
+
+Although there is no explicit redundancy checker, we see that implicitly, redundancy is kept to a minimum because of the formulation of the ILP problem--each concept weight will be included in objective function only once.
+
+\subsubsection{LexRank}
+
+The LexRank algorithm treats each sentence as a document. It compares sentence vectors to construct a weighted graph of the relationships between sentences in a document set. \citet{lexrank} obtains sentence vectors using TF-IDF (without smoothing); however, sentence vectors can be obtained using a number of methods (see \ref{sentence_embeddings}). We found the best performing vectors to be TF-IDF vectors with the IDF values taken from the evaluation dataset and training dataset, +1 smoothing for unseen terms for IDF, and ignoring punctuation tokens.
+
+Sentences that are compared to one another are related to one another using the cosine similarity measure of their vector representations. For vector representation of sentences $\Vec{s_i}$ and $\Vec{s_j}$: 
+\begin{align} 
+    sim&(\Vec{s_i},\Vec{s_j}) = \frac{\Vec{s_i} \cdot \Vec{s_j}}{||\Vec{s_i}||_2 \times ||\Vec{s_j}||_2} \label{cosine similarity measure}
+\end{align} \normalsize
+
+\noindent A similarity matrix can then be constructed by calculating similarity scores across all sentences in the document. Unlike \citet{lexrank}, we do not calculate the similarity between instances of the same sentence, since we found 1 to be a relatively similarity high score. We believe the decline in performance might pertain to lowering other similarity scores to other sentences after the adjacency matrix's rows are normalized.
+
+Using this similarity measure, we created a similarity matrix between sentences in the document, which also functioned as a weighted graph. Per \citet{lexrank}, values with low similarities scores and self-connections are set to zero. After perfoming row normalization, The matrix satisfies the properties of a stochastic matrix, allowing us to use the power method to estimate the eigenvalue of the matrix. We initialize the centrality vector as $\bm{p}=\frac{1}{N}\bm{p}$, where $N$ is the number of documents. We then apply the following update to  $\bm{p}$: \begin{align} 
+    \bm{p} = [d\bm{U}+(1-d)\bm{B}]^T\bm{p}
+\end{align}
+
+\noindent where $\bm{U}$ is a square matrix of size $[N \times N]$ with values equal to $1/N$ and $\bm{B}$ is the adjacency matrix of the graph. 
+
+Experiments were conducted to investigate whether LexRank performed best with TF-IDF, Word2vec, or DistilBERT vectors. A comparison table can be found in Appendix \ref{appendixtable}.
+
+\subsubsection{Gap sentence generation} \label{GSG}
+We used the gap sentence generation method introduced in \citet{pegasus}. Based on the finding when \citeauthor{pegasus} were training the Pegasus based model, we will selecting the top m sentences as gap sentences without replacement from a document based on importance score. The importance score is calculated based on the ROUGE score one sentence gets comparing to the remaining sentences in one document as in Algorithm ~\ref{alg:GSG}.
+
+\begin{algorithm}[H]
+\caption{Independent sentence selection}\label{alg:GSG}
+\begin{algorithmic}[1]
+\State $ \textit{D} := \{x_i\}_n \gets \text{sentences in whole docset}$
+\State $ \textit{S} := \emptyset$
+\State $ \textit{I} \gets \text{list contains index from 0 to n}$
+\For{$j \gets 1 \text{ to } n$} 
+\State $ s_i := \textit{ROUGE}(x_i, D \setminus \{x_i\}) $
+\State $ S := S \cup \{s_i\} $
+\EndFor
+\State $ I := sort(I) \text{ Based on the value in S}$
+\end{algorithmic}
+\end{algorithm}
+
+To improve the system, when we are processing the training data, we calculate the ROUGE score based on the average ROUGE score when comparing the selected sentence with each of the gold summary. We only calculate the ROUGE score based on the rest of the documents when we are processing the test and validation data.
+
+We only mask the top thirty percent of the sentences as \citeauthor{pegasus} finds out achieves relatively high performance without sacrifice training efficiency.
